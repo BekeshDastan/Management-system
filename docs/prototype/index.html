@@ -21,6 +21,7 @@ label.field{display:grid;gap:8px;font-size:.85em;font-weight:600} input,select{m
 .game-name{display:inline-block;max-width:100%;margin-top:8px;padding:5px 9px;border-radius:12px;background:var(--soft);color:var(--green);font-size:.75em;line-height:1.5;overflow-wrap:anywhere}.game-setting{display:flex;align-items:center;gap:14px;min-height:52px;font-size:.9em;font-weight:600;line-height:1.5;cursor:pointer}.game-setting input{appearance:auto;accent-color:var(--green);width:24px;height:24px;min-height:24px;flex:0 0 24px;padding:0}.name-ranges{margin:0}.name-ranges div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line);line-height:1.5}.name-ranges div:last-child{border-bottom:0}.name-ranges dt{font-size:.8em;color:var(--muted)}.name-ranges dd{margin:0;font-size:.85em;font-weight:600;overflow-wrap:anywhere}
 .level-list{list-style:none;padding:0;margin:0;display:grid;gap:16px}.level-list li{border-bottom:1px solid var(--line);padding-bottom:16px;line-height:1.5;min-width:0}.level-list li:last-child{border-bottom:0;padding-bottom:0}.level-list strong{font-size:.9em;overflow-wrap:anywhere}.level-list .row{align-items:baseline}.diary-level{display:grid;gap:10px}.diary-level .measurement-value{margin-top:0}
 .progress-tabs{display:flex;flex-wrap:wrap;gap:8px}.progress-tabs .button{flex:1;min-width:90px}.progress-chart{width:100%;min-width:0}.progress-chart svg{display:block;width:100%;overflow:visible}.progress-chart .chart-grid{stroke:var(--line);stroke-width:1}.progress-chart .chart-line{stroke:var(--green);stroke-width:2;fill:none}.progress-chart .chart-point{fill:var(--green);stroke:var(--bg);stroke-width:2}.progress-chart .chart-selected{fill:var(--accent);stroke:var(--ink)}.progress-chart text{fill:var(--muted);font-family:inherit}.progress-chart .chart-cursor{stroke:var(--muted);stroke-dasharray:4 4}.progress-chart [data-action]{cursor:pointer}.progress-summary{display:grid;gap:8px}.progress-summary .measurement-value{margin:0}.progress-values{width:100%;border-collapse:collapse;font-size:.8em;line-height:1.5;table-layout:fixed}.progress-values th,.progress-values td{text-align:left;border-bottom:1px solid var(--line);padding:10px 4px;overflow-wrap:anywhere}.progress-values th:first-child{width:55%}.progress-details summary{min-height:44px;padding:10px 0;cursor:pointer;font-size:.85em;color:var(--green)}.progress-screen input[type=date]{display:block;min-width:0;max-width:100%}.progress-detail{display:grid;gap:10px}.progress-scale{font-size:.75em;line-height:1.5;overflow-wrap:anywhere}.progress-range{font-size:.85em;font-weight:600;line-height:1.6;overflow-wrap:anywhere}
+.progress-chart .chart-target{stroke:var(--muted);stroke-width:2;stroke-dasharray:6 4;fill:none}.progress-chart .chart-target-point{fill:var(--bg);stroke:var(--muted);stroke-width:2}.progress-chart .chart-partial{fill:var(--bg);stroke:var(--green);stroke-width:2}.progress-chart .chart-partial-line{stroke-dasharray:3 4}.chart-legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:.75em;line-height:1.5}.chart-legend span{display:inline-flex;align-items:center;gap:6px}.legend-target{display:inline-block;width:22px;border-top:2px dashed var(--muted)}.progress-comparison{display:grid;gap:10px}.progress-comparison .measurement-value{margin:0;font-size:1em}.progress-warning{color:var(--error);font-size:.8em;line-height:1.5}
 dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px;width:calc(100% - 40px);max-width:360px;box-shadow:var(--shadow)}dialog::backdrop{background:#14251cc0}dialog h2{font-size:1.4em;margin-bottom:14px}dialog p{font-size:.9em;margin-bottom:22px}dialog .stack{gap:8px}.dialog-close{margin-top:10px} .screen h1,.screen h2{outline:none}
 @media(max-width:850px){.workspace{gap:32px;padding:24px;grid-template-columns:1fr 390px}.intro{margin-top:40px}.intro h1{font-size:2.4em}.phone{min-height:760px}.side .legend{display:none}}
 @media(max-width:690px){.workspace{display:flex;flex-direction:column;align-items:center;padding:16px 12px;gap:18px}.side{position:static;width:100%;max-width:420px}.side .brand{font-size:1.2em}.intro{margin:12px 0}.intro h1,.intro p{display:none}.intro .demo-tag{font-size:.65em}.controls{margin:12px 0;gap:8px}.control{padding:10px 12px;font-size:.75em}.footnote{font-size:.65em}.phone{width:100%;max-width:420px;border-radius:26px;min-height:740px}.screen{padding:18px 20px 22px;min-height:680px}.bottom-nav{margin-left:-20px;margin-right:-20px}.art{height:185px}.plate{transform:scale(.9)}.orbit{width:200px;height:200px}.statusbar{padding:14px 20px 8px}}
@@ -35,7 +36,7 @@ dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);bord
     <div class="intro"><span class="demo-tag">UX-прототип · вымышленные данные · не приложение</span><h1>В своём<br>ритме.</h1><p>Повседневный дневник.<br>Первый запуск, еда, вес и сон.</p></div>
     <div class="controls"><div class="control-row"><button class="control" data-action="restart">Сначала</button><button class="control" data-action="example">Пример дня</button><button class="control" data-action="progress-example">Пример прогресса</button></div><div class="control-row"><button class="control" data-action="theme" aria-pressed="false">Тёмная тема</button><button class="control" data-action="font" aria-pressed="false">Крупный текст</button></div></div>
     <p class="footnote">Только демонстрация: вводите вымышленные значения. Всё хранится в памяти страницы и сбрасывается при перезагрузке. «Сначала», «Пример дня» и «Пример прогресса» заменяют текущую демонстрацию.</p>
-    <div class="legend"><span class="eyebrow">Попробуйте</span><ol><li>Начать без заполнения анкеты и целей.</li><li>Добавить продукт и изменить порцию.</li><li>Записать вес и суммарный сон за день.</li><li>Исправить запись или отменить изменения.</li><li>Отметить день и посмотреть уровень дневника.</li><li>Посмотреть вес и сон в «Прогрессе».</li><li>Настроить названия и уровни.</li></ol><p class="footnote">Направление дизайна — предложение. Условное «сегодня»: 14 ноября 2026. Данные примера не являются рекомендацией. Выбирайте прошлые даты в дневнике. «Пример прогресса» открывает отдельный вымышленный набор за 8–14 ноября. В макете период графика ограничен 366 днями.</p></div>
+    <div class="legend"><span class="eyebrow">Попробуйте</span><ol><li>Начать без заполнения анкеты и целей.</li><li>Добавить продукт и изменить порцию.</li><li>Записать вес и суммарный сон за день.</li><li>Исправить запись или отменить изменения.</li><li>Отметить день и посмотреть уровень дневника.</li><li>Посмотреть вес, сон и питание в «Прогрессе».</li><li>Настроить названия и уровни.</li></ol><p class="footnote">Направление дизайна — предложение. Условное «сегодня»: 14 ноября 2026. Данные примера не являются рекомендацией. Выбирайте прошлые даты в дневнике. «Пример прогресса» открывает отдельный вымышленный набор за 8–14 ноября. В макете период графика ограничен 366 днями.</p></div>
   </aside>
   <section class="phone" aria-label="Мобильный макет Diet"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>● ▰</span></div><div id="app"></div></section>
 </main>
@@ -72,7 +73,7 @@ const day=()=>state.days[state.date];
 const total=(date=state.date)=>(state.days[date]?.entries||[]).reduce((sum,e)=>sum.map((v,i)=>v+e.values[i]),[0,0,0,0]);
 const target=(date=state.date)=>state.targets.filter(x=>x.date<=date).sort((a,b)=>b.date.localeCompare(a.date))[0];
 function reset(example=false){
- state={screen:example?'home':'welcome',name:'',direction:'',goalDraft:['','','',''],goalDate:TODAY,returnHome:false,date:TODAY,meal:0,products:structuredClone(seed),selected:1,quantity:'100',search:'',quickName:'',quick:['','','',''],newName:'',newUnit:'г',newValues:['','','',''],targets:[],days:{[TODAY]:{entries:[],complete:false}},message:'',weightDate:TODAY,weightDraft:'',weightInitial:'',sleepDate:TODAY,sleepDraft:['',''],sleepInitial:['',''],measurementNamesEnabled:true,diaryLevelsEnabled:true,progress:null};
+ state={screen:example?'home':'welcome',name:'',direction:'',goalDraft:['','','',''],goalDate:TODAY,goalDraftDirty:false,returnHome:false,date:TODAY,meal:0,products:structuredClone(seed),selected:1,quantity:'100',search:'',quickName:'',quick:['','','',''],newName:'',newUnit:'г',newValues:['','','',''],targets:[],days:{[TODAY]:{entries:[],complete:false}},message:'',weightDate:TODAY,weightDraft:'',weightInitial:'',sleepDate:TODAY,sleepDraft:['',''],sleepInitial:['',''],measurementNamesEnabled:true,diaryLevelsEnabled:true,progress:null};
  if(example){state.targets=[{date:TODAY,values:[2000,100,65,250]}];state.days[TODAY].entries=[{id:1,name:'Овсяная каша',amount:'200 г',meal:0,values:[300,20,8,36]},{id:2,name:'Йогурт',amount:'250 мл',meal:0,values:[100,7.5,2.5,12]}];}
  render();
 }
@@ -84,13 +85,13 @@ function header(back,title,caption=''){return `<button class="back" data-action=
 function context(){return `<div class="context">${dateLabel(state.date)} · ${meals[state.meal]}</div>`;}
 function modal(title,text,yesLabel='',action=null,cancelLabel='Отмена'){lastFocus=document.activeElement;document.getElementById('dialog-title').textContent=title;document.getElementById('dialog-text').textContent=text;document.getElementById('dialog-actions').innerHTML=(yesLabel?`<button class="button full" data-action="dialog-yes">${esc(yesLabel)}</button>`:'')+`<button class="button ${yesLabel?'plain':'secondary'} full" data-action="dialog-close">${yesLabel?esc(cancelLabel):'Понятно'}</button>`;dialogCallback=action;document.getElementById('dialog').showModal();}
 function closeModal(){document.getElementById('dialog').close();if(lastFocus?.isConnected)lastFocus.focus();}
-function outside(){modal('За пределами макета','Этот сценарий не входит в прототип. Здесь можно проверить первый запуск, главную, добавление еды, веса и сна, а также графики веса и сна. Данные не изменены.');}
+function outside(){modal('За пределами макета','Этот сценарий не входит в прототип. Здесь можно проверить первый запуск, главную, добавление еды, веса и сна, а также графики веса, сна и питания. Данные не изменены.');}
 function render(){
  if(progressObserver){progressObserver.disconnect();progressObserver=null;}
  let html='';
  if(state.screen==='welcome')html=`<div class="screen"><div class="row"><span class="brand">diet</span><span class="pill">Без регистрации</span></div><div class="art" aria-hidden="true"><div class="orbit"></div><div class="plate"><div class="leaf"></div><div class="leaf second"></div></div><i class="dot one"></i><i class="dot two"></i></div><div class="heading"><span class="eyebrow">Небольшие шаги. Каждый день.</span><h1 tabindex="-1">Забота о себе<br>начинается здесь.</h1><p class="muted">Питание, вес и сон в одном спокойном дневнике. Всё в вашем темпе.</p></div><div class="spacer"></div><div class="stack"><button class="button full" data-action="start">Начать</button></div><p class="footer-note">Работает без аккаунта и интернета</p></div>`;
  if(state.screen==='profile')html=`<div class="screen">${header('welcome','Давайте познакомимся','Этот шаг можно пропустить. Всё можно изменить позже.')}${step(1)}${field('name','Как к вам обращаться',state.name,'autocomplete="off" maxlength="40" placeholder="Имя, необязательно"')}<div class="stack"><h3>Что сейчас вам ближе?</h3>${['Снижение веса','Поддержание','Набор массы'].map(t=>`<button class="choice" data-action="direction" data-value="${t}" aria-pressed="${state.direction===t}"><span class="radio" aria-hidden="true"></span>${t}</button>`).join('')}</div><div class="spacer"></div><div class="stack"><button class="button full" data-action="goals">Продолжить</button><button class="button plain full" data-action="skip-profile">Пропустить</button></div></div>`;
- if(state.screen==='goals')html=`<div class="screen">${header('goal-back','Ваши ориентиры','Введите свои значения КБЖУ. Можно начать дневник и настроить их позже.')}${step(2)}${nutrientFields('goal',state.goalDraft)}<label class="field" for="goal-date">Действуют с даты<select id="goal-date"><option value="${TODAY}" ${state.goalDate===TODAY?'selected':''}>14 ноября 2026</option><option value="${YESTERDAY}" ${state.goalDate===YESTERDAY?'selected':''}>13 ноября 2026</option></select></label><p class="small muted">Здесь нет автоматической рекомендации. Направление цели не меняет введённые значения.</p><p class="error" id="goal-error" aria-live="polite"></p><div class="spacer"></div><div class="stack"><button class="button full" id="goal-save" data-action="save-goal" ${goalValid()?'':'disabled'}>${state.returnHome?'Сохранить цель':'Сохранить и начать'}</button><button class="button plain full" data-action="skip-goal">${state.returnHome?'Вернуться в дневник':'Настроить позже'}</button><button class="link" data-action="clear-goal">Очистить черновик</button></div></div>`;
+ if(state.screen==='goals')html=`<div class="screen">${header('goal-back','Ваши ориентиры','Введите свои значения КБЖУ. Можно начать дневник и настроить их позже.')}${step(2)}${nutrientFields('goal',state.goalDraft)}${field('goal-date','Действуют с даты',state.goalDate,`type="date" min="${MIN_DATE}" max="9999-12-31" aria-describedby="goal-date-help goal-error"`)}<p class="small muted" id="goal-date-help">Меняет цель с этой даты до следующей заданной цели. Можно выбрать будущую дату.</p><p class="small muted">Здесь нет автоматической рекомендации. Направление цели не меняет введённые значения.</p><p class="error" id="goal-error" aria-live="polite"></p><div class="spacer"></div><div class="stack"><button class="button full" id="goal-save" data-action="save-goal" ${goalValid()?'':'disabled'}>${state.returnHome?'Сохранить цель':'Сохранить и начать'}</button><button class="button plain full" data-action="skip-goal">${state.returnHome?'Вернуться в дневник':'Настроить позже'}</button><button class="link" data-action="clear-goal">Очистить черновик</button></div></div>`;
  if(state.screen==='home')html=home();
  if(state.screen==='progress')html=progressView();
  if(state.screen==='game-settings')html=gameSettings();
@@ -105,6 +106,57 @@ function render(){
  if(renderedScreen!==null&&renderedScreen!==state.screen)app.closest('.phone').scrollIntoView({block:'start',behavior:'instant'});
  renderedScreen=state.screen;
 }
+const foodMetrics=['Калории','Белки','Жиры','Углеводы'];
+function foodUnit(index=state.progress.nutrient){return index===0?'ккал':'г';}
+function decimalFromNumber(value){
+ if(!Number.isFinite(value)||value<0)return null;
+ const [mantissa,exponent='0']=String(value).toLowerCase().split('e'),parts=mantissa.split('.');
+ return {coefficient:BigInt(parts.join('')),exponent:Number(exponent)-(parts[1]?.length||0)};
+}
+function decimalSum(parts){
+ if(parts.some(part=>part===null))return null;
+ const exponent=Math.min(0,...parts.map(part=>part.exponent));
+ return {coefficient:parts.reduce((sum,part)=>sum+part.coefficient*10n**BigInt(part.exponent-exponent),0n),exponent};
+}
+function decimalToNumber(part){return part===null?NaN:Number(part.coefficient.toString()+'e'+part.exponent);}
+function decimalTenths(part,count=1){
+ if(part===null||count===0)return null;
+ const shift=part.exponent+1;
+ const numerator=part.coefficient*(shift>=0?10n**BigInt(shift):1n);
+ const denominator=BigInt(count)*(shift<0?10n**BigInt(-shift):1n);
+ return (2n*numerator+denominator)/(2n*denominator);
+}
+function tenthsText(tenths){
+ if(tenths===null)return 'Не удалось рассчитать';
+ const whole=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(tenths/10n),fraction=tenths%10n;
+ return whole+(fraction?','+fraction:'');
+}
+function decimalText(part,count=1){return tenthsText(decimalTenths(part,count));}
+function decimalMean(parts){
+ if(!parts.length)return {mean:null,text:'—',overflow:false};
+ const tenths=decimalTenths(decimalSum(parts),parts.length);
+ const mean=tenths===null?NaN:Number(tenths.toString()+'e-1');
+ return Number.isFinite(mean)?{mean,text:tenthsText(tenths),overflow:false}:{mean:null,text:'Не удалось рассчитать',overflow:true};
+}
+function foodStatus(row){
+ return row.status==='complete'?'День заполнен':row.status==='partial'?'Заполнен частично':'Нет записей';
+}
+function foodRowValue(row){
+ return row.status==='missing'?'Нет записей':row.overflow?'Сумма слишком велика или некорректна':decimalText(row.decimal)+' '+foodUnit();
+}
+function foodProgressData(range=progressRange(),index=state.progress.nutrient){
+ const rows=range.dates.map(date=>{
+  const day=state.days[date],entries=day?.entries||[],status=day?.complete===true?'complete':entries.length?'partial':'missing';
+  const decimal=status==='missing'?null:decimalSum(entries.map(entry=>decimalFromNumber(entry.values[index])));
+  const value=decimalToNumber(decimal),overflow=status!=='missing'&&!Number.isFinite(value);
+  const goal=target(date),rawGoal=goal?.values[index],targetValue=Number.isFinite(rawGoal)&&rawGoal>=0?rawGoal:null;
+  return {date,status,decimal,overflow,value:status==='missing'||overflow?null:value,displayValue:status==='missing'||overflow||state.progress.completeOnly&&status!=='complete'?null:value,targetValue,targetStart:targetValue===null?null:goal.date};
+ });
+ const complete=rows.filter(row=>row.status==='complete'),matched=complete.filter(row=>row.targetValue!==null);
+ const mean=decimalMean(complete.map(row=>row.decimal)),fact=decimalMean(matched.map(row=>row.decimal)),goals=decimalMean(matched.map(row=>decimalFromNumber(row.targetValue)));
+ return {rows,count:complete.length,days:range.count,mean:mean.mean,meanText:mean.text,meanOverflow:mean.overflow,hasOverflow:rows.some(row=>row.overflow),comparison:{count:matched.length,factMean:fact.mean,factText:fact.text,targetMean:goals.mean,targetText:goals.text,overflow:fact.overflow||goals.overflow}};
+}
+
 function progressRange(progress=state.progress){
  if(!progress)return {error:'Выберите период.'};
  const end=calendarDay(progress.end);
@@ -127,6 +179,7 @@ function integerMean(values){
 }
 function progressData(metric=state.progress.metric,range=progressRange()){
  if(range.error)return null;
+ if(metric==='food')return foodProgressData(range);
  const property=metric==='weight'?'weightCents':'sleepMinutes';
  const rows=range.dates.map(date=>{
   const raw=state.days[date]?.[property];
@@ -136,10 +189,11 @@ function progressData(metric=state.progress.metric,range=progressRange()){
  return {rows,count:values.length,days:range.count,mean:integerMean(values)};
 }
 function progressValue(value,metric=state.progress.metric){
+ if(metric==='food')return value===null?'Нет записей':decimalText(decimalFromNumber(value))+' '+foodUnit();
  return value===null?'Нет записи':metric==='weight'?weightText(value)+' кг':sleepText(value);
 }
 function openProgress(){
- if(!state.progress)state.progress={metric:'weight',preset:'week',end:state.date,from:dateFromDay(calendarDay(state.date)-6),selectedDate:state.date};
+ if(!state.progress)state.progress={metric:'weight',nutrient:0,completeOnly:false,preset:'week',end:state.date,from:dateFromDay(calendarDay(state.date)-6),selectedDate:state.date};
  go('progress');
 }
 function loadProgressExample(){
@@ -160,10 +214,11 @@ function loadProgressExample(){
 }
 function progressView(){
  const p=state.progress;
- const tabs=[['weight','Вес'],['sleep','Сон']].map(([metric,label])=>'<button class="button '+(p.metric===metric?'':'secondary')+'" data-action="progress-metric" data-metric="'+metric+'" aria-pressed="'+(p.metric===metric)+'">'+label+'</button>').join('');
+ const tabs=[['weight','Вес'],['sleep','Сон'],['food','Питание']].map(([metric,label])=>'<button class="button '+(p.metric===metric?'':'secondary')+'" data-action="progress-metric" data-metric="'+metric+'" aria-pressed="'+(p.metric===metric)+'">'+label+'</button>').join('');
  const options=[['week','7 дней'],['month','С начала месяца'],['year','С начала года'],['custom','Свой период']].map(([value,label])=>'<option value="'+value+'" '+(p.preset===value?'selected':'')+'>'+label+'</option>').join('');
  const dateAttrs='type="date" min="'+MIN_DATE+'" max="'+TODAY+'" aria-describedby="progress-error"';
- return '<div class="screen progress-screen">'+header('home','Прогресс')+'<div class="progress-tabs" role="group" aria-label="Показатель">'+tabs+'</div><label class="field" for="progress-preset">Период<select id="progress-preset">'+options+'</select></label><div class="stack"><div '+(p.preset==='custom'?'':'class="hidden"')+'>'+field('progress-from','Начало периода',p.from,dateAttrs)+'</div>'+field('progress-end','Конец периода, включительно',p.end,dateAttrs)+'</div><p class="error" id="progress-error" role="alert"></p><div class="stack" id="progress-results"></div></div>';
+ const foodControls=p.metric==='food'?'<label class="field" for="progress-nutrient">Показатель питания<select id="progress-nutrient">'+foodMetrics.map((name,index)=>'<option value="'+index+'" '+(p.nutrient===index?'selected':'')+'>'+name+', '+foodUnit(index)+'</option>').join('')+'</select></label><label class="game-setting" for="progress-complete-only"><input id="progress-complete-only" type="checkbox" '+(p.completeOnly?'checked':'')+'><span>На графике только заполненные дни</span></label>':'';
+ return '<div class="screen progress-screen">'+header('home','Прогресс')+'<div class="progress-tabs" role="group" aria-label="Показатель">'+tabs+'</div>'+foodControls+'<label class="field" for="progress-preset">Период<select id="progress-preset">'+options+'</select></label><div class="stack"><div '+(p.preset==='custom'?'':'class="hidden"')+'>'+field('progress-from','Начало периода',p.from,dateAttrs)+'</div>'+field('progress-end','Конец периода, включительно',p.end,dateAttrs)+'</div><p class="error" id="progress-error" role="alert"></p><div class="stack" id="progress-results"></div></div>';
 }
 function refreshProgress(normalizeSelection=true){
  if(progressObserver){progressObserver.disconnect();progressObserver=null;}
@@ -171,10 +226,20 @@ function refreshProgress(normalizeSelection=true){
  if(!host)return;
  document.getElementById('progress-error').textContent=range.error||'';
  if(range.error){host.innerHTML='';return;}
- const p=state.progress,data=progressData(),weight=p.metric==='weight';
+ const p=state.progress,data=progressData(),weight=p.metric==='weight',food=p.metric==='food';
  if(normalizeSelection&&(calendarDay(p.selectedDate)===null||p.selectedDate<range.from||p.selectedDate>range.to))p.selectedDate=range.to;
- const rows=data.rows.map(row=>'<tr><td>'+dateLabel(row.date)+'</td><td>'+progressValue(row.value)+'</td></tr>').join('');
- host.innerHTML='<p class="progress-range" id="progress-range">'+dateLabel(range.from)+' — '+dateLabel(range.to)+' · '+range.count+' дн.</p><section class="card progress-summary"><h3>Средний '+(weight?'вес':'сон')+'</h3><p class="measurement-value" id="progress-mean">'+(data.mean===null?'—':progressValue(data.mean))+'</p><p class="small muted" id="progress-sample">'+(weight?'Измерений':'Записей сна')+' '+data.count+' из '+data.days+' дней</p>'+(!data.count?'<p class="small muted">В этом периоде нет записей.</p>':'')+'</section><section class="stack" aria-label="'+(weight?'График веса':'График сна')+'"><div class="progress-chart" id="progress-chart"></div><p class="progress-scale muted" id="progress-scale"></p><p class="small muted">Пропуски разрывают линию. Выберите точку или дату ниже, чтобы увидеть точное значение.</p></section>'+field('progress-selected-date','Дата на графике',p.selectedDate,'type="date" min="'+range.from+'" max="'+range.to+'" aria-describedby="progress-selection-error"')+'<p class="error" id="progress-selection-error" role="alert"></p><section class="card progress-detail" id="progress-detail"></section><details class="progress-details"><summary>Все даты и значения</summary><table class="progress-values"><thead><tr><th scope="col">Дата</th><th scope="col">'+(weight?'Вес, кг':'Сон')+'</th></tr></thead><tbody>'+rows+'</tbody></table></details>';
+ const meanLabel=food?'Среднее по заполненным дням':weight?'Средний вес':'Средний сон';
+ const meanText=food?(data.mean===null?data.meanText:data.meanText+' '+foodUnit()):data.mean===null?'—':progressValue(data.mean);
+ const sample=(food?'Заполненных дней':weight?'Измерений':'Записей сна')+' '+data.count+' из '+data.days;
+ const rows=data.rows.map(row=>'<tr><td>'+dateLabel(row.date)+'</td><td>'+(food?foodRowValue(row)+'<br><span class="muted">'+foodStatus(row)+(p.completeOnly&&row.status==='partial'?' · скрыт на графике':'')+'</span><br><span class="muted">Цель: '+(row.targetValue===null?'не задана':decimalText(decimalFromNumber(row.targetValue))+' '+foodUnit())+'</span>':progressValue(row.value))+'</td></tr>').join('');
+ let comparison='';
+ if(food){
+  const q=data.comparison;
+  comparison='<section class="card progress-comparison"><h3>Факт и исторические цели</h3><p class="small muted" id="progress-goal-sample">Заполненных дней с целью: '+q.count+' из '+data.count+'</p>'+(q.count?'<p class="measurement-value" id="progress-goal-fact">Средний факт: '+q.factText+(q.factMean===null?'':' '+foodUnit())+'</p><p class="measurement-value" id="progress-goal-target">Средняя цель: '+q.targetText+(q.targetMean===null?'':' '+foodUnit())+'</p><p class="small muted">Обе величины рассчитаны по этим '+q.count+' дням и действовавшим тогда целям.</p>':'<p class="small muted">Нет заполненных дней с заданной целью.</p>')+(q.overflow?'<p class="progress-warning">Не удалось рассчитать сравнение: сумма выходит за диапазон макета или содержит некорректное значение.</p>':'')+'</section>';
+ }
+ const legend=food?'<div class="chart-legend" aria-label="Обозначения графика"><span>● Заполнен</span><span>◇ Частичный</span><span><i class="legend-target" aria-hidden="true"></i>Историческая цель</span><span>Пропуск — разрыв</span></div>':'';
+ const warning=food&&(data.hasOverflow||data.meanOverflow)?'<p class="progress-warning" role="alert">Есть слишком большие или некорректные суммы. Такие точки не показаны на графике; они не считаются пропусками. Подробности — в списке дат.</p>':'';
+ host.innerHTML='<p class="progress-range" id="progress-range">'+dateLabel(range.from)+' — '+dateLabel(range.to)+' · '+range.count+' дн.</p><section class="card progress-summary"><h3>'+meanLabel+'</h3>'+(food?'<p class="small muted">'+foodMetrics[p.nutrient]+'</p>':'')+'<p class="measurement-value" id="progress-mean">'+meanText+'</p><p class="small muted" id="progress-sample">'+sample+' дней</p>'+(!data.count?'<p class="small muted">'+(food?'Нет заполненных дней для среднего.':'В этом периоде нет записей.')+'</p>':'')+'</section>'+comparison+warning+'<section class="stack" aria-label="'+(food?'График питания':weight?'График веса':'График сна')+'">'+legend+'<div class="progress-chart" id="progress-chart"></div><p class="progress-scale muted" id="progress-scale"></p><p class="small muted">Пропуски разрывают линию. Выберите точку или дату ниже, чтобы увидеть точное значение.</p></section>'+field('progress-selected-date','Дата на графике',p.selectedDate,'type="date" min="'+range.from+'" max="'+range.to+'" aria-describedby="progress-selection-error"')+'<p class="error" id="progress-selection-error" role="alert"></p><section class="card progress-detail" id="progress-detail"></section><details class="progress-details"><summary>Все даты и значения</summary><table class="progress-values"><thead><tr><th scope="col">Дата</th><th scope="col">'+(food?foodMetrics[p.nutrient]+', '+foodUnit():weight?'Вес, кг':'Сон')+'</th></tr></thead><tbody>'+rows+'</tbody></table></details>';
  updateProgressSelection();
  const chart=document.getElementById('progress-chart');
  let previousWidth=chart.getBoundingClientRect().width;
@@ -188,40 +253,53 @@ function updateProgressSelection(){
  document.getElementById('progress-selection-error').textContent=valid?'':'Выберите дату внутри показанного периода.';
  if(!valid)detail.innerHTML='<p class="small muted">Сначала выберите допустимую дату.</p>';
  else{
-  const row=progressData().rows.find(item=>item.date===date);
-  detail.innerHTML='<h3>'+dateLabel(date)+'</h3><p class="measurement-value">'+progressValue(row.value)+'</p>'+(state.progress.metric==='sleep'&&row.value===0?'<p class="small muted">Отсутствие сна подтверждено.</p>':'')+'<button class="button secondary full" data-action="progress-open-day">Открыть день</button>';
+  const row=progressData().rows.find(item=>item.date===date),food=state.progress.metric==='food';
+  const foodDetails=food?'<p class="small muted">'+foodStatus(row)+(state.progress.completeOnly&&row.status==='partial'?' · скрыт на графике':'')+'</p><p class="small">Цель: '+(row.targetValue===null?'не задана':decimalText(decimalFromNumber(row.targetValue))+' '+foodUnit()+' · действует с '+dateLabel(row.targetStart))+'</p>':'';
+  detail.innerHTML='<h3>'+dateLabel(date)+'</h3><p class="measurement-value">'+(food?foodRowValue(row):progressValue(row.value))+'</p>'+foodDetails+(state.progress.metric==='sleep'&&row.value===0?'<p class="small muted">Отсутствие сна подтверждено.</p>':'')+'<button class="button secondary full" data-action="progress-open-day">Открыть день</button>';
  }
  drawProgressChart();
 }
 function drawProgressChart(){
  const host=document.getElementById('progress-chart'),scale=document.getElementById('progress-scale'),range=progressRange();
  if(!host||range.error)return;
- const data=progressData(),metric=state.progress.metric,weight=metric==='weight',points=data.rows.filter(row=>row.value!==null);
- if(!points.length){host.innerHTML='<p class="small muted">График появится после записи данных за этот период.</p>';scale.textContent='';return;}
+ const data=progressData(),metric=state.progress.metric,weight=metric==='weight',food=metric==='food';
+ const rows=data.rows.map(row=>({...row,plotValue:food?row.displayValue:row.value}));
+ const points=rows.filter(row=>row.plotValue!==null),goals=food?rows.filter(row=>row.targetValue!==null):[];
+ if(!points.length&&!goals.length){host.innerHTML='<p class="small muted">'+(food&&data.hasOverflow?'Значения не помещаются на графике.':food&&state.progress.completeOnly?'Нет заполненных дней для графика.':'График появится после записи данных за этот период.')+'</p>';scale.textContent='';return;}
  const width=Math.max(180,Math.floor(host.getBoundingClientRect().width)),height=250,font=document.body.classList.contains('large')?14:12;
- const vals=points.map(row=>row.value),minimum=Math.min(...vals),maximum=Math.max(...vals);
- let low=0,high=Math.max(60,maximum);
+ const vals=points.map(row=>row.plotValue).concat(goals.map(row=>row.targetValue)),minimum=Math.min(...vals),maximum=Math.max(...vals);
+ let low=0,high=Math.max(food?1:60,maximum);
  if(weight){const pad=maximum===minimum?100:Math.max(1,(maximum-minimum)*.1);low=Math.max(0,minimum-pad);high=maximum+pad;}
  const offset=weight&&maximum>=1e9&&(high-low)<maximum*.001?minimum:0;
  const tickLabel=value=>{
-  const number=(value-offset)/(weight?100:60);
+  const number=(value-offset)/(weight?100:food?1:60);
   if(Math.abs(number)>=1e7)return new Intl.NumberFormat('ru-RU',{notation:'scientific',maximumFractionDigits:2}).format(number);
   return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:weight?2:1}).format(number);
  };
- const ticks=[low,(low+high)/2,high],labels=ticks.map(tickLabel);
+ const ticks=[low,low+(high-low)/2,high],labels=ticks.map(tickLabel);
  const left=Math.max(42,Math.min(width*.45,Math.max(...labels.map(label=>label.length))*font*.62+10)),right=14,top=28,bottom=38,plotW=width-left-right,plotH=height-top-bottom;
  const x=date=>left+(range.count===1?plotW/2:(calendarDay(date)-calendarDay(range.from))/(range.count-1)*plotW);
  const y=value=>top+(high-value)/(high-low)*plotH;
- let svg='<svg width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+(weight?'Вес в кг':'Сон в часах')+', '+data.count+' записей за '+range.count+' дней. Точные значения доступны в выборе даты и таблице."><text x="'+left+'" y="15" font-size="'+font+'">'+(weight?(offset?'кг относительно базы':'кг'):'часы')+'</text>';
+ const axis=weight?(offset?'кг от базы':'кг'):food?foodUnit():'часы';
+ let svg='<svg width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+(food?foodMetrics[state.progress.nutrient]:weight?'Вес в кг':'Сон в часах')+', период '+range.count+' дней. Точные значения доступны в выборе даты и таблице."><text x="'+left+'" y="15" font-size="'+font+'">'+axis+'</text>';
  ticks.forEach((tick,i)=>{svg+='<line class="chart-grid" x1="'+left+'" x2="'+(width-right)+'" y1="'+y(tick)+'" y2="'+y(tick)+'"/><text x="'+(left-7)+'" y="'+(y(tick)+font*.35)+'" text-anchor="end" font-size="'+font+'">'+esc(labels[i])+'</text>';});
  const dates=range.count===1?[range.from]:[range.from,range.to];
  dates.forEach((date,i)=>{const label=date.slice(8,10)+'.'+date.slice(5,7)+'.'+date.slice(2,4);svg+='<text x="'+x(date)+'" y="'+(height-12)+'" text-anchor="'+(range.count===1?'middle':i===0?'start':'end')+'" font-size="'+font+'">'+label+'</text>';});
- for(let i=1;i<data.rows.length;i++){const a=data.rows[i-1],b=data.rows[i];if(a.value!==null&&b.value!==null)svg+='<line class="chart-line" x1="'+x(a.date)+'" y1="'+y(a.value)+'" x2="'+x(b.date)+'" y2="'+y(b.value)+'"/>';}
+ if(food){
+  for(let i=1;i<rows.length;i++){const a=rows[i-1],b=rows[i];if(a.targetValue!==null&&b.targetValue!==null)svg+='<path class="chart-target" data-action="progress-point" data-date="'+b.date+'" d="M '+x(a.date)+' '+y(a.targetValue)+' H '+x(b.date)+' V '+y(b.targetValue)+'"><title>'+esc('Цель '+dateLabel(b.date)+' · '+decimalText(decimalFromNumber(b.targetValue))+' '+foodUnit())+'</title></path>';}
+  rows.forEach((row,i)=>{if(row.targetValue!==null&&(i===0||rows[i-1].targetValue===null)&&(i===rows.length-1||rows[i+1].targetValue===null))svg+='<circle class="chart-target-point" data-action="progress-point" data-date="'+row.date+'" cx="'+x(row.date)+'" cy="'+y(row.targetValue)+'" r="4.5"><title>'+esc('Цель · '+dateLabel(row.date))+'</title></circle>';});
+ }
+ for(let i=1;i<rows.length;i++){const a=rows[i-1],b=rows[i];if(a.plotValue!==null&&b.plotValue!==null)svg+='<line class="chart-line '+(food&&(a.status==='partial'||b.status==='partial')?'chart-partial-line':'')+'" x1="'+x(a.date)+'" y1="'+y(a.plotValue)+'" x2="'+x(b.date)+'" y2="'+y(b.plotValue)+'"/>';}
  const selected=state.progress.selectedDate;
  if(calendarDay(selected)!==null&&selected>=range.from&&selected<=range.to)svg+='<line class="chart-cursor" x1="'+x(selected)+'" x2="'+x(selected)+'" y1="'+top+'" y2="'+(height-bottom)+'"/>';
- points.forEach(point=>{svg+='<g data-action="progress-point" data-date="'+point.date+'"><title>'+esc(dateLabel(point.date)+' · '+progressValue(point.value))+'</title><circle cx="'+x(point.date)+'" cy="'+y(point.value)+'" r="13" fill="transparent"/><circle class="chart-point '+(point.date===selected?'chart-selected':'')+'" cx="'+x(point.date)+'" cy="'+y(point.value)+'" r="'+(point.date===selected?6:4.5)+'"/></g>';});
+ points.forEach(point=>{
+  const px=x(point.date),py=y(point.plotValue),partial=food&&point.status==='partial';
+  const title=dateLabel(point.date)+' · '+(food?foodRowValue(point)+' · '+foodStatus(point):progressValue(point.value));
+  const mark=partial?'<rect class="chart-partial" x="'+(px-4.5)+'" y="'+(py-4.5)+'" width="9" height="9" transform="rotate(45 '+px+' '+py+')"/>':'<circle class="chart-point '+(point.date===selected?'chart-selected':'')+'" cx="'+px+'" cy="'+py+'" r="'+(point.date===selected?6:4.5)+'"/>';
+  svg+='<g data-action="progress-point" data-date="'+point.date+'"><title>'+esc(title)+'</title><circle cx="'+px+'" cy="'+py+'" r="13" fill="transparent"/>'+mark+'</g>';
+ });
  host.innerHTML=svg+'</svg>';
- scale.textContent=offset?'Ось показывает отклонение в кг от '+weightText(offset)+' кг. Точные значения — ниже.':weight?'Вертикальная шкала подобрана по измерениям; её границы подписаны.':'Вертикальная шкала начинается с 0 часов; точная длительность указана в часах и минутах ниже.';
+ scale.textContent=food?'Шкала начинается с нуля. Пунктирная ступенчатая линия показывает цель, действовавшую в каждую дату.':offset?'Ось показывает отклонение в кг от '+weightText(offset)+' кг. Точные значения — ниже.':weight?'Вертикальная шкала подобрана по измерениям; её границы подписаны.':'Вертикальная шкала начинается с 0 часов; точная длительность указана в часах и минутах ниже.';
 }
 
 const gameRanges={
@@ -359,7 +437,8 @@ function saveSleep(){
  else apply();
 }
 function selected(){return state.products.find(p=>p.id===state.selected);}
-function goalValid(){return valid(state.goalDraft)&&num(state.goalDraft[0])>0;}
+function goalValid(){return valid(state.goalDraft)&&num(state.goalDraft[0])>0&&calendarDay(state.goalDate)!==null;}
+function goalError(){return calendarDay(state.goalDate)===null?'Укажите допустимую дату начала цели.':'Укажите калории больше нуля и неотрицательные БЖУ.';}
 function quantityValid(){return Number.isFinite(num(state.quantity))&&num(state.quantity)>0;}
 function foodValid(){return state.screen==='new'?state.newName.trim().length>0&&valid(state.newValues):valid(state.quick);}
 function productResults(){const list=state.products.filter(p=>p.name.toLocaleLowerCase('ru').includes(state.search.toLocaleLowerCase('ru')));return list.length?list.map(p=>`<button class="product" data-action="select" data-id="${p.id}"><span class="food-icon" aria-hidden="true">${p.icon}</span><span><strong>${esc(p.name)}</strong><small>${fmt(p.values[0])} ккал · на ${p.base} ${p.unit}</small></span><span class="arrow" aria-hidden="true">›</span></button>`).join(''):'<div class="empty-state"><span class="symbol" aria-hidden="true">⌕</span><h3>Пока ничего не найдено</h3><p class="small muted">Создайте свой продукт или внесите КБЖУ.</p></div>';}
@@ -372,9 +451,10 @@ document.addEventListener('input',event=>{
  if(id==='progress-from'||id==='progress-end'){state.progress[id==='progress-from'?'from':'end']=v;refreshProgress(true);return;}
  if(id==='progress-selected-date'){state.progress.selectedDate=v;updateProgressSelection();return;}
  if(id==='name')state.name=v;
+ if(id==='goal-date'){state.goalDate=v;state.goalDraftDirty=true;document.getElementById('goal-save').disabled=!goalValid();document.getElementById('goal-error').textContent=goalValid()?'':goalError();}
  if(id==='weight-value'){state.weightDraft=v;const error=weightError();document.getElementById('weight-save').disabled=Boolean(error);document.getElementById('weight-error').textContent=error;event.target.setAttribute('aria-invalid',String(Boolean(error)));}
  if(id==='search'){state.search=v;document.getElementById('results').innerHTML=productResults();}
- if(id.startsWith('goal-')&&/^goal-\d$/.test(id)){state.goalDraft[Number(id.slice(-1))]=v;document.getElementById('goal-save').disabled=!goalValid();document.getElementById('goal-error').textContent=goalValid()?'':'Укажите калории больше нуля и неотрицательные БЖУ.';}
+ if(id.startsWith('goal-')&&/^goal-\d$/.test(id)){state.goalDraft[Number(id.slice(-1))]=v;state.goalDraftDirty=true;document.getElementById('goal-save').disabled=!goalValid();document.getElementById('goal-error').textContent=goalValid()?'':goalError();}
  if(id==='quantity'){state.quantity=v;document.getElementById('portion-values').innerHTML=portionNutrition();document.getElementById('portion-save').disabled=!quantityValid();document.getElementById('portion-error').textContent=quantityValid()?'':'Введите количество больше нуля.';}
  if(id==='sleep-hours'||id==='sleep-minutes'){
   state.sleepDraft[id==='sleep-hours'?0:1]=v;
@@ -390,7 +470,7 @@ document.addEventListener('input',event=>{
  if(/^(quick|new)-\d$/.test(id)){const a=id.startsWith('quick')?state.quick:state.newValues;a[Number(id.slice(-1))]=v;}
  if(state.screen==='quick'||state.screen==='new'){document.getElementById('food-save').disabled=!foodValid();document.getElementById('food-error').textContent=foodValid()?'':'Заполните обязательные поля неотрицательными числами.';}
 });
-document.addEventListener('change',e=>{if(e.target.id==='progress-preset'){const previous=progressRange();state.progress.preset=e.target.value;if(e.target.value==='custom'&&!previous.error)state.progress.from=previous.from;render();return;}if(e.target.id==='diary-levels-toggle'){state.diaryLevelsEnabled=e.target.checked;document.getElementById('levels-setting-status').textContent=state.diaryLevelsEnabled?'Уровни включены':'Уровни выключены';}if(e.target.id==='measurement-names-toggle'){state.measurementNamesEnabled=e.target.checked;document.getElementById('game-setting-status').textContent=state.measurementNamesEnabled?'Названия включены':'Названия выключены';}if(e.target.id==='goal-date')state.goalDate=e.target.value;if(e.target.id==='new-unit')state.newUnit=e.target.value;if(e.target.id==='diary-date'){const date=e.target.value;if(calendarDay(date)===null||date>TODAY){document.getElementById('diary-date-error').textContent='Выберите дату не позднее '+dateLabel(TODAY)+'.';e.target.setAttribute('aria-invalid','true');return;}state.date=date;ensureDay(date);state.message='';render();}if(e.target.id==='meal'){state.meal=Number(e.target.value);app.querySelector('.context').textContent=dateLabel(state.date)+' · '+meals[state.meal];}});
+document.addEventListener('change',e=>{if(e.target.id==='progress-nutrient'){state.progress.nutrient=Number(e.target.value);refreshProgress(false);return;}if(e.target.id==='progress-complete-only'){state.progress.completeOnly=e.target.checked;refreshProgress(false);return;}if(e.target.id==='progress-preset'){const previous=progressRange();state.progress.preset=e.target.value;if(e.target.value==='custom'&&!previous.error)state.progress.from=previous.from;render();return;}if(e.target.id==='diary-levels-toggle'){state.diaryLevelsEnabled=e.target.checked;document.getElementById('levels-setting-status').textContent=state.diaryLevelsEnabled?'Уровни включены':'Уровни выключены';}if(e.target.id==='measurement-names-toggle'){state.measurementNamesEnabled=e.target.checked;document.getElementById('game-setting-status').textContent=state.measurementNamesEnabled?'Названия включены':'Названия выключены';}if(e.target.id==='goal-date'){state.goalDate=e.target.value;state.goalDraftDirty=true;document.getElementById('goal-save').disabled=!goalValid();document.getElementById('goal-error').textContent=goalValid()?'':goalError();}if(e.target.id==='new-unit')state.newUnit=e.target.value;if(e.target.id==='diary-date'){const date=e.target.value;if(calendarDay(date)===null||date>TODAY){document.getElementById('diary-date-error').textContent='Выберите дату не позднее '+dateLabel(TODAY)+'.';e.target.setAttribute('aria-invalid','true');return;}state.date=date;ensureDay(date);state.message='';render();}if(e.target.id==='meal'){state.meal=Number(e.target.value);app.querySelector('.context').textContent=dateLabel(state.date)+' · '+meals[state.meal];}});
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;
  if(a==='theme'||a==='font'){const cls=a==='theme'?'dark':'large';document.body.classList.toggle(cls);b.setAttribute('aria-pressed',document.body.classList.contains(cls));if(state.screen==='progress')drawProgressChart();return;}
@@ -402,11 +482,11 @@ document.addEventListener('click',e=>{
  if(a==='direction'){state.direction=state.direction===b.dataset.value?'':b.dataset.value;render();return;}
  if(a==='skip-profile'){state.name='';state.direction='';state.returnHome=false;go('goals');return;}
  if(a==='goals'){state.name=state.name.trim();state.returnHome=false;go('goals');return;}
- if(a==='edit-goal'){state.returnHome=true;state.goalDate=TODAY;go('goals');return;}
+ if(a==='edit-goal'){state.returnHome=true;if(!state.goalDraftDirty){state.goalDate=state.date;const current=target(state.date);state.goalDraft=current?current.values.map(String):['','','',''];}go('goals');return;}
  if(a==='goal-back'){go(state.returnHome?'home':'profile');return;}
- if(a==='clear-goal'){state.goalDraft=['','','',''];render();return;}
+ if(a==='clear-goal'){state.goalDraft=['','','',''];state.goalDraftDirty=false;render();return;}
  if(a==='skip-goal'){go('home');return;}
- if(a==='save-goal'&&goalValid()){state.targets=state.targets.filter(t=>t.date!==state.goalDate);state.targets.push({date:state.goalDate,values:values(state.goalDraft)});state.screen='home';state.message='Цель сохранена с '+dateLabel(state.goalDate);render();return;}
+ if(a==='save-goal'&&goalValid()){state.targets=state.targets.filter(t=>t.date!==state.goalDate);state.targets.push({date:state.goalDate,values:values(state.goalDraft)});state.goalDraftDirty=false;state.screen='home';state.message='Цель сохранена с '+dateLabel(state.goalDate);render();return;}
  if(a==='home'){go('home');return;}
  if(a==='game-settings'){go('game-settings');return;}
  if(a==='progress'){openProgress();return;}
