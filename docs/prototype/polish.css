@@ -322,3 +322,19 @@ dialog h2{font-size:1.45em;letter-spacing:-.04em}
   @keyframes diet-image{from{transform:scale(1.045)}to{transform:scale(1)}}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Catalogue navigation and photos. */
+.category-chips{display:flex;flex-wrap:wrap;gap:7px}
+.category-chip{border:1px solid var(--line);border-radius:20px;padding:9px 12px;min-height:40px;background:var(--card);color:var(--ink);font-size:.72em;line-height:1.4}
+.category-chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:var(--bg)}
+.catalog-cover{width:100%;height:220px;aspect-ratio:1.5}
+.product .grow{min-width:0}.product-list>.button{margin-top:16px}
+
+.entry-thumbnail{width:84px;height:64px;min-height:0;border-radius:13px;margin-bottom:8px}
+
+.photo-tile.tile-6{background-image:url("assets/food-classics.png");background-position:0 0}
+.photo-tile.tile-7{background-image:url("assets/food-classics.png");background-position:50% 0}
+.photo-tile.tile-8{background-image:url("assets/food-classics.png");background-position:100% 0}
+.photo-tile.tile-9{background-image:url("assets/food-classics.png");background-position:0 100%}
+.photo-tile.tile-10{background-image:url("assets/food-classics.png");background-position:50% 100%}
+.photo-tile.tile-11{background-image:url("assets/food-classics.png");background-position:100% 100%}

@@ -1,6 +1,6 @@
 /* Presentation and small daily interactions for the disposable UX prototype. */
 function foodPhoto(tile=0,className='',label='Фотография еды для оформления'){
- return `<span class="food-photo photo-tile tile-${Number.isInteger(tile)&&tile>=0&&tile<6?tile:0} ${className}" role="img" aria-label="${esc(label)}"></span>`;
+ return `<span class="food-photo photo-tile tile-${Number.isInteger(tile)&&tile>=0&&tile<12?tile:0} ${className}" role="img" aria-label="${esc(label)}"></span>`;
 }
 function welcomePhoto(){return `<div class="hero-photo welcome-photo">${foodPhoto(0,'','Йогурт с ягодами — иллюстрация')}<div class="hero-caption"><span class="pill">Маленькие шаги · большие истории</span></div></div>`;}
 function homeHero(){return `<div class="hero-photo">${foodPhoto((calendarDay(state.date)%6+6)%6,'','Еда — атмосферная иллюстрация')}<div class="hero-caption"><span class="eyebrow">Место для себя</span><h2>Каждый день —<br>новая страница.</h2></div></div>`;}
