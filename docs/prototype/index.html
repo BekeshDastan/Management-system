@@ -33,6 +33,7 @@ dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);bord
 @media(prefers-reduced-motion:no-preference){button{transition:background .15s,transform .15s}button:active{transform:translateY(1px)}}
 </style>
 <link rel="stylesheet" href="polish.css">
+<link rel="stylesheet" href="convenience.css">
 </head>
 <body>
 <main class="workspace">
@@ -977,6 +978,7 @@ document.addEventListener('click',e=>{
  if(a==='restart'||a==='example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут сброшены. Это не затрагивает какие-либо реальные данные.',a==='restart'?'Начать сначала':'Показать пример',()=>reset(a==='example'));return;}
  if(journalAction(a,b))return;
  if(foodCategoryAction(a,b))return;
+ if(reportPanelsAction(a,b))return;
  if(insightsAction(a,b))return;
  if(richAction(a,b))return;
  if(reminderAction(a,b))return;
@@ -1043,6 +1045,7 @@ document.addEventListener('click',e=>{
 <script src="rich.js"></script>
 <script src="library-data.js"></script>
 <script src="insights.js"></script>
+<script src="report-panels.js"></script>
 <script src="journal.js"></script>
 <script>reset();</script>
 </body>
