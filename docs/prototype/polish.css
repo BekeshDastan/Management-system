@@ -67,15 +67,15 @@ label.field{font-size:.8em;line-height:1.4;gap:9px}
 .error:empty{display:none}
 .choice{border-radius:18px;min-height:64px;background:var(--card)}
 .choice[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--green)}
-.screen.home>section.card:first-of-type{background:var(--forest);color:#f5f5eb;border:0;box-shadow:0 10px 30px #183a2322;position:relative;overflow:hidden}
-.screen.home>section.card:first-of-type .muted,.screen.home>section.card:first-of-type .calories span,.screen.home>section.card:first-of-type .macro .caption{color:#cfdbcc}
-.screen.home>section.card:first-of-type .pill{background:#ffffff16;color:#edf6df}
-.screen.home>section.card:first-of-type .pill.complete{background:var(--lime);color:#203b27}
-.screen.home>section.card:first-of-type .track{background:#ffffff24}
-.screen.home>section.card:first-of-type .fill{background:var(--lime)}
-.screen.home>section.card:first-of-type .macro:nth-child(2) .fill{background:#edcda4}
-.screen.home>section.card:first-of-type .macro:nth-child(3) .fill{background:#c2b6df}
-.screen.home>section.card:first-of-type .link{color:var(--lime)}
+.screen.home>[data-home-block="nutrition"]{background:var(--forest);color:#f5f5eb;border:0;box-shadow:0 10px 30px #183a2322;position:relative;overflow:hidden}
+.screen.home>[data-home-block="nutrition"] .muted,.screen.home>[data-home-block="nutrition"] .calories span,.screen.home>[data-home-block="nutrition"] .macro .caption{color:#cfdbcc}
+.screen.home>[data-home-block="nutrition"] .pill{background:#ffffff16;color:#edf6df}
+.screen.home>[data-home-block="nutrition"] .pill.complete{background:var(--lime);color:#203b27}
+.screen.home>[data-home-block="nutrition"] .track{background:#ffffff24}
+.screen.home>[data-home-block="nutrition"] .fill{background:var(--lime)}
+.screen.home>[data-home-block="nutrition"] .macro:nth-child(2) .fill{background:#edcda4}
+.screen.home>[data-home-block="nutrition"] .macro:nth-child(3) .fill{background:#c2b6df}
+.screen.home>[data-home-block="nutrition"] .link{color:var(--lime)}
 .calories{margin:18px 0 6px;flex-wrap:wrap;gap:3px 9px}
 .calories strong{font-size:3.45em;line-height:1.05;font-weight:750;letter-spacing:-.07em}
 .calories span{font-size:.76em}
