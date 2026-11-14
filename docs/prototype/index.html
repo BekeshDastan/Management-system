@@ -101,11 +101,12 @@ function render(){
  if(state.screen==='game-settings')html=gameSettings();
  if(state.screen==='weight')html=weightForm();
  if(state.screen==='sleep')html=sleepForm();
- if(state.screen==='search')html=`<div class="screen">${header('home','Добавить еду')}${context()}<label class="field" for="meal">Приём пищи<select id="meal">${mealOptions(state.meal)}</select></label><label class="search-label"><span class="hidden">Поиск продуктов</span><input id="search" aria-label="Поиск продуктов" value="${esc(state.search)}" placeholder="Найти свой продукт" autocomplete="off"></label>${catalogTabs()}<div class="product-list" id="results">${productResults()}</div><div class="spacer"></div><div class="stack"><button class="button secondary full" data-action="new">＋ Создать продукт</button><button class="button plain full" data-action="quick">Быстрый ввод КБЖУ</button></div></div>`;
+ if(state.screen==='search')html=`<div class="screen">${header('home','Добавить еду')}${context()}<label class="field" for="meal">Приём пищи<select id="meal">${mealOptions(state.meal)}</select></label><label class="search-label"><span class="hidden">Поиск продуктов</span><input id="search" aria-label="Поиск продуктов" value="${esc(state.search)}" placeholder="Найти свой продукт" autocomplete="off"></label>${catalogTabs()}<div class="product-list" id="results">${productResults()}</div><div class="spacer"></div><div class="stack"><button class="button secondary full" data-action="new">＋ Создать продукт</button><button class="button secondary full" data-action="recipe-new">＋ Создать рецепт</button><button class="button plain full" data-action="quick">Быстрый ввод КБЖУ</button></div></div>`;
  if(state.screen==='portion'){const p=selected();html=`<div class="screen">${header('search','Порция')}${context()}<div class="portion-title"><div class="food-icon" aria-hidden="true">${p.icon}</div><h2>${esc(p.name)}</h2><p class="muted small">${fmt(p.values[0])} ккал на ${p.base} ${esc(p.unit)}</p></div><div class="quantity-row">${field('quantity','Сколько съели',state.quantity,'inputmode="decimal" autocomplete="off"')}<span class="quantity-unit">${esc(p.unit)}</span></div><p class="error" id="portion-error" aria-live="polite"></p><div class="card soft"><p class="small muted" style="margin-bottom:16px">В вашей порции</p><div id="portion-values">${portionNutrition()}</div></div><div class="spacer"></div><button class="button full" data-action="save-portion" id="portion-save" ${quantityValid()?'':'disabled'}>Добавить в дневник</button></div>`;}
  if(state.screen==='quick'||state.screen==='new'){const isNew=state.screen==='new',prefix=isNew?'new':'quick';html=`<div class="screen">${header('cancel-food',isNew?'Новый продукт':'Быстрый ввод',isNew?'Перенесите значения с упаковки.':'Укажите КБЖУ всей съеденной порции.')}${context()}${field(`${prefix}-name`,isNew?'Название':'Название, необязательно',isNew?state.newName:state.quickName,'autocomplete="off" maxlength="80"')}${isNew?`<label class="field" for="new-unit">Пищевая ценность<select id="new-unit"><option value="г" ${state.newUnit==='г'?'selected':''}>На 100 г</option><option value="мл" ${state.newUnit==='мл'?'selected':''}>На 100 мл</option><option value="шт." ${state.newUnit==='шт.'?'selected':''}>На 1 штуку</option></select></label>`:''}${nutrientFields(prefix,isNew?state.newValues:state.quick)}<p class="small muted">Заполните все четыре значения. Неизвестное значение не равно нулю.</p><p class="error" id="food-error" aria-live="polite"></p><div class="spacer"></div><button class="button full" id="food-save" data-action="${isNew?'save-product':'save-quick'}" ${foodValid()?'':'disabled'}>${isNew?'Сохранить продукт':'Добавить в дневник'}</button>${isNew?'<p class="footer-note">Затем можно выбрать порцию для дневника</p>':''}</div>`;}
  if(['account','profile-edit','meal-settings'].includes(state.screen))html=settingsView();
  if(['library','catalog-card','catalog-edit'].includes(state.screen))html=catalogView();
+ if(state.screen==='recipe-edit')html=recipeView();
  app.innerHTML=html;
  if(state.screen==='progress')refreshProgress(false);
  const title=app.querySelector('h1');if(title)title.focus({preventScroll:true});
@@ -113,6 +114,60 @@ function render(){
  renderedScreen=state.screen;
 }
 
+
+
+function recipeResult(d=state.recipeDraft){
+ if(!d.ingredients.length||!Number.isFinite(num(d.yield))||num(d.yield)<=0)return null;
+ const portions=d.ingredients.map(i=>portionValues(i.snapshot,num(i.quantity)));if(portions.some(v=>v===null))return null;
+ const totals=[0,1,2,3].map(n=>decimalToNumber(decimalSum(portions.map(v=>decimalFromNumber(v[n])))));
+ const per100=totals.map(v=>v*(100/num(d.yield)));
+ return [...totals,...per100].every(Number.isFinite)?{totals,per100}:null;
+}
+function recipeDescription(p){return `<section class="card stack"><h3>Состав и выход</h3><p class="small">Готовое блюдо: ${fmt(p.recipe.yield)} г</p>${p.recipe.ingredients.map(i=>`<p class="small">${esc(i.snapshot.name)} · ${fmt(i.quantity)} ${esc(i.snapshot.unit)}</p>`).join('')}<p class="small muted">Сохранённые снимки ингредиентов. Изменение справочника их не обновляет.</p></section>`;}
+function openRecipe(id=null){
+ const p=id===null?null:state.products.find(p=>p.id===id);
+ state.recipeDraft=p?{id:p.id,name:p.name,yield:String(p.recipe.yield),ingredients:structuredClone(p.recipe.ingredients).map(i=>({...i,quantity:String(i.quantity)}))}:{id:null,name:'',yield:'',ingredients:[]};
+ state.recipeInitial=JSON.stringify(state.recipeDraft);state.recipeProduct=state.products.find(p=>p.kind!=='recipe')?.id??null;state.recipeQuantity='100';go('recipe-edit');
+}
+function recipePreview(){const r=recipeResult();return r?`<h3>Всё блюдо</h3>${nutrition(r.totals)}<h3>На 100 г готового блюда</h3>${nutrition(r.per100)}`:'<p class="small muted">Добавьте ингредиенты с положительным количеством и укажите выход готового блюда. Слишком большой результат не рассчитывается.</p>';}
+function recipeView(){
+ const d=state.recipeDraft,products=state.products.filter(p=>p.kind!=='recipe');
+ return `<div class="screen">${header('recipe-cancel',d.id===null?'Новый рецепт':'Изменить рецепт')}${field('recipe-name','Название блюда',d.name,'maxlength="80"')}<h3>Ингредиенты</h3>${d.ingredients.map((i,n)=>`<section class="card stack"><h3>${esc(i.snapshot.name)}</h3><p class="small muted">${fmt(i.snapshot.values[0])} ккал на ${i.snapshot.base} ${esc(i.snapshot.unit)} · сохранённая база</p>${field('ingredient-qty-'+n,'Количество, '+esc(i.snapshot.unit),i.quantity,'inputmode="decimal"')}<button class="link" data-action="ingredient-remove" data-index="${n}">Убрать ингредиент</button>${state.products.some(p=>p.id===i.sourceId)?`<button class="link" data-action="ingredient-refresh" data-index="${n}">Взять текущие значения продукта</button>`:'<p class="small muted">Источник удалён; сохранённые значения доступны.</p>'}</section>`).join('')}<section class="card stack"><label class="field">Продукт<select id="recipe-product" ${products.length?'':'disabled'}>${products.map(p=>`<option value="${p.id}" ${p.id===state.recipeProduct?'selected':''}>${esc(p.name)} · ${esc(p.unit)}</option>`).join('')}</select></label>${field('recipe-quantity','Количество в единицах продукта',state.recipeQuantity,'inputmode="decimal"')}<p class="small muted">Граммы, миллилитры или число порций выбранного продукта. Скрытых переводов между единицами нет.</p><button class="button secondary" data-action="ingredient-add" ${products.length?'':'disabled'}>Добавить ингредиент</button>${products.length?'':'<p class="small muted">Сначала создайте продукт в справочнике. Вложенных рецептов нет.</p>'}</section>${field('recipe-yield','Выход готового блюда, г',d.yield,'inputmode="decimal"')}<p class="small muted">Укажите фактический вес после приготовления; он может отличаться от суммы ингредиентов.</p><section class="card stack" id="recipe-preview">${recipePreview()}</section><p class="error" id="recipe-error" role="alert"></p><button class="button" id="recipe-save" data-action="recipe-save" ${d.name.trim()&&recipeResult()?'':'disabled'}>Сохранить рецепт</button></div>`;
+}
+function recipeInput(id,value){
+ if(state.screen!=='recipe-edit')return false;
+ if(id==='recipe-product')state.recipeProduct=Number(value);
+ else if(id==='recipe-quantity')state.recipeQuantity=value;
+ else if(id==='recipe-name')state.recipeDraft.name=value;
+ else if(id==='recipe-yield')state.recipeDraft.yield=value;
+ else if(id.startsWith('ingredient-qty-'))state.recipeDraft.ingredients[Number(id.slice(15))].quantity=value;
+ else return false;
+ document.getElementById('recipe-preview').innerHTML=recipePreview();document.getElementById('recipe-save').disabled=!state.recipeDraft.name.trim()||!recipeResult();return true;
+}
+function recipeAction(action,button){
+ if(action==='recipe-new'){state.catalogReturn=state.screen==='search'?'search':'library';openRecipe();return true;}
+ if(action==='catalog-edit'&&state.products.find(p=>p.id===Number(button.dataset.id))?.kind==='recipe'){state.catalogReturn='catalog-card';openRecipe(Number(button.dataset.id));return true;}
+ if(action==='recipe-cancel'){
+  if(JSON.stringify(state.recipeDraft)!==state.recipeInitial)modal('Выйти без сохранения?','Изменения рецепта будут отброшены. История питания останется прежней.','Выйти без сохранения',()=>go(state.catalogReturn),'Продолжить ввод');else go(state.catalogReturn);return true;
+ }
+ if(action==='ingredient-add'){
+  const p=state.products.find(p=>p.id===state.recipeProduct&&p.kind!=='recipe'),q=num(state.recipeQuantity);
+  if(!p||!portionValues(productSnapshot(p),q)){document.getElementById('recipe-error').textContent='Укажите положительное количество с конечным результатом.';return true;}
+  state.recipeDraft.ingredients.push({sourceId:p.id,snapshot:productSnapshot(p),quantity:String(q)});render();return true;
+ }
+ if(action==='ingredient-remove'){state.recipeDraft.ingredients.splice(Number(button.dataset.index),1);render();return true;}
+ if(action==='ingredient-refresh'){
+  const i=state.recipeDraft.ingredients[Number(button.dataset.index)],p=state.products.find(p=>p.id===i.sourceId);
+  modal('Обновить ингредиент?',i.snapshot.name+': сохранённая база будет заменена текущей. Количество сбросится к новой базовой порции; проверьте его и итог до сохранения рецепта.','Обновить',()=>{i.snapshot=productSnapshot(p);i.quantity=String(p.base);render();});return true;
+ }
+ if(action==='recipe-save'&&state.screen==='recipe-edit'){
+  const d=state.recipeDraft,r=recipeResult();if(!d.name.trim()||!r)return true;
+  const old=state.products.find(p=>p.id===d.id),p={id:d.id??state.nextId++,kind:'recipe',name:d.name.trim(),unit:'г',base:100,values:r.per100,icon:'♧',favorite:old?.favorite||false,recipe:{yield:num(d.yield),ingredients:d.ingredients.map(i=>({...structuredClone(i),quantity:num(i.quantity)}))}};
+  if(old)state.products[state.products.indexOf(old)]=p;else state.products.push(p);state.catalogId=p.id;
+  if(state.catalogReturn==='search'){state.selected=p.id;state.quantity='100';go('portion');}else go('catalog-card');return true;
+ }
+ return false;
+}
 
 function productSnapshot(product){return structuredClone({name:product.name,base:product.base,unit:product.unit,values:product.values});}
 function portionValues(snapshot,quantity){
@@ -141,10 +196,10 @@ function openCatalogEditor(id=null){
  state.catalogInitial=JSON.stringify(state.catalogDraft);go('catalog-edit');
 }
 function catalogView(){
- if(state.screen==='library')return `<div class="screen">${header('home','Продукты')}<label class="field">Поиск<input id="search" value="${esc(state.search)}" placeholder="Название продукта или блюда"></label>${catalogTabs()}<div id="results" class="product-list">${catalogResults()}</div><button class="button" data-action="catalog-new">Создать продукт</button><p class="small muted">Свой справочник. Создание продукта не добавляет еду в дневник.</p></div>`;
+ if(state.screen==='library')return `<div class="screen">${header('home','Продукты')}<label class="field">Поиск<input id="search" value="${esc(state.search)}" placeholder="Название продукта или блюда"></label>${catalogTabs()}<div id="results" class="product-list">${catalogResults()}</div><button class="button" data-action="catalog-new">Создать продукт</button><button class="button secondary" data-action="recipe-new">Создать рецепт</button><p class="small muted">Свой справочник. Создание продукта не добавляет еду в дневник.</p></div>`;
  if(state.screen==='catalog-card'){
   const p=state.products.find(p=>p.id===state.catalogId);
-  return `<div class="screen">${header('library',esc(p.name))}<p class="small muted">На ${p.base} ${esc(p.unit)}</p>${nutrition(p.values)}<button class="button" data-action="catalog-use" data-id="${p.id}">Добавить порцию в дневник</button><p class="small muted">${dateLabel(state.date)} · ${esc(meals[state.meal])}. Приём можно изменить на экране выбора еды.</p><button class="button secondary" data-action="catalog-edit" data-id="${p.id}">Изменить продукт</button><button class="button secondary" data-action="catalog-favorite" data-id="${p.id}" aria-pressed="${!!p.favorite}">${p.favorite?'Убрать из избранного':'В избранное'}</button><button class="button danger" data-action="catalog-delete" data-id="${p.id}">Удалить продукт</button><p class="small muted">Изменение и удаление не меняют уже записанные порции.</p></div>`;
+  return `<div class="screen">${header('library',esc(p.name))}<p class="small muted">На ${p.base} ${esc(p.unit)}</p>${nutrition(p.values)}${p.kind==='recipe'?recipeDescription(p):''}<button class="button" data-action="catalog-use" data-id="${p.id}">Добавить порцию в дневник</button><p class="small muted">${dateLabel(state.date)} · ${esc(meals[state.meal])}. Приём можно изменить на экране выбора еды.</p><button class="button secondary" data-action="catalog-edit" data-id="${p.id}">${p.kind==='recipe'?'Изменить рецепт':'Изменить продукт'}</button><button class="button secondary" data-action="catalog-favorite" data-id="${p.id}" aria-pressed="${!!p.favorite}">${p.favorite?'Убрать из избранного':'В избранное'}</button><button class="button danger" data-action="catalog-delete" data-id="${p.id}">${p.kind==='recipe'?'Удалить рецепт':'Удалить продукт'}</button><p class="small muted">Изменение и удаление не меняют уже записанные порции.</p></div>`;
  }
  const d=state.catalogDraft;
  return `<div class="screen">${header('catalog-cancel',d.id===null?'Новый продукт':'Изменить продукт')}${field('catalog-name','Название',d.name,'maxlength="80"')}<label class="field">База пищевой ценности<select id="catalog-unit"><option value="г" ${d.unit==='г'?'selected':''}>На 100 г</option><option value="мл" ${d.unit==='мл'?'selected':''}>На 100 мл</option><option value="portion" ${d.unit==='portion'?'selected':''}>На одну именованную порцию</option></select></label><div id="catalog-portion-wrap" ${d.unit==='portion'?'':'class="hidden"'}>${field('catalog-portion','Название одной порции',d.portion,'maxlength="30" placeholder="Например, штука"')}</div>${nutrientFields('catalog',d.values)}<p class="error" id="catalog-error" role="alert"></p><p class="small muted">Неизвестное значение не равно нулю. Изменения применяются к новым порциям; история сохраняется.</p><button class="button" id="catalog-save" data-action="catalog-save" ${catalogError()?'disabled':''}>Сохранить продукт</button></div>`;
@@ -569,6 +624,7 @@ function home(){const d=day(),t=total(),g=target(),has=d.entries.length>0||d.com
 function addEntry(name,amount,v,meta={kind:'quick'}){day().entries.push({id:state.nextId++,name,amount,values:[...v],meal:state.meal,...structuredClone(meta)});if(meta.sourceId)state.recents=[meta.sourceId,...state.recents.filter(id=>id!==meta.sourceId)].slice(0,20);state.screen='home';state.message=day().complete?'Запись добавлена. День остаётся заполненным.':'Запись добавлена';render();}
 document.addEventListener('input',event=>{
  const id=event.target.id,v=event.target.value;
+ if(recipeInput(id,v))return;
  if(catalogInput(id,v))return;
  if(settingsInput(id,v))return;
  if(id==='progress-from'||id==='progress-end'){state.progress[id==='progress-from'?'from':'end']=v;refreshProgress(true);return;}
@@ -600,6 +656,7 @@ document.addEventListener('click',e=>{
  if(a==='dialog-close'){closeModal();return;}if(a==='dialog-yes'){const fn=dialogCallback;closeModal();if(fn)fn();return;}
  if(a==='progress-example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут заменены примером прогресса за 8–14 ноября.','Показать пример прогресса',loadProgressExample);return;}
  if(a==='restart'||a==='example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут сброшены. Это не затрагивает какие-либо реальные данные.',a==='restart'?'Начать сначала':'Показать пример',()=>reset(a==='example'));return;}
+ if(recipeAction(a,b))return;
  if(catalogAction(a,b))return;
  if(settingsAction(a,b))return;
  if(a==='outside'){outside();return;}
