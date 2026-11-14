@@ -95,7 +95,7 @@ function render(){
  let html='';
  if(state.screen==='welcome')html=`<div class="screen"><div class="row"><span class="brand">diet</span><span class="pill">Без регистрации</span></div><div class="art" aria-hidden="true"><div class="orbit"></div><div class="plate"><div class="leaf"></div><div class="leaf second"></div></div><i class="dot one"></i><i class="dot two"></i></div><div class="heading"><span class="eyebrow">Небольшие шаги. Каждый день.</span><h1 tabindex="-1">Забота о себе<br>начинается здесь.</h1><p class="muted">Питание, вес и сон в одном спокойном дневнике. Всё в вашем темпе.</p></div><div class="spacer"></div><div class="stack"><button class="button full" data-action="start">Начать</button></div><p class="footer-note">Работает без аккаунта и интернета</p></div>`;
  if(state.screen==='profile')html=`<div class="screen">${header('welcome','Давайте познакомимся','Этот шаг можно пропустить. Всё можно изменить позже.')}${step(1)}${field('name','Как к вам обращаться',state.name,'autocomplete="off" maxlength="40" placeholder="Имя, необязательно"')}<div class="stack"><h3>Что сейчас вам ближе?</h3>${['Снижение веса','Поддержание','Набор массы'].map(t=>`<button class="choice" data-action="direction" data-value="${t}" aria-pressed="${state.direction===t}"><span class="radio" aria-hidden="true"></span>${t}</button>`).join('')}</div><div class="spacer"></div><div class="stack"><button class="button full" data-action="goals">Продолжить</button><button class="button plain full" data-action="skip-profile">Пропустить</button></div></div>`;
- if(state.screen==='goals')html=`<div class="screen">${header('goal-back','Ваши ориентиры','Введите свои значения КБЖУ. Можно начать дневник и настроить их позже.')}${step(2)}${nutrientFields('goal',state.goalDraft)}${field('goal-date','Действуют с даты',state.goalDate,`type="date" min="${MIN_DATE}" max="9999-12-31" aria-describedby="goal-date-help goal-error"`)}<p class="small muted" id="goal-date-help">Меняет цель с этой даты до следующей заданной цели. Можно выбрать будущую дату.</p><p class="small muted">Здесь нет автоматической рекомендации. Направление цели не меняет введённые значения.</p><p class="error" id="goal-error" aria-live="polite"></p><div class="spacer"></div><div class="stack"><button class="button full" id="goal-save" data-action="save-goal" ${goalValid()?'':'disabled'}>${state.returnHome?'Сохранить цель':'Сохранить и начать'}</button><button class="button plain full" data-action="skip-goal">${state.returnHome?'Вернуться в дневник':'Настроить позже'}</button><button class="link" data-action="clear-goal">Очистить черновик</button></div></div>`;
+ if(state.screen==='goals')html=`<div class="screen">${header('goal-back','Ваши ориентиры','Введите свои значения КБЖУ. Можно начать дневник и настроить их позже.')}${state.returnHome?'':step(2)}${nutrientFields('goal',state.goalDraft)}${field('goal-date','Действуют с даты',state.goalDate,`type="date" min="${MIN_DATE}" max="9999-12-31" aria-describedby="goal-date-help goal-error"`)}<p class="small muted" id="goal-date-help">Меняет цель с этой даты до следующей заданной цели. Можно выбрать будущую дату.</p><div id="goal-impact" class="card small">${goalImpact()}</div><p class="small muted">Здесь нет автоматической рекомендации. Направление цели не меняет введённые значения.</p><p class="error" id="goal-error" aria-live="polite"></p><div class="spacer"></div><div class="stack"><button class="button full" id="goal-save" data-action="save-goal" ${goalValid()?'':'disabled'}>${state.returnHome?'Сохранить цель':'Сохранить и начать'}</button><button class="button plain full" data-action="skip-goal">${state.returnHome?(state.goalReturn==='account'?'Вернуться в профиль':state.goalReturn==='target-history'?'Вернуться к истории':'Вернуться в дневник'):'Настроить позже'}</button><button class="link" data-action="clear-goal">Очистить черновик</button></div></div>`;
  if(state.screen==='home')html=home();
  if(state.screen==='progress')html=progressView();
  if(state.screen==='game-settings')html=gameSettings();
@@ -109,6 +109,7 @@ function render(){
  if(state.screen==='recipe-edit')html=recipeView();
  if(state.screen==='entry-edit')html=entryView();
  if(state.screen==='copy-meal')html=copyView();
+ if(state.screen==='target-history')html=targetHistoryView();
  app.innerHTML=html;
  if(state.screen==='progress')refreshProgress(false);
  const title=app.querySelector('h1');if(title)title.focus({preventScroll:true});
@@ -118,6 +119,36 @@ function render(){
 
 
 
+
+
+function targetEnd(date){const next=state.targets.map(t=>t.date).filter(d=>d>date).sort()[0];return next?dateFromDay(calendarDay(next)-1):null;}
+function targetPeriod(date){const end=targetEnd(date);return 'с '+dateLabel(date)+(end?' по '+dateLabel(end):' до следующей заданной цели');}
+function goalImpact(){
+ if(calendarDay(state.goalDate)===null)return 'Укажите дату, чтобы увидеть период действия.';
+ const old=state.targets.find(t=>t.date===state.goalDate);
+ return `<p>${old?'Заменит цель':'Новая цель'} ${targetPeriod(state.goalDate)}.</p><p>Записи еды не изменятся. Даты раньше начала сохранят прежние сравнения.</p>${old?'<p>Сейчас за эту дату:</p>'+nutrition(old.values):''}`;
+}
+function targetHistoryView(){
+ const list=[...state.targets].sort((a,b)=>b.date.localeCompare(a.date));
+ return `<div class="screen">${header('account','История целей')}<p class="small muted">Цель действует с указанной даты до следующего изменения. Отсутствующая цель не равна нулевой.</p><button class="button" data-action="target-new">Добавить цель с даты</button>${list.length?list.map(t=>`<section class="card stack"><h3>${dateLabel(t.date)}</h3><p class="small muted">${targetPeriod(t.date)}</p>${nutrition(t.values)}<button class="button secondary" data-action="target-edit" data-date="${t.date}">Изменить эту цель</button><button class="link" data-action="target-delete" data-date="${t.date}">Удалить эту цель</button></section>`).join(''):'<p class="empty-state small muted">Целей ещё нет. Дневник и абсолютные графики доступны.</p>'}</div>`;
+}
+function targetAction(a,b){
+ if(a==='target-history'){go('target-history');return true;}
+ if(a==='target-new'||a==='target-edit'){
+  const start=()=>{const t=a==='target-edit'?state.targets.find(t=>t.date===b.dataset.date):null;state.goalReturn='target-history';state.returnHome=true;state.goalDate=t?.date||TODAY;state.goalDraft=t?t.values.map(String):['','','',''];state.goalDraftDirty=false;go('goals');};
+  if(state.goalDraftDirty)modal('Заменить незавершённый черновик?','Текущие несохранённые поля цели будут заменены выбранной записью.','Заменить черновик',start,'Оставить черновик');else start();return true;
+ }
+ if(a==='save-goal'&&state.screen==='goals'){
+  if(!goalValid())return true;
+  const date=state.goalDate,v=values(state.goalDraft),save=()=>{state.targets=state.targets.filter(t=>t.date!==date);state.targets.push({date,values:[...v]});state.goalDraftDirty=false;go(state.returnHome?(state.goalReturn||'home'):'home');};
+  if(state.targets.some(t=>t.date===date)||date<TODAY)modal('Сохранить изменение цели?',targetPeriod(date)+'. Новые КБЖУ: '+v.map((n,i)=>fmt(n)+' '+(i?'г':'ккал')).join(' / ')+'. Сравнения за этот период пересчитаются; еда останется прежней.','Сохранить цель',save);else save();return true;
+ }
+ if(a==='target-delete'){
+  const date=b.dataset.date,previous=[...state.targets].filter(t=>t.date<date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  modal('Удалить цель?',targetPeriod(date)+': '+(previous?'будет действовать цель от '+dateLabel(previous.date):'цель будет отсутствовать')+'. Дневник не удаляется.','Удалить цель',()=>{state.targets=state.targets.filter(t=>t.date!==date);render();});return true;
+ }
+ return false;
+}
 
 function searchView(){return `<div class="screen">${header(state.entryReplacement?'entry-replace-cancel':'home',state.entryReplacement?'Заменить продукт':'Добавить еду')}${context()}${state.entryReplacement?'<p class="small muted">Новая база сначала появится в черновике. История изменится после сохранения.</p>':`<label class="field">Приём пищи<select id="meal">${mealOptions(state.meal)}</select></label>`}<label class="field">Поиск<input id="search" value="${esc(state.search)}" placeholder="Найти свой продукт"></label>${catalogTabs()}<div class="product-list" id="results">${productResults()}</div>${state.entryReplacement?'':`<div class="stack"><button class="button secondary" data-action="new">Создать продукт</button><button class="button secondary" data-action="recipe-new">Создать рецепт</button><button class="button plain" data-action="quick">Быстрый ввод КБЖУ</button></div>`}</div>`;}
 function entryValues(d=state.entryDraft){return d.kind==='portion'?portionValues(d.snapshot,num(d.quantity)):valid(d.raw)?values(d.raw):null;}
@@ -295,7 +326,7 @@ function profileError(){
  return '';
 }
 function settingsView(){
- if(state.screen==='account')return `<div class="screen">${header('home','Профиль')}<section class="card stack"><h2>${esc(state.name||'Ваш профиль')}</h2><p class="small muted">${esc(state.direction||'Направление не выбрано')}</p><p class="small">Возраст: ${esc(state.profileValues[0]||'—')} · Рост: ${esc(state.profileValues[1]||'—')} см<br>Исходный вес: ${esc(state.profileValues[2]||'—')} кг</p><button class="button secondary" data-action="profile-edit">Изменить профиль</button></section><div class="stack"><button class="button secondary" data-action="edit-goal">Ручные цели КБЖУ</button><button class="button secondary" data-action="meal-settings">Приёмы пищи</button><button class="button secondary" data-action="game-settings">Уровни и названия</button></div><section class="card stack"><h3>Оформление</h3><button class="button secondary" data-action="theme" aria-pressed="${document.body.classList.contains('dark')}">Тёмная тема</button><button class="button secondary" data-action="font" aria-pressed="${document.body.classList.contains('large')}">Крупный текст</button></section><p class="small muted">Работа без аккаунта и рекламы. Параметры профиля не создают запись веса и не меняют ручную цель. Расчётные рекомендации и синхронизация — будущий этап.</p></div>`;
+ if(state.screen==='account')return `<div class="screen">${header('home','Профиль')}<section class="card stack"><h2>${esc(state.name||'Ваш профиль')}</h2><p class="small muted">${esc(state.direction||'Направление не выбрано')}</p><p class="small">Возраст: ${esc(state.profileValues[0]||'—')} · Рост: ${esc(state.profileValues[1]||'—')} см<br>Исходный вес: ${esc(state.profileValues[2]||'—')} кг</p><button class="button secondary" data-action="profile-edit">Изменить профиль</button></section><div class="stack"><button class="button secondary" data-action="edit-goal">Ручные цели КБЖУ</button><button class="button secondary" data-action="target-history">История целей</button><button class="button secondary" data-action="meal-settings">Приёмы пищи</button><button class="button secondary" data-action="game-settings">Уровни и названия</button></div><section class="card stack"><h3>Оформление</h3><button class="button secondary" data-action="theme" aria-pressed="${document.body.classList.contains('dark')}">Тёмная тема</button><button class="button secondary" data-action="font" aria-pressed="${document.body.classList.contains('large')}">Крупный текст</button></section><p class="small muted">Работа без аккаунта и рекламы. Параметры профиля не создают запись веса и не меняют ручную цель. Расчётные рекомендации и синхронизация — будущий этап.</p></div>`;
  if(state.screen==='profile-edit'){
  const d=state.profileDraft;
  return `<div class="screen">${header('profile-cancel','Изменить профиль','Все поля необязательны. Данные здесь демонстрационные.')}${field('profile-name','Имя',d.name,'maxlength="40" autocomplete="off"')}${field('profile-age','Возраст, лет',d.age,'inputmode="numeric"')}${field('profile-height','Рост, см',d.height,'inputmode="decimal"')}${field('profile-weight','Исходный вес, кг',d.weight,'inputmode="decimal"')}<label class="field">Направление<select id="profile-direction">${['','Снижение веса','Поддержание','Набор массы'].map(v=>`<option value="${v}" ${d.direction===v?'selected':''}>${v||'Не выбрано'}</option>`).join('')}</select></label><p class="error" id="profile-error" role="alert"></p><p class="small muted">Сохранение не изменяет дневник измерений или КБЖУ.</p><button class="button" id="profile-save" data-action="profile-save">Сохранить профиль</button></div>`;
@@ -702,6 +733,7 @@ document.addEventListener('input',event=>{
  }
  if(id==='quick-name')state.quickName=v;if(id==='new-name')state.newName=v;
  if(/^(quick|new)-\d$/.test(id)){const a=id.startsWith('quick')?state.quick:state.newValues;a[Number(id.slice(-1))]=v;}
+ if(id.startsWith('goal-')&&document.getElementById('goal-impact'))document.getElementById('goal-impact').innerHTML=goalImpact();
  if(state.screen==='quick'||state.screen==='new'){document.getElementById('food-save').disabled=!foodValid();document.getElementById('food-error').textContent=foodValid()?'':'Заполните обязательные поля неотрицательными числами.';}
 });
 document.addEventListener('change',e=>{if(e.target.id==='progress-nutrient'){state.progress.nutrient=Number(e.target.value);refreshProgress(false);return;}if(e.target.id==='progress-complete-only'){state.progress.completeOnly=e.target.checked;refreshProgress(false);return;}if(e.target.id==='progress-preset'){const previous=progressRange();state.progress.preset=e.target.value;if(e.target.value==='custom'&&!previous.error)state.progress.from=previous.from;render();return;}if(e.target.id==='diary-levels-toggle'){state.diaryLevelsEnabled=e.target.checked;document.getElementById('levels-setting-status').textContent=state.diaryLevelsEnabled?'Уровни включены':'Уровни выключены';}if(e.target.id==='measurement-names-toggle'){state.measurementNamesEnabled=e.target.checked;document.getElementById('game-setting-status').textContent=state.measurementNamesEnabled?'Названия включены':'Названия выключены';}if(e.target.id==='goal-date'){state.goalDate=e.target.value;state.goalDraftDirty=true;document.getElementById('goal-save').disabled=!goalValid();document.getElementById('goal-error').textContent=goalValid()?'':goalError();}if(e.target.id==='new-unit')state.newUnit=e.target.value;if(e.target.id==='diary-date'){const date=e.target.value;if(calendarDay(date)===null||date>TODAY){document.getElementById('diary-date-error').textContent='Выберите дату не позднее '+dateLabel(TODAY)+'.';e.target.setAttribute('aria-invalid','true');return;}state.date=date;ensureDay(date);state.message='';render();}if(e.target.id==='meal'){state.meal=Number(e.target.value);app.querySelector('.context').textContent=dateLabel(state.date)+' · '+meals[state.meal];}});
@@ -711,6 +743,7 @@ document.addEventListener('click',e=>{
  if(a==='dialog-close'){closeModal();return;}if(a==='dialog-yes'){const fn=dialogCallback;dialogCallback=null;closeModal();if(fn)fn();return;}
  if(a==='progress-example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут заменены примером прогресса за 8–14 ноября.','Показать пример прогресса',loadProgressExample);return;}
  if(a==='restart'||a==='example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут сброшены. Это не затрагивает какие-либо реальные данные.',a==='restart'?'Начать сначала':'Показать пример',()=>reset(a==='example'));return;}
+ if(targetAction(a,b))return;
  if(historyAction(a,b))return;
  if(recipeAction(a,b))return;
  if(catalogAction(a,b))return;
@@ -720,11 +753,11 @@ document.addEventListener('click',e=>{
  if(a==='direction'){state.direction=state.direction===b.dataset.value?'':b.dataset.value;render();return;}
  if(a==='skip-profile'){state.name='';state.direction='';state.returnHome=false;go('goals');return;}
  if(a==='goals'){state.name=state.name.trim();state.returnHome=false;go('goals');return;}
- if(a==='edit-goal'){state.returnHome=true;if(!state.goalDraftDirty){state.goalDate=state.date;const current=target(state.date);state.goalDraft=current?current.values.map(String):['','','',''];}go('goals');return;}
- if(a==='goal-back'){go(state.returnHome?'home':'profile');return;}
+ if(a==='edit-goal'){state.goalReturn=state.screen==='account'?'account':'home';state.returnHome=true;if(!state.goalDraftDirty){state.goalDate=state.date;const current=target(state.date);state.goalDraft=current?current.values.map(String):['','','',''];}go('goals');return;}
+ if(a==='goal-back'){go(state.returnHome?(state.goalReturn||'home'):'profile');return;}
  if(a==='clear-goal'){state.goalDraft=['','','',''];state.goalDraftDirty=false;render();return;}
- if(a==='skip-goal'){go('home');return;}
- if(a==='save-goal'&&goalValid()){state.targets=state.targets.filter(t=>t.date!==state.goalDate);state.targets.push({date:state.goalDate,values:values(state.goalDraft)});state.goalDraftDirty=false;state.screen='home';state.message='Цель сохранена с '+dateLabel(state.goalDate);render();return;}
+ if(a==='skip-goal'){go(state.returnHome?(state.goalReturn||'home'):'home');return;}
+
  if(a==='home'){go('home');return;}
  if(a==='game-settings'){go('game-settings');return;}
  if(a==='progress'){openProgress();return;}
