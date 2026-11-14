@@ -10,7 +10,7 @@ function dayStrip(){
 }
 function homeShortcuts(){return `<div class="home-shortcuts"><button class="mini-feature" data-action="calendar"><span class="feature-icon" aria-hidden="true">▦</span>Календарь</button><button class="mini-feature" data-action="report"><span class="feature-icon" aria-hidden="true">↗</span>Отчёты</button><button class="mini-feature" data-action="tools"><span class="feature-icon" aria-hidden="true">⊞</span>Ещё</button></div>`;}
 
-function toolsView(){return `<div class="screen">${header('home','Для вашего ритма','Всё нужное — под рукой.')}<div class="tools-grid">${[['calendar','▦','Календарь'],['report','↗','Отчёты'],['progress','⌁','Подробные графики'],['photo-feed','▧','Фотолента'],['diary-search','⌕','Поиск по дневнику']].map(([a,i,t])=>`<button class="choice tool-tile" data-action="${a}"><span class="feature-icon" aria-hidden="true">${i}</span><strong>${t}</strong></button>`).join('')}</div></div>`;}
+function toolsView(){return `<div class="screen">${header('home','Для вашего ритма','Всё нужное — под рукой.')}<div class="tools-grid">${[['calendar','▦','Календарь'],['report','↗','Отчёты'],['progress','⌁','Подробные графики'],['photo-feed','▧','Фотолента'],['diary-search','⌕','Поиск по дневнику'],['templates','▤','Шаблоны приёмов'],['meal-plan','▦','План питания']].map(([a,i,t])=>`<button class="choice tool-tile" data-action="${a}"><span class="feature-icon" aria-hidden="true">${i}</span><strong>${t}</strong></button>`).join('')}</div></div>`;}
 function richAction(a,b){
  if(a==='tools'){go('tools');return true;}
  if(a==='rich-date'&&calendarDay(b.dataset.date)!==null&&b.dataset.date<=TODAY){state.date=b.dataset.date;go('home');return true;}
