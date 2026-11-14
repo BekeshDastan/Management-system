@@ -345,7 +345,7 @@ function loadFullExample(){
  const ingredients=[{sourceId:1,snapshot:productSnapshot(state.products[0]),quantity:200},{sourceId:curd.id,snapshot:productSnapshot(curd),quantity:100}];
  const recipe={id:state.nextId++,kind:'recipe',name:'Запеканка — демо',unit:'г',base:100,values:[152,10,4,19.2],favorite:true,icon:'♧',recipe:{yield:250,ingredients}};state.products.push(recipe);state.days['2026-11-07']={complete:false,entries:[state.products[0],recipe].map((product,i)=>{const quantity=i?50:80;return {id:state.nextId++,kind:'portion',sourceId:product.id,name:product.name,amount:fmt(quantity)+' '+product.unit,meal:0,quantity,snapshot:productSnapshot(product),values:portionValues(productSnapshot(product),quantity)};})};state.recents=[recipe.id,1];
  state.days[TODAY].entries=[['Йогурт с гранолой',0,[450,25,15,55]],['Курица с гречкой',1,[750,40,25,90]],['Лосось с рисом',2,[600,25,20,75]]].map(([name,meal,values])=>({id:state.nextId++,kind:'portion',name,meal,quantity:1,amount:'1 порция · демо',values:[...values],snapshot:{name,base:1,unit:'порция',values:[...values],photo:meal}}));
- go('home');
+ loadRoutineExample();go('home');
 }
 function dayPrompt(){
  if(state.date!==TODAY)return '';

@@ -154,3 +154,11 @@ function routinesAction(action,button){
  }
  return false;
 }
+
+function loadRoutineExample(){
+ const r=rtState(),entries=state.days[TODAY].entries;
+ const breakfast=entries.filter(e=>e.meal===0),lunch=entries.filter(e=>e.meal===1);
+ r.templates=[{id:state.nextId++,name:'Мой завтрак · демо',entries:breakfast.map(rtNormalEntry)}];
+ r.plans=[{id:state.nextId++,name:'Завтрашний обед · демо',date:dateFromDay(calendarDay(TODAY)+1),meal:1,entries:lunch.map(rtNormalEntry),transfers:[]}];
+ r.planDate=r.plans[0].date;
+}
