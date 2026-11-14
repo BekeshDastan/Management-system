@@ -23,3 +23,5 @@
 .routine-card h3,.routine-entry h3{overflow-wrap:anywhere}.routine-screen .row.wrap .button{max-width:100%}.routine-screen .link{text-align:left}.routine-screen .card .card{padding:12px;background:var(--soft)}.routine-screen .fields{min-width:0}.plan-day>h2{font-size:1.15em;line-height:1.4}.routine-status{font-size:.74em}.routine-entry .row{align-items:start}.routine-entry .row h3{min-width:0}
 
 [data-home-block][hidden]{display:none!important}.home-layout-row .button{min-width:0}.home-layout-row .game-setting{align-items:flex-start}.home-layout-row .game-setting span{min-width:0}.home-layout-empty .link{display:block}
+
+.preset-buttons{display:flex;flex-wrap:wrap;gap:8px}.preset-buttons .button{min-width:70px}.preset-buttons [aria-pressed=true]{background:var(--green);color:var(--bg)}
