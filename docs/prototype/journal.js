@@ -31,7 +31,7 @@ async function journalFile(file){
   const url=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error('read'));r.readAsDataURL(file);});
   const image=new Image();image.src=url;await image.decode();
   if(!image.naturalWidth||image.naturalWidth>16000||image.naturalHeight>16000)throw new Error('dimensions');
-  if(state.screen==='journal'&&state.journalDraft===draft&&state.journalDate===date&&draft.photos.length<4)draft.photos.push({url,caption:'',meal:state.journalMeal??null});
+  if(state.screen==='journal'&&state.journalDraft===draft&&state.journalDate===date&&draft.photos.length<4)draft.photos.push({id:state.nextId++,url,caption:'',meal:state.journalMeal??null});
  }catch{if(state.journalDraft===draft)state.journalPhotoError='Не удалось открыть изображение. Попробуйте другой файл.';}
  finally{if(state.journalDraft===draft){state.journalLoading=false;if(state.screen==='journal')render();}}
 }
