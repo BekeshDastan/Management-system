@@ -8,7 +8,7 @@ function dayStrip(){
  const end=calendarDay(state.date),today=calendarDay(TODAY);
  return `<div class="day-strip" aria-label="Даты дневника">${Array.from({length:7},(_,i)=>{const date=dateFromDay(end-6+i),d=state.days[date],valid=date>=MIN_DATE&&date<=TODAY;return `<button class="day-chip" data-action="rich-date" data-date="${date}" aria-pressed="${date===state.date}" ${valid?'':'disabled'}><small>${new Intl.DateTimeFormat('ru-RU',{weekday:'short',timeZone:'UTC'}).format(new Date((end-6+i)*DAY_MS))}</small><b>${Number(date.slice(-2))}</b><span aria-label="${d?.complete?'Питание заполнено':d?.entries?.length?'Есть записи':'Нет записей'}">${d?.complete?'●':d?.entries?.length?'◐':'·'}</span></button>`;}).join('')}</div>`;
 }
-function homeShortcuts(){return `<div class="home-shortcuts"><button class="mini-feature" data-action="calendar"><span class="feature-icon" aria-hidden="true">▦</span>Календарь</button><button class="mini-feature" data-action="report"><span class="feature-icon" aria-hidden="true">↗</span>Отчёты</button><button class="mini-feature" data-action="journal"><span class="feature-icon" aria-hidden="true">✎</span>Мой день</button></div>`;}
+function homeShortcuts(){return `<div class="home-shortcuts"><button class="mini-feature" data-action="calendar"><span class="feature-icon" aria-hidden="true">▦</span>Календарь</button><button class="mini-feature" data-action="report"><span class="feature-icon" aria-hidden="true">↗</span>Отчёты</button><button class="mini-feature" data-action="progress"><span class="feature-icon" aria-hidden="true">⌁</span>Графики</button></div>`;}
 
 function richAction(a,b){
  if(a==='rich-date'&&calendarDay(b.dataset.date)!==null&&b.dataset.date<=TODAY){state.date=b.dataset.date;go('home');return true;}
