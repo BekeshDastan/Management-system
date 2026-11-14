@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Diet — интерактивный UX-прототип</title>
 <style>
-*{box-sizing:border-box} :root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#263d35;background:#eaece6;font-synthesis:none;font-size:16px;--bg:#f7f7f1;--card:#fff;--ink:#203d32;--muted:#66736a;--line:#e1e7dd;--green:#24634b;--soft:#e9f0e6;--accent:#e4bc73;--error:#a03b35;--shadow:0 24px 80px #24432b15}
-body{margin:0} body.dark{--bg:#19251f;--card:#24332b;--ink:#e7eee7;--muted:#a9b9ad;--line:#3c4e42;--green:#a0d1b3;--soft:#30473a;--accent:#ddb875;--error:#ffaaa2;background:#111a16;color:var(--ink)}
+*{box-sizing:border-box} :root{color-scheme:light;font-family:Inter,"Segoe UI",Arial,sans-serif;color:#263d35;background:#eaece6;font-synthesis:none;font-size:16px;--bg:#f7f7f1;--card:#fff;--ink:#203d32;--muted:#66736a;--line:#e1e7dd;--green:#24634b;--soft:#e9f0e6;--accent:#e4bc73;--error:#a03b35;--shadow:0 24px 80px #24432b15}
+body{margin:0} body.dark{color-scheme:dark;--bg:#19251f;--card:#24332b;--ink:#e7eee7;--muted:#a9b9ad;--line:#3c4e42;--green:#a0d1b3;--soft:#30473a;--accent:#ddb875;--error:#ffaaa2;background:#111a16;color:var(--ink)}
 body.large{font-size:20px} button,input,select{font:inherit} button{cursor:pointer} button:disabled{cursor:not-allowed;opacity:.48} button,input,select{touch-action:manipulation} button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 button{border:0} h1,h2,h3,p{margin:0} h1{font-size:2.15em;font-weight:650;letter-spacing:-.055em;line-height:1.12} h2{font-size:1.6em;font-weight:650;letter-spacing:-.035em;line-height:1.2} h3{font-size:1.05em;font-weight:650} p{line-height:1.55} small,.small{font-size:.8em;line-height:1.5} .muted{color:var(--muted)} .eyebrow{font-size:.7em;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--green)}
 .workspace{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 420px;gap:90px;padding:48px 32px;align-items:start}.side{position:sticky;top:48px}.brand{font-size:1.5em;font-weight:750;letter-spacing:-.06em;display:flex;align-items:center;gap:10px}.brand-mark{display:inline-grid;place-items:center;background:var(--green);color:var(--bg);border-radius:50% 50% 50% 8%;width:35px;height:35px;font-size:.75em;transform:rotate(-8deg)}
@@ -20,6 +20,7 @@ label.field{display:grid;gap:8px;font-size:.85em;font-weight:600} input,select{m
 .measurements .link{display:block;text-align:left}
 .game-name{display:inline-block;max-width:100%;margin-top:8px;padding:5px 9px;border-radius:12px;background:var(--soft);color:var(--green);font-size:.75em;line-height:1.5;overflow-wrap:anywhere}.game-setting{display:flex;align-items:center;gap:14px;min-height:52px;font-size:.9em;font-weight:600;line-height:1.5;cursor:pointer}.game-setting input{appearance:auto;accent-color:var(--green);width:24px;height:24px;min-height:24px;flex:0 0 24px;padding:0}.name-ranges{margin:0}.name-ranges div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line);line-height:1.5}.name-ranges div:last-child{border-bottom:0}.name-ranges dt{font-size:.8em;color:var(--muted)}.name-ranges dd{margin:0;font-size:.85em;font-weight:600;overflow-wrap:anywhere}
 .level-list{list-style:none;padding:0;margin:0;display:grid;gap:16px}.level-list li{border-bottom:1px solid var(--line);padding-bottom:16px;line-height:1.5;min-width:0}.level-list li:last-child{border-bottom:0;padding-bottom:0}.level-list strong{font-size:.9em;overflow-wrap:anywhere}.level-list .row{align-items:baseline}.diary-level{display:grid;gap:10px}.diary-level .measurement-value{margin-top:0}
+.progress-tabs{display:flex;flex-wrap:wrap;gap:8px}.progress-tabs .button{flex:1;min-width:90px}.progress-chart{width:100%;min-width:0}.progress-chart svg{display:block;width:100%;overflow:visible}.progress-chart .chart-grid{stroke:var(--line);stroke-width:1}.progress-chart .chart-line{stroke:var(--green);stroke-width:2;fill:none}.progress-chart .chart-point{fill:var(--green);stroke:var(--bg);stroke-width:2}.progress-chart .chart-selected{fill:var(--accent);stroke:var(--ink)}.progress-chart text{fill:var(--muted);font-family:inherit}.progress-chart .chart-cursor{stroke:var(--muted);stroke-dasharray:4 4}.progress-chart [data-action]{cursor:pointer}.progress-summary{display:grid;gap:8px}.progress-summary .measurement-value{margin:0}.progress-values{width:100%;border-collapse:collapse;font-size:.8em;line-height:1.5;table-layout:fixed}.progress-values th,.progress-values td{text-align:left;border-bottom:1px solid var(--line);padding:10px 4px;overflow-wrap:anywhere}.progress-values th:first-child{width:55%}.progress-details summary{min-height:44px;padding:10px 0;cursor:pointer;font-size:.85em;color:var(--green)}.progress-screen input[type=date]{display:block;min-width:0;max-width:100%}.progress-detail{display:grid;gap:10px}.progress-scale{font-size:.75em;line-height:1.5;overflow-wrap:anywhere}.progress-range{font-size:.85em;font-weight:600;line-height:1.6;overflow-wrap:anywhere}
 dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px;width:calc(100% - 40px);max-width:360px;box-shadow:var(--shadow)}dialog::backdrop{background:#14251cc0}dialog h2{font-size:1.4em;margin-bottom:14px}dialog p{font-size:.9em;margin-bottom:22px}dialog .stack{gap:8px}.dialog-close{margin-top:10px} .screen h1,.screen h2{outline:none}
 @media(max-width:850px){.workspace{gap:32px;padding:24px;grid-template-columns:1fr 390px}.intro{margin-top:40px}.intro h1{font-size:2.4em}.phone{min-height:760px}.side .legend{display:none}}
 @media(max-width:690px){.workspace{display:flex;flex-direction:column;align-items:center;padding:16px 12px;gap:18px}.side{position:static;width:100%;max-width:420px}.side .brand{font-size:1.2em}.intro{margin:12px 0}.intro h1,.intro p{display:none}.intro .demo-tag{font-size:.65em}.controls{margin:12px 0;gap:8px}.control{padding:10px 12px;font-size:.75em}.footnote{font-size:.65em}.phone{width:100%;max-width:420px;border-radius:26px;min-height:740px}.screen{padding:18px 20px 22px;min-height:680px}.bottom-nav{margin-left:-20px;margin-right:-20px}.art{height:185px}.plate{transform:scale(.9)}.orbit{width:200px;height:200px}.statusbar{padding:14px 20px 8px}}
@@ -32,9 +33,9 @@ dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);bord
   <aside class="side" aria-label="Управление прототипом">
     <div class="brand"><span class="brand-mark" aria-hidden="true">d</span> diet</div>
     <div class="intro"><span class="demo-tag">UX-прототип · вымышленные данные · не приложение</span><h1>В своём<br>ритме.</h1><p>Повседневный дневник.<br>Первый запуск, еда, вес и сон.</p></div>
-    <div class="controls"><div class="control-row"><button class="control" data-action="restart">Сначала</button><button class="control" data-action="example">Пример дня</button></div><div class="control-row"><button class="control" data-action="theme" aria-pressed="false">Тёмная тема</button><button class="control" data-action="font" aria-pressed="false">Крупный текст</button></div></div>
-    <p class="footnote">Только демонстрация: вводите вымышленные значения. Всё хранится в памяти страницы и сбрасывается при перезагрузке. «Сначала» и «Пример дня» заменяют текущую демонстрацию.</p>
-    <div class="legend"><span class="eyebrow">Попробуйте</span><ol><li>Начать без заполнения анкеты и целей.</li><li>Добавить продукт и изменить порцию.</li><li>Записать вес и суммарный сон за день.</li><li>Исправить запись или отменить изменения.</li><li>Отметить день и посмотреть уровень дневника.</li><li>Настроить названия и уровни.</li></ol><p class="footnote">Направление дизайна — предложение. Условное «сегодня»: 14 ноября 2026. Данные примера не являются рекомендацией. Доступны две даты: можно пройти первые три уровня. Остальные перечислены в настройках.</p></div>
+    <div class="controls"><div class="control-row"><button class="control" data-action="restart">Сначала</button><button class="control" data-action="example">Пример дня</button><button class="control" data-action="progress-example">Пример прогресса</button></div><div class="control-row"><button class="control" data-action="theme" aria-pressed="false">Тёмная тема</button><button class="control" data-action="font" aria-pressed="false">Крупный текст</button></div></div>
+    <p class="footnote">Только демонстрация: вводите вымышленные значения. Всё хранится в памяти страницы и сбрасывается при перезагрузке. «Сначала», «Пример дня» и «Пример прогресса» заменяют текущую демонстрацию.</p>
+    <div class="legend"><span class="eyebrow">Попробуйте</span><ol><li>Начать без заполнения анкеты и целей.</li><li>Добавить продукт и изменить порцию.</li><li>Записать вес и суммарный сон за день.</li><li>Исправить запись или отменить изменения.</li><li>Отметить день и посмотреть уровень дневника.</li><li>Посмотреть вес и сон в «Прогрессе».</li><li>Настроить названия и уровни.</li></ol><p class="footnote">Направление дизайна — предложение. Условное «сегодня»: 14 ноября 2026. Данные примера не являются рекомендацией. Выбирайте прошлые даты в дневнике. «Пример прогресса» открывает отдельный вымышленный набор за 8–14 ноября. В макете период графика ограничен 366 днями.</p></div>
   </aside>
   <section class="phone" aria-label="Мобильный макет Diet"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>● ▰</span></div><div id="app"></div></section>
 </main>
@@ -42,7 +43,7 @@ dialog{color:var(--ink);background:var(--card);border:1px solid var(--line);bord
 <script>
 'use strict';
 const app=document.getElementById('app');
-const TODAY='2026-11-14', YESTERDAY='2026-11-13';
+const TODAY='2026-11-14', YESTERDAY='2026-11-13', MIN_DATE='0001-01-01', DAY_MS=86400000;
 const meals=['Завтрак','Обед','Ужин','Перекус'];
 const names=['Калории, ккал','Белки, г','Жиры, г','Углеводы, г'];
 const seed=[
@@ -50,22 +51,32 @@ const seed=[
  {id:2,name:'Йогурт',unit:'мл',base:100,values:[40,3,1,4.8],icon:'◫',note:'Демо-продукт'},
  {id:3,name:'Хлебец',unit:'шт.',base:1,values:[120,3,4,18],icon:'▤',note:'Демо-продукт'}
 ];
-let state, dialogCallback=null, lastFocus=null, renderedScreen=null;
+let state, dialogCallback=null, lastFocus=null, renderedScreen=null, progressObserver=null;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1}).format(n);
 const num=s=>{const t=String(s).trim();return /^(?:\d+(?:[.,]\d+)?|[.,]\d+)$/.test(t)?Number(t.replace(',','.')):NaN};
 const valid=a=>a.length===4&&a.every(x=>Number.isFinite(num(x))&&num(x)>=0);
 const values=a=>a.map(num);
-const dateLabel=d=>d===TODAY?'14 ноября · Сегодня':'13 ноября · Вчера';
+function calendarDay(date){
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<MIN_DATE)return null;
+ const ms=Date.parse(date+'T00:00:00Z');
+ return Number.isFinite(ms)&&new Date(ms).toISOString().slice(0,10)===date?ms/DAY_MS:null;
+}
+function dateFromDay(day){return new Date(day*DAY_MS).toISOString().slice(0,10);}
+function dateLabel(date){
+ const day=calendarDay(date);
+ return day===null?'Дата не выбрана':new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(day*DAY_MS));
+}
+function ensureDay(date){if(!state.days[date])state.days[date]={entries:[],complete:false};}
 const day=()=>state.days[state.date];
-const total=()=>day().entries.reduce((sum,e)=>sum.map((v,i)=>v+e.values[i]),[0,0,0,0]);
-const target=()=>state.targets.filter(x=>x.date<=state.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+const total=(date=state.date)=>(state.days[date]?.entries||[]).reduce((sum,e)=>sum.map((v,i)=>v+e.values[i]),[0,0,0,0]);
+const target=(date=state.date)=>state.targets.filter(x=>x.date<=date).sort((a,b)=>b.date.localeCompare(a.date))[0];
 function reset(example=false){
- state={screen:example?'home':'welcome',name:'',direction:'',goalDraft:['','','',''],goalDate:TODAY,returnHome:false,date:TODAY,meal:0,products:structuredClone(seed),selected:1,quantity:'100',search:'',quickName:'',quick:['','','',''],newName:'',newUnit:'г',newValues:['','','',''],targets:[],days:{[TODAY]:{entries:[],complete:false},[YESTERDAY]:{entries:[],complete:false}},message:'',weightDate:TODAY,weightDraft:'',weightInitial:'',sleepDate:TODAY,sleepDraft:['',''],sleepInitial:['',''],measurementNamesEnabled:true,diaryLevelsEnabled:true};
+ state={screen:example?'home':'welcome',name:'',direction:'',goalDraft:['','','',''],goalDate:TODAY,returnHome:false,date:TODAY,meal:0,products:structuredClone(seed),selected:1,quantity:'100',search:'',quickName:'',quick:['','','',''],newName:'',newUnit:'г',newValues:['','','',''],targets:[],days:{[TODAY]:{entries:[],complete:false}},message:'',weightDate:TODAY,weightDraft:'',weightInitial:'',sleepDate:TODAY,sleepDraft:['',''],sleepInitial:['',''],measurementNamesEnabled:true,diaryLevelsEnabled:true,progress:null};
  if(example){state.targets=[{date:TODAY,values:[2000,100,65,250]}];state.days[TODAY].entries=[{id:1,name:'Овсяная каша',amount:'200 г',meal:0,values:[300,20,8,36]},{id:2,name:'Йогурт',amount:'250 мл',meal:0,values:[100,7.5,2.5,12]}];}
  render();
 }
-function go(screen){state.screen=screen;state.message='';render();}
+function go(screen){if(screen==='home')ensureDay(state.date);state.screen=screen;state.message='';render();}
 function field(id,label,value,extra=''){return `<label class="field" for="${id}">${label}<input id="${id}" value="${esc(value)}" ${extra}></label>`;}
 function nutrientFields(prefix,draft){return `<div class="fields">${names.map((n,i)=>field(`${prefix}-${i}`,n,draft[i],'inputmode="decimal" autocomplete="off"')).join('')}</div>`;}
 function step(n){return `<div class="step" aria-label="Шаг ${n} из 2"><span class="active"></span><span class="${n===2?'active':''}"></span></div>`;}
@@ -73,13 +84,15 @@ function header(back,title,caption=''){return `<button class="back" data-action=
 function context(){return `<div class="context">${dateLabel(state.date)} · ${meals[state.meal]}</div>`;}
 function modal(title,text,yesLabel='',action=null,cancelLabel='Отмена'){lastFocus=document.activeElement;document.getElementById('dialog-title').textContent=title;document.getElementById('dialog-text').textContent=text;document.getElementById('dialog-actions').innerHTML=(yesLabel?`<button class="button full" data-action="dialog-yes">${esc(yesLabel)}</button>`:'')+`<button class="button ${yesLabel?'plain':'secondary'} full" data-action="dialog-close">${yesLabel?esc(cancelLabel):'Понятно'}</button>`;dialogCallback=action;document.getElementById('dialog').showModal();}
 function closeModal(){document.getElementById('dialog').close();if(lastFocus?.isConnected)lastFocus.focus();}
-function outside(){modal('За пределами макета','Этот сценарий не входит в прототип. Здесь можно проверить первый запуск, главную, добавление еды, веса и сна. Данные не изменены.');}
+function outside(){modal('За пределами макета','Этот сценарий не входит в прототип. Здесь можно проверить первый запуск, главную, добавление еды, веса и сна, а также графики веса и сна. Данные не изменены.');}
 function render(){
+ if(progressObserver){progressObserver.disconnect();progressObserver=null;}
  let html='';
  if(state.screen==='welcome')html=`<div class="screen"><div class="row"><span class="brand">diet</span><span class="pill">Без регистрации</span></div><div class="art" aria-hidden="true"><div class="orbit"></div><div class="plate"><div class="leaf"></div><div class="leaf second"></div></div><i class="dot one"></i><i class="dot two"></i></div><div class="heading"><span class="eyebrow">Небольшие шаги. Каждый день.</span><h1 tabindex="-1">Забота о себе<br>начинается здесь.</h1><p class="muted">Питание, вес и сон в одном спокойном дневнике. Всё в вашем темпе.</p></div><div class="spacer"></div><div class="stack"><button class="button full" data-action="start">Начать</button></div><p class="footer-note">Работает без аккаунта и интернета</p></div>`;
  if(state.screen==='profile')html=`<div class="screen">${header('welcome','Давайте познакомимся','Этот шаг можно пропустить. Всё можно изменить позже.')}${step(1)}${field('name','Как к вам обращаться',state.name,'autocomplete="off" maxlength="40" placeholder="Имя, необязательно"')}<div class="stack"><h3>Что сейчас вам ближе?</h3>${['Снижение веса','Поддержание','Набор массы'].map(t=>`<button class="choice" data-action="direction" data-value="${t}" aria-pressed="${state.direction===t}"><span class="radio" aria-hidden="true"></span>${t}</button>`).join('')}</div><div class="spacer"></div><div class="stack"><button class="button full" data-action="goals">Продолжить</button><button class="button plain full" data-action="skip-profile">Пропустить</button></div></div>`;
  if(state.screen==='goals')html=`<div class="screen">${header('goal-back','Ваши ориентиры','Введите свои значения КБЖУ. Можно начать дневник и настроить их позже.')}${step(2)}${nutrientFields('goal',state.goalDraft)}<label class="field" for="goal-date">Действуют с даты<select id="goal-date"><option value="${TODAY}" ${state.goalDate===TODAY?'selected':''}>14 ноября 2026</option><option value="${YESTERDAY}" ${state.goalDate===YESTERDAY?'selected':''}>13 ноября 2026</option></select></label><p class="small muted">Здесь нет автоматической рекомендации. Направление цели не меняет введённые значения.</p><p class="error" id="goal-error" aria-live="polite"></p><div class="spacer"></div><div class="stack"><button class="button full" id="goal-save" data-action="save-goal" ${goalValid()?'':'disabled'}>${state.returnHome?'Сохранить цель':'Сохранить и начать'}</button><button class="button plain full" data-action="skip-goal">${state.returnHome?'Вернуться в дневник':'Настроить позже'}</button><button class="link" data-action="clear-goal">Очистить черновик</button></div></div>`;
  if(state.screen==='home')html=home();
+ if(state.screen==='progress')html=progressView();
  if(state.screen==='game-settings')html=gameSettings();
  if(state.screen==='weight')html=weightForm();
  if(state.screen==='sleep')html=sleepForm();
@@ -87,10 +100,130 @@ function render(){
  if(state.screen==='portion'){const p=selected();html=`<div class="screen">${header('search','Порция')}${context()}<div class="portion-title"><div class="food-icon" aria-hidden="true">${p.icon}</div><h2>${esc(p.name)}</h2><p class="muted small">${fmt(p.values[0])} ккал на ${p.base} ${p.unit}</p></div><div class="quantity-row">${field('quantity','Сколько съели',state.quantity,'inputmode="decimal" autocomplete="off"')}<span class="quantity-unit">${p.unit}</span></div><p class="error" id="portion-error" aria-live="polite"></p><div class="card soft"><p class="small muted" style="margin-bottom:16px">В вашей порции</p><div id="portion-values">${portionNutrition()}</div></div><div class="spacer"></div><button class="button full" data-action="save-portion" id="portion-save" ${quantityValid()?'':'disabled'}>Добавить в дневник</button></div>`;}
  if(state.screen==='quick'||state.screen==='new'){const isNew=state.screen==='new',prefix=isNew?'new':'quick';html=`<div class="screen">${header('cancel-food',isNew?'Новый продукт':'Быстрый ввод',isNew?'Перенесите значения с упаковки.':'Укажите КБЖУ всей съеденной порции.')}${context()}${field(`${prefix}-name`,isNew?'Название':'Название, необязательно',isNew?state.newName:state.quickName,'autocomplete="off" maxlength="80"')}${isNew?`<label class="field" for="new-unit">Пищевая ценность<select id="new-unit"><option value="г" ${state.newUnit==='г'?'selected':''}>На 100 г</option><option value="мл" ${state.newUnit==='мл'?'selected':''}>На 100 мл</option><option value="шт." ${state.newUnit==='шт.'?'selected':''}>На 1 штуку</option></select></label>`:''}${nutrientFields(prefix,isNew?state.newValues:state.quick)}<p class="small muted">Заполните все четыре значения. Неизвестное значение не равно нулю.</p><p class="error" id="food-error" aria-live="polite"></p><div class="spacer"></div><button class="button full" id="food-save" data-action="${isNew?'save-product':'save-quick'}" ${foodValid()?'':'disabled'}>${isNew?'Сохранить продукт':'Добавить в дневник'}</button>${isNew?'<p class="footer-note">Затем можно выбрать порцию для дневника</p>':''}</div>`;}
  app.innerHTML=html;
+ if(state.screen==='progress')refreshProgress(false);
  const title=app.querySelector('h1');if(title)title.focus({preventScroll:true});
  if(renderedScreen!==null&&renderedScreen!==state.screen)app.closest('.phone').scrollIntoView({block:'start',behavior:'instant'});
  renderedScreen=state.screen;
 }
+function progressRange(progress=state.progress){
+ if(!progress)return {error:'Выберите период.'};
+ const end=calendarDay(progress.end);
+ if(end===null||progress.end>TODAY)return {error:'Укажите конечную дату не позднее '+dateLabel(TODAY)+'.'};
+ let from=progress.from;
+ if(progress.preset==='week')from=dateFromDay(end-6);
+ if(progress.preset==='month')from=progress.end.slice(0,8)+'01';
+ if(progress.preset==='year')from=progress.end.slice(0,4)+'-01-01';
+ const start=calendarDay(from);
+ if(start===null)return {error:'Укажите допустимую начальную дату периода.'};
+ if(start>end)return {error:'Начало периода не может быть позже конца.'};
+ const count=end-start+1;
+ if(count>366)return {error:'В макете можно выбрать не более 366 дней. Сократите период.'};
+ return {from,to:progress.end,count,dates:Array.from({length:count},(_,i)=>dateFromDay(start+i))};
+}
+function integerMean(values){
+ if(!values.length)return null;
+ const sum=values.reduce((acc,value)=>acc+BigInt(value),0n),count=BigInt(values.length);
+ return Number((2n*sum+count)/(2n*count));
+}
+function progressData(metric=state.progress.metric,range=progressRange()){
+ if(range.error)return null;
+ const property=metric==='weight'?'weightCents':'sleepMinutes';
+ const rows=range.dates.map(date=>{
+  const raw=state.days[date]?.[property];
+  return {date,value:Number.isSafeInteger(raw)&&(metric==='weight'?raw>0:raw>=0)?raw:null};
+ });
+ const values=rows.filter(row=>row.value!==null).map(row=>row.value);
+ return {rows,count:values.length,days:range.count,mean:integerMean(values)};
+}
+function progressValue(value,metric=state.progress.metric){
+ return value===null?'Нет записи':metric==='weight'?weightText(value)+' кг':sleepText(value);
+}
+function openProgress(){
+ if(!state.progress)state.progress={metric:'weight',preset:'week',end:state.date,from:dateFromDay(calendarDay(state.date)-6),selectedDate:state.date};
+ go('progress');
+}
+function loadProgressExample(){
+ reset();
+ state.days={};
+ const weights=[8020,null,8000,7980,null,7990,8001],sleep=[420,480,null,0,421,450,null];
+ const foods=[[2000,100,70,240],[850,40,25,115],null,[],[2200,110,80,260],[1200,65,40,140],[1800,90,60,220]],complete=[true,false,false,true,true,false,true];
+ for(let i=0;i<7;i++){
+  const date='2026-11-'+String(i+8).padStart(2,'0'),record={entries:[],complete:complete[i]};
+  if(weights[i]!==null)record.weightCents=weights[i];
+  if(sleep[i]!==null)record.sleepMinutes=sleep[i];
+  if(foods[i]?.length)record.entries=[{id:100+i,name:'Демонстрационная запись',amount:'Вся порция',meal:1,values:[...foods[i]]}];
+  state.days[date]=record;
+ }
+ state.targets=[{date:'2026-11-09',values:[2000,100,70,250]},{date:'2026-11-13',values:[2100,105,75,260]}];
+ state.date=TODAY;
+ openProgress();
+}
+function progressView(){
+ const p=state.progress;
+ const tabs=[['weight','Вес'],['sleep','Сон']].map(([metric,label])=>'<button class="button '+(p.metric===metric?'':'secondary')+'" data-action="progress-metric" data-metric="'+metric+'" aria-pressed="'+(p.metric===metric)+'">'+label+'</button>').join('');
+ const options=[['week','7 дней'],['month','С начала месяца'],['year','С начала года'],['custom','Свой период']].map(([value,label])=>'<option value="'+value+'" '+(p.preset===value?'selected':'')+'>'+label+'</option>').join('');
+ const dateAttrs='type="date" min="'+MIN_DATE+'" max="'+TODAY+'" aria-describedby="progress-error"';
+ return '<div class="screen progress-screen">'+header('home','Прогресс')+'<div class="progress-tabs" role="group" aria-label="Показатель">'+tabs+'</div><label class="field" for="progress-preset">Период<select id="progress-preset">'+options+'</select></label><div class="stack"><div '+(p.preset==='custom'?'':'class="hidden"')+'>'+field('progress-from','Начало периода',p.from,dateAttrs)+'</div>'+field('progress-end','Конец периода, включительно',p.end,dateAttrs)+'</div><p class="error" id="progress-error" role="alert"></p><div class="stack" id="progress-results"></div></div>';
+}
+function refreshProgress(normalizeSelection=true){
+ if(progressObserver){progressObserver.disconnect();progressObserver=null;}
+ const range=progressRange(),host=document.getElementById('progress-results');
+ if(!host)return;
+ document.getElementById('progress-error').textContent=range.error||'';
+ if(range.error){host.innerHTML='';return;}
+ const p=state.progress,data=progressData(),weight=p.metric==='weight';
+ if(normalizeSelection&&(calendarDay(p.selectedDate)===null||p.selectedDate<range.from||p.selectedDate>range.to))p.selectedDate=range.to;
+ const rows=data.rows.map(row=>'<tr><td>'+dateLabel(row.date)+'</td><td>'+progressValue(row.value)+'</td></tr>').join('');
+ host.innerHTML='<p class="progress-range" id="progress-range">'+dateLabel(range.from)+' — '+dateLabel(range.to)+' · '+range.count+' дн.</p><section class="card progress-summary"><h3>Средний '+(weight?'вес':'сон')+'</h3><p class="measurement-value" id="progress-mean">'+(data.mean===null?'—':progressValue(data.mean))+'</p><p class="small muted" id="progress-sample">'+(weight?'Измерений':'Записей сна')+' '+data.count+' из '+data.days+' дней</p>'+(!data.count?'<p class="small muted">В этом периоде нет записей.</p>':'')+'</section><section class="stack" aria-label="'+(weight?'График веса':'График сна')+'"><div class="progress-chart" id="progress-chart"></div><p class="progress-scale muted" id="progress-scale"></p><p class="small muted">Пропуски разрывают линию. Выберите точку или дату ниже, чтобы увидеть точное значение.</p></section>'+field('progress-selected-date','Дата на графике',p.selectedDate,'type="date" min="'+range.from+'" max="'+range.to+'" aria-describedby="progress-selection-error"')+'<p class="error" id="progress-selection-error" role="alert"></p><section class="card progress-detail" id="progress-detail"></section><details class="progress-details"><summary>Все даты и значения</summary><table class="progress-values"><thead><tr><th scope="col">Дата</th><th scope="col">'+(weight?'Вес, кг':'Сон')+'</th></tr></thead><tbody>'+rows+'</tbody></table></details>';
+ updateProgressSelection();
+ const chart=document.getElementById('progress-chart');
+ let previousWidth=chart.getBoundingClientRect().width;
+ progressObserver=new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(Math.abs(width-previousWidth)>.1){previousWidth=width;drawProgressChart();}});
+ progressObserver.observe(chart);
+}
+function updateProgressSelection(){
+ const range=progressRange(),date=state.progress.selectedDate,detail=document.getElementById('progress-detail');
+ if(range.error||!detail)return;
+ const valid=calendarDay(date)!==null&&date>=range.from&&date<=range.to;
+ document.getElementById('progress-selection-error').textContent=valid?'':'Выберите дату внутри показанного периода.';
+ if(!valid)detail.innerHTML='<p class="small muted">Сначала выберите допустимую дату.</p>';
+ else{
+  const row=progressData().rows.find(item=>item.date===date);
+  detail.innerHTML='<h3>'+dateLabel(date)+'</h3><p class="measurement-value">'+progressValue(row.value)+'</p>'+(state.progress.metric==='sleep'&&row.value===0?'<p class="small muted">Отсутствие сна подтверждено.</p>':'')+'<button class="button secondary full" data-action="progress-open-day">Открыть день</button>';
+ }
+ drawProgressChart();
+}
+function drawProgressChart(){
+ const host=document.getElementById('progress-chart'),scale=document.getElementById('progress-scale'),range=progressRange();
+ if(!host||range.error)return;
+ const data=progressData(),metric=state.progress.metric,weight=metric==='weight',points=data.rows.filter(row=>row.value!==null);
+ if(!points.length){host.innerHTML='<p class="small muted">График появится после записи данных за этот период.</p>';scale.textContent='';return;}
+ const width=Math.max(180,Math.floor(host.getBoundingClientRect().width)),height=250,font=document.body.classList.contains('large')?14:12;
+ const vals=points.map(row=>row.value),minimum=Math.min(...vals),maximum=Math.max(...vals);
+ let low=0,high=Math.max(60,maximum);
+ if(weight){const pad=maximum===minimum?100:Math.max(1,(maximum-minimum)*.1);low=Math.max(0,minimum-pad);high=maximum+pad;}
+ const offset=weight&&maximum>=1e9&&(high-low)<maximum*.001?minimum:0;
+ const tickLabel=value=>{
+  const number=(value-offset)/(weight?100:60);
+  if(Math.abs(number)>=1e7)return new Intl.NumberFormat('ru-RU',{notation:'scientific',maximumFractionDigits:2}).format(number);
+  return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:weight?2:1}).format(number);
+ };
+ const ticks=[low,(low+high)/2,high],labels=ticks.map(tickLabel);
+ const left=Math.max(42,Math.min(width*.45,Math.max(...labels.map(label=>label.length))*font*.62+10)),right=14,top=28,bottom=38,plotW=width-left-right,plotH=height-top-bottom;
+ const x=date=>left+(range.count===1?plotW/2:(calendarDay(date)-calendarDay(range.from))/(range.count-1)*plotW);
+ const y=value=>top+(high-value)/(high-low)*plotH;
+ let svg='<svg width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+(weight?'Вес в кг':'Сон в часах')+', '+data.count+' записей за '+range.count+' дней. Точные значения доступны в выборе даты и таблице."><text x="'+left+'" y="15" font-size="'+font+'">'+(weight?(offset?'кг относительно базы':'кг'):'часы')+'</text>';
+ ticks.forEach((tick,i)=>{svg+='<line class="chart-grid" x1="'+left+'" x2="'+(width-right)+'" y1="'+y(tick)+'" y2="'+y(tick)+'"/><text x="'+(left-7)+'" y="'+(y(tick)+font*.35)+'" text-anchor="end" font-size="'+font+'">'+esc(labels[i])+'</text>';});
+ const dates=range.count===1?[range.from]:[range.from,range.to];
+ dates.forEach((date,i)=>{const label=date.slice(8,10)+'.'+date.slice(5,7)+'.'+date.slice(2,4);svg+='<text x="'+x(date)+'" y="'+(height-12)+'" text-anchor="'+(range.count===1?'middle':i===0?'start':'end')+'" font-size="'+font+'">'+label+'</text>';});
+ for(let i=1;i<data.rows.length;i++){const a=data.rows[i-1],b=data.rows[i];if(a.value!==null&&b.value!==null)svg+='<line class="chart-line" x1="'+x(a.date)+'" y1="'+y(a.value)+'" x2="'+x(b.date)+'" y2="'+y(b.value)+'"/>';}
+ const selected=state.progress.selectedDate;
+ if(calendarDay(selected)!==null&&selected>=range.from&&selected<=range.to)svg+='<line class="chart-cursor" x1="'+x(selected)+'" x2="'+x(selected)+'" y1="'+top+'" y2="'+(height-bottom)+'"/>';
+ points.forEach(point=>{svg+='<g data-action="progress-point" data-date="'+point.date+'"><title>'+esc(dateLabel(point.date)+' · '+progressValue(point.value))+'</title><circle cx="'+x(point.date)+'" cy="'+y(point.value)+'" r="13" fill="transparent"/><circle class="chart-point '+(point.date===selected?'chart-selected':'')+'" cx="'+x(point.date)+'" cy="'+y(point.value)+'" r="'+(point.date===selected?6:4.5)+'"/></g>';});
+ host.innerHTML=svg+'</svg>';
+ scale.textContent=offset?'Ось показывает отклонение в кг от '+weightText(offset)+' кг. Точные значения — ниже.':weight?'Вертикальная шкала подобрана по измерениям; её границы подписаны.':'Вертикальная шкала начинается с 0 часов; точная длительность указана в часах и минутах ниже.';
+}
+
 const gameRanges={
  weight:[
   {max:5999,name:'Искра',range:'Больше 0 и меньше 60 кг'},
@@ -232,10 +365,12 @@ function foodValid(){return state.screen==='new'?state.newName.trim().length>0&&
 function productResults(){const list=state.products.filter(p=>p.name.toLocaleLowerCase('ru').includes(state.search.toLocaleLowerCase('ru')));return list.length?list.map(p=>`<button class="product" data-action="select" data-id="${p.id}"><span class="food-icon" aria-hidden="true">${p.icon}</span><span><strong>${esc(p.name)}</strong><small>${fmt(p.values[0])} ккал · на ${p.base} ${p.unit}</small></span><span class="arrow" aria-hidden="true">›</span></button>`).join(''):'<div class="empty-state"><span class="symbol" aria-hidden="true">⌕</span><h3>Пока ничего не найдено</h3><p class="small muted">Создайте свой продукт или внесите КБЖУ.</p></div>';}
 function nutrition(v){return `<div class="nutrition">${['ккал','белки, г','жиры, г','углев., г'].map((n,i)=>`<div><strong>${v?fmt(v[i]):'—'}</strong><small>${n}</small></div>`).join('')}</div>`;}
 function portionNutrition(){const p=selected();return nutrition(quantityValid()?p.values.map(v=>v*num(state.quantity)/p.base):null);}
-function home(){const d=day(),t=total(),g=target(),has=d.entries.length>0||d.complete,status=d.complete?'День заполнен':d.entries.length?'Заполнен частично':'Нет записей';return `<div class="screen home"><div class="row"><div><span class="eyebrow">${state.name?esc(state.name):'Ваш дневник'}</span><h1 tabindex="-1">${state.date===TODAY?'Сегодня':'Вчера'}</h1></div><button class="icon-button" data-action="edit-goal" aria-label="Настроить цель">⚙</button></div><label class="field" for="diary-date"><span class="hidden">Дата дневника</span><select class="date" id="diary-date"><option value="${TODAY}" ${state.date===TODAY?'selected':''}>14 ноября · Сегодня</option><option value="${YESTERDAY}" ${state.date===YESTERDAY?'selected':''}>13 ноября · Вчера</option></select></label>${state.message?`<div class="toast" role="status">${esc(state.message)}</div>`:''}<section class="card"><div class="title-row"><h3>Питание</h3><span class="pill ${d.complete?'complete':''}">${status}</span></div><div class="calories"><strong>${has?fmt(t[0]):'—'}</strong><span>ккал${g?' / '+fmt(g.values[0]):''}</span></div><p class="small muted">${!has?'Добавьте первую запись':d.complete?'По заполненному дневнику':'По внесённым записям'}</p>${g&&has?`<div class="track" role="progressbar" aria-label="Калории относительно цели" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(t[0]/g.values[0]*100))}"><div class="fill" style="width:${Math.min(100,t[0]/g.values[0]*100)}%"></div></div><p class="small muted" style="margin-top:10px">${t[0]>g.values[0]?'Выше цели на '+fmt(t[0]-g.values[0]):'До цели '+fmt(g.values[0]-t[0])} ккал</p>`:''}<div class="macros">${['Белки','Жиры','Углеводы'].map((n,i)=>`<div class="macro"><div class="caption">${n}</div><div class="value">${has?fmt(t[i+1]):'—'}${g?' / '+fmt(g.values[i+1]):''} г</div>${g&&has&&g.values[i+1]>0?`<div class="track"><div class="fill" style="width:${Math.min(100,t[i+1]/g.values[i+1]*100)}%"></div></div>`:''}</div>`).join('')}</div>${!g?'<div class="row wrap" style="margin-top:16px"><span class="small muted">Цель не задана</span><button class="link" data-action="edit-goal">Настроить цель</button></div>':''}</section><section><div class="row" style="margin-bottom:20px"><h2>Приёмы пищи</h2></div>${meals.map((m,i)=>`<div class="meal"><div class="row"><div><h3 class="meal-title">${m}</h3>${!d.entries.some(e=>e.meal===i)?'<p class="empty">Пока нет записей</p>':''}</div><button class="icon-button" data-action="add" data-meal="${i}" aria-label="Добавить: ${m}">＋</button></div>${d.entries.filter(e=>e.meal===i).map(e=>`<div class="meal-item"><div class="entry-name">${esc(e.name)}<div class="muted">${esc(e.amount)}</div></div><div style="text-align:right;flex-shrink:0">${fmt(e.values[0])} ккал<br><button class="link" data-action="delete" data-id="${e.id}" aria-label="Удалить: ${esc(e.name)}">Удалить</button></div></div>`).join('')}</div>`).join('')}</section><div class="measurements"><section class="card"><div class="measurement-icon" aria-hidden="true">↕</div><h3>Вес</h3>${d.weightCents==null?'<p class="small muted">Нет записи</p>':`<p class="measurement-value">${weightText(d.weightCents)} кг</p>${measurementBadge('weight',d.weightCents)}`}<button class="link" data-action="weight">${d.weightCents==null?'Записать вес':'Изменить вес'}</button></section><section class="card"><div class="measurement-icon" aria-hidden="true">☾</div><h3>Сон</h3>${d.sleepMinutes==null?'<p class="small muted">Нет записи</p>':`<p class="measurement-value">${sleepText(d.sleepMinutes)}</p>${measurementBadge('sleep',d.sleepMinutes)}${d.sleepMinutes===0?'<p class="small muted">Отсутствие сна подтверждено</p>':''}`}<button class="link" data-action="sleep">${d.sleepMinutes==null?'Записать сон':'Изменить сон'}</button></section></div>${diaryLevelCard()}<button class="link" data-action="game-settings">Уровни и названия</button><div class="stack"><button class="button ${d.complete?'secondary':''} full" data-action="complete">${d.complete?'Снять отметку заполнения':'День заполнен'}</button><p class="footer-note">${d.complete?'Можно вернуться и исправить записи':'Отметьте, когда все приёмы пищи внесены'}</p></div><nav class="bottom-nav" aria-label="Разделы"><button class="nav-button active" data-action="home" aria-current="page"><b aria-hidden="true">◉</b>Сегодня</button><button class="nav-button" data-action="outside"><b aria-hidden="true">▤</b>Продукты</button><button class="nav-button" data-action="outside"><b aria-hidden="true">▥</b>Прогресс</button><button class="nav-button" data-action="outside"><b aria-hidden="true">○</b>Профиль</button></nav></div>`;}
+function home(){const d=day(),t=total(),g=target(),has=d.entries.length>0||d.complete,status=d.complete?'День заполнен':d.entries.length?'Заполнен частично':'Нет записей';return `<div class="screen home"><div class="row"><div><span class="eyebrow">${state.name?esc(state.name):'Ваш дневник'}</span><h1 tabindex="-1">${state.date===TODAY?'Сегодня':state.date===YESTERDAY?'Вчера':'Дневник'}</h1></div><button class="icon-button" data-action="edit-goal" aria-label="Настроить цель">⚙</button></div><label class="field" for="diary-date">Дата дневника<input type="date" id="diary-date" value="${state.date}" min="${MIN_DATE}" max="${TODAY}" aria-describedby="diary-date-error"></label><p class="error" id="diary-date-error" role="alert"></p>${state.message?`<div class="toast" role="status">${esc(state.message)}</div>`:''}<section class="card"><div class="title-row"><h3>Питание</h3><span class="pill ${d.complete?'complete':''}">${status}</span></div><div class="calories"><strong>${has?fmt(t[0]):'—'}</strong><span>ккал${g?' / '+fmt(g.values[0]):''}</span></div><p class="small muted">${!has?'Добавьте первую запись':d.complete?'По заполненному дневнику':'По внесённым записям'}</p>${g&&has?`<div class="track" role="progressbar" aria-label="Калории относительно цели" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(t[0]/g.values[0]*100))}"><div class="fill" style="width:${Math.min(100,t[0]/g.values[0]*100)}%"></div></div><p class="small muted" style="margin-top:10px">${t[0]>g.values[0]?'Выше цели на '+fmt(t[0]-g.values[0]):'До цели '+fmt(g.values[0]-t[0])} ккал</p>`:''}<div class="macros">${['Белки','Жиры','Углеводы'].map((n,i)=>`<div class="macro"><div class="caption">${n}</div><div class="value">${has?fmt(t[i+1]):'—'}${g?' / '+fmt(g.values[i+1]):''} г</div>${g&&has&&g.values[i+1]>0?`<div class="track"><div class="fill" style="width:${Math.min(100,t[i+1]/g.values[i+1]*100)}%"></div></div>`:''}</div>`).join('')}</div>${!g?'<div class="row wrap" style="margin-top:16px"><span class="small muted">Цель не задана</span><button class="link" data-action="edit-goal">Настроить цель</button></div>':''}</section><section><div class="row" style="margin-bottom:20px"><h2>Приёмы пищи</h2></div>${meals.map((m,i)=>`<div class="meal"><div class="row"><div><h3 class="meal-title">${m}</h3>${!d.entries.some(e=>e.meal===i)?'<p class="empty">Пока нет записей</p>':''}</div><button class="icon-button" data-action="add" data-meal="${i}" aria-label="Добавить: ${m}">＋</button></div>${d.entries.filter(e=>e.meal===i).map(e=>`<div class="meal-item"><div class="entry-name">${esc(e.name)}<div class="muted">${esc(e.amount)}</div></div><div style="text-align:right;flex-shrink:0">${fmt(e.values[0])} ккал<br><button class="link" data-action="delete" data-id="${e.id}" aria-label="Удалить: ${esc(e.name)}">Удалить</button></div></div>`).join('')}</div>`).join('')}</section><div class="measurements"><section class="card"><div class="measurement-icon" aria-hidden="true">↕</div><h3>Вес</h3>${d.weightCents==null?'<p class="small muted">Нет записи</p>':`<p class="measurement-value">${weightText(d.weightCents)} кг</p>${measurementBadge('weight',d.weightCents)}`}<button class="link" data-action="weight">${d.weightCents==null?'Записать вес':'Изменить вес'}</button></section><section class="card"><div class="measurement-icon" aria-hidden="true">☾</div><h3>Сон</h3>${d.sleepMinutes==null?'<p class="small muted">Нет записи</p>':`<p class="measurement-value">${sleepText(d.sleepMinutes)}</p>${measurementBadge('sleep',d.sleepMinutes)}${d.sleepMinutes===0?'<p class="small muted">Отсутствие сна подтверждено</p>':''}`}<button class="link" data-action="sleep">${d.sleepMinutes==null?'Записать сон':'Изменить сон'}</button></section></div>${diaryLevelCard()}<button class="link" data-action="game-settings">Уровни и названия</button><div class="stack"><button class="button ${d.complete?'secondary':''} full" data-action="complete">${d.complete?'Снять отметку заполнения':'День заполнен'}</button><p class="footer-note">${d.complete?'Можно вернуться и исправить записи':'Отметьте, когда все приёмы пищи внесены'}</p></div><nav class="bottom-nav" aria-label="Разделы"><button class="nav-button active" data-action="home" aria-current="page"><b aria-hidden="true">◉</b>Сегодня</button><button class="nav-button" data-action="outside"><b aria-hidden="true">▤</b>Продукты</button><button class="nav-button" data-action="progress"><b aria-hidden="true">▥</b>Прогресс</button><button class="nav-button" data-action="outside"><b aria-hidden="true">○</b>Профиль</button></nav></div>`;}
 function addEntry(name,amount,v){day().entries.push({id:Date.now()+Math.random(),name,amount,values:v,meal:state.meal});state.screen='home';state.message=day().complete?'Запись добавлена. День остаётся заполненным.':'Запись добавлена';render();}
 document.addEventListener('input',event=>{
  const id=event.target.id,v=event.target.value;
+ if(id==='progress-from'||id==='progress-end'){state.progress[id==='progress-from'?'from':'end']=v;refreshProgress(true);return;}
+ if(id==='progress-selected-date'){state.progress.selectedDate=v;updateProgressSelection();return;}
  if(id==='name')state.name=v;
  if(id==='weight-value'){state.weightDraft=v;const error=weightError();document.getElementById('weight-save').disabled=Boolean(error);document.getElementById('weight-error').textContent=error;event.target.setAttribute('aria-invalid',String(Boolean(error)));}
  if(id==='search'){state.search=v;document.getElementById('results').innerHTML=productResults();}
@@ -255,11 +390,12 @@ document.addEventListener('input',event=>{
  if(/^(quick|new)-\d$/.test(id)){const a=id.startsWith('quick')?state.quick:state.newValues;a[Number(id.slice(-1))]=v;}
  if(state.screen==='quick'||state.screen==='new'){document.getElementById('food-save').disabled=!foodValid();document.getElementById('food-error').textContent=foodValid()?'':'Заполните обязательные поля неотрицательными числами.';}
 });
-document.addEventListener('change',e=>{if(e.target.id==='diary-levels-toggle'){state.diaryLevelsEnabled=e.target.checked;document.getElementById('levels-setting-status').textContent=state.diaryLevelsEnabled?'Уровни включены':'Уровни выключены';}if(e.target.id==='measurement-names-toggle'){state.measurementNamesEnabled=e.target.checked;document.getElementById('game-setting-status').textContent=state.measurementNamesEnabled?'Названия включены':'Названия выключены';}if(e.target.id==='goal-date')state.goalDate=e.target.value;if(e.target.id==='new-unit')state.newUnit=e.target.value;if(e.target.id==='diary-date'){state.date=e.target.value;state.message='';render();}if(e.target.id==='meal'){state.meal=Number(e.target.value);app.querySelector('.context').textContent=dateLabel(state.date)+' · '+meals[state.meal];}});
+document.addEventListener('change',e=>{if(e.target.id==='progress-preset'){const previous=progressRange();state.progress.preset=e.target.value;if(e.target.value==='custom'&&!previous.error)state.progress.from=previous.from;render();return;}if(e.target.id==='diary-levels-toggle'){state.diaryLevelsEnabled=e.target.checked;document.getElementById('levels-setting-status').textContent=state.diaryLevelsEnabled?'Уровни включены':'Уровни выключены';}if(e.target.id==='measurement-names-toggle'){state.measurementNamesEnabled=e.target.checked;document.getElementById('game-setting-status').textContent=state.measurementNamesEnabled?'Названия включены':'Названия выключены';}if(e.target.id==='goal-date')state.goalDate=e.target.value;if(e.target.id==='new-unit')state.newUnit=e.target.value;if(e.target.id==='diary-date'){const date=e.target.value;if(calendarDay(date)===null||date>TODAY){document.getElementById('diary-date-error').textContent='Выберите дату не позднее '+dateLabel(TODAY)+'.';e.target.setAttribute('aria-invalid','true');return;}state.date=date;ensureDay(date);state.message='';render();}if(e.target.id==='meal'){state.meal=Number(e.target.value);app.querySelector('.context').textContent=dateLabel(state.date)+' · '+meals[state.meal];}});
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;
- if(a==='theme'||a==='font'){const cls=a==='theme'?'dark':'large';document.body.classList.toggle(cls);b.setAttribute('aria-pressed',document.body.classList.contains(cls));return;}
+ if(a==='theme'||a==='font'){const cls=a==='theme'?'dark':'large';document.body.classList.toggle(cls);b.setAttribute('aria-pressed',document.body.classList.contains(cls));if(state.screen==='progress')drawProgressChart();return;}
  if(a==='dialog-close'){closeModal();return;}if(a==='dialog-yes'){const fn=dialogCallback;closeModal();if(fn)fn();return;}
+ if(a==='progress-example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут заменены примером прогресса за 8–14 ноября.','Показать пример прогресса',loadProgressExample);return;}
  if(a==='restart'||a==='example'){modal('Заменить демонстрацию?','Текущие вымышленные записи будут сброшены. Это не затрагивает какие-либо реальные данные.',a==='restart'?'Начать сначала':'Показать пример',()=>reset(a==='example'));return;}
  if(a==='outside'){outside();return;}
  if(a==='start'){go('profile');return;}if(a==='welcome'){go('welcome');return;}
@@ -270,9 +406,13 @@ document.addEventListener('click',e=>{
  if(a==='goal-back'){go(state.returnHome?'home':'profile');return;}
  if(a==='clear-goal'){state.goalDraft=['','','',''];render();return;}
  if(a==='skip-goal'){go('home');return;}
- if(a==='save-goal'&&goalValid()){state.targets=state.targets.filter(t=>t.date!==state.goalDate);state.targets.push({date:state.goalDate,values:values(state.goalDraft)});state.screen='home';state.message='Цель сохранена с '+(state.goalDate===TODAY?'14':'13')+' ноября';render();return;}
+ if(a==='save-goal'&&goalValid()){state.targets=state.targets.filter(t=>t.date!==state.goalDate);state.targets.push({date:state.goalDate,values:values(state.goalDraft)});state.screen='home';state.message='Цель сохранена с '+dateLabel(state.goalDate);render();return;}
  if(a==='home'){go('home');return;}
  if(a==='game-settings'){go('game-settings');return;}
+ if(a==='progress'){openProgress();return;}
+ if(a==='progress-metric'){state.progress.metric=b.dataset.metric;render();return;}
+ if(a==='progress-point'){state.progress.selectedDate=b.dataset.date;document.getElementById('progress-selected-date').value=b.dataset.date;updateProgressSelection();return;}
+ if(a==='progress-open-day'){const range=progressRange(),date=state.progress.selectedDate;if(!range.error&&calendarDay(date)!==null&&date>=range.from&&date<=range.to){state.date=date;go('home');}return;}
  if(a==='weight'){openWeight();return;}
  if(a==='save-weight'){saveWeight();return;}
  if(a==='cancel-weight'){
