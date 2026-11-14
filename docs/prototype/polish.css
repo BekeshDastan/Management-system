@@ -338,3 +338,18 @@ dialog h2{font-size:1.45em;letter-spacing:-.04em}
 .photo-tile.tile-9{background-image:url("assets/food-classics.png");background-position:0 100%}
 .photo-tile.tile-10{background-image:url("assets/food-classics.png");background-position:50% 100%}
 .photo-tile.tile-11{background-image:url("assets/food-classics.png");background-position:100% 100%}
+
+/* Photo journal forms preserve readable labels on small screens. */
+textarea{font:inherit;resize:vertical;min-height:110px;max-width:100%;width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:13px;line-height:1.5}
+.journal-screen .mood-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.journal-screen .mood-option{display:grid;gap:8px;justify-items:center;font-size:.82em;padding:14px 8px;min-height:85px}
+.journal-screen .mood-option span{font-size:1.9em}
+.journal-screen .photo-grid{grid-template-columns:1fr}
+.journal-screen .journal-photo{padding:14px}
+.journal-screen .journal-photo img{border-radius:12px;max-height:280px;object-fit:contain;background:var(--bg)}
+.journal-screen .journal-photo button{position:static;background:var(--soft);color:var(--green);border-radius:12px;box-shadow:none;min-height:44px;text-align:left;padding:10px 12px}
+.journal-note{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9em;line-height:1.6}
+.journal-screen input[type=file]{font-size:.76em;padding:10px;overflow:hidden}
+.journal-screen input[type=file]::file-selector-button{border:0;border-radius:9px;padding:9px;background:var(--soft);color:var(--green);font:inherit;margin-right:8px}
+
+.calendar-dots i.journal-dot{background:var(--ink);border-radius:0;transform:rotate(45deg)}
