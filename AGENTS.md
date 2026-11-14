@@ -47,3 +47,12 @@ Preserve existing history and unrelated changes. Do not force-push, rewrite hist
 - Reviewers should check the requirements and actual artifacts independently.
 - Coordinate commits centrally so changes from different tasks are not mixed.
 - Use a single agent for small tasks when delegation would add unnecessary overhead.
+
+## Documentation and traceability
+
+- Document every meaningful change, decision, validation result, and blocker in docs/work-log.md during the same work session.
+- Keep docs/product-spec.md current when requirements change and docs/user-flows.md current when user-facing behavior changes.
+- Label statements as agreed requirements, proposals, or open questions. Never present a proposed stack, formula, skill, or feature as approved or implemented.
+- Record what changed, why, which files were affected, what was checked, and whether the change was committed and published. Do not record hidden reasoning or raw tool transcripts.
+- Update documentation with the implementation it describes. Avoid duplicate sources of truth; use README.md as the navigation index.
+- A completed local file is not a published GitHub change. Preserve explicit pending status when committing or publishing is blocked.
