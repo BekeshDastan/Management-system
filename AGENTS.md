@@ -15,7 +15,8 @@
 - Provide a profile, algorithm-based calorie and macronutrient suggestions, and manual targets. No ML is required for these calculations.
 - Track meals, reusable products and recipes, morning weight, sleep, and progress over selectable periods.
 - Include light and dark themes, clear charts, gentle habit tracking, and no advertisements.
-- Support editing past records and exporting/restoring backups.
+- Support editing past records.
+- Backup export and restoration are excluded from the product at the user's request on 2026-11-14; do not add them to the scope or UI unless the user explicitly changes this decision.
 - Preserve historical nutrition values and date-effective targets when products or goals change.
 - Distinguish missing, incomplete, and completed days in analytics; missing measurements are not zero.
 - Reward recording habits, not eating less or losing weight faster.
