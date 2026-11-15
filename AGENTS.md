@@ -7,7 +7,8 @@
 - Communicate with the user in Russian.
 - Repository: https://github.com/BekeshDastan/Management-system
 - Local workspace: D:\Diet.
-- Kotlin, Jetpack Compose, and Room are proposed, not yet a final stack decision.
+- Kotlin, Jetpack Compose, and Room were selected by the user on 2026-11-15. Exact toolchain/library versions and supporting architecture choices remain open under TECH-002.
+- Minimum supported OS: Android 10 / API 29, selected by the user on 2026-11-15. Do not silently raise it. targetSdk, compileSdk, and the complete test matrix remain open under TECH-001.
 
 ## Accepted product direction
 
