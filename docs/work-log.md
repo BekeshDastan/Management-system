@@ -954,3 +954,10 @@
 - Период выбирается компактно; неверный custom range не заменяет текущий. Нажатие столбика открывает день/интервал, длинный ряд ограничен 600 интервалами. N/Q, неполные дни, подтверждённый ноль и пропуски сохраняют точный смысл; обновление того же периода не схлопывает позицию.
 - Calendar/hit JVM2 и ReportsUi2 PASS; итоговый 07 на API37/16 КиБ — 106 PASS за 165,587 с, включая S2/100 тысяч записей с прежним timeout. В docs/ux-validation-1.1.md сохранены и ранние неуспешные прогоны, их причины и конкретные исправления; они не объявляются PASS задним числом.
 - Файлы: ReportScreens.kt, ReportPresentation.kt, ReportPresentationTest.kt, ReportsUiTest.kt, docs/android-ui.md/ux-v1.1.md/ux-validation-1.1.md/work-log.md. Проверены diff, ссылки, UTF-8, лимиты и точные значения. Отдельный commit/push с проверкой remote SHA; файл APK ещё на этапе выпуска.
+
+
+## 2026-11-15 — подготовка совместимого выпуска 1.1.0
+
+- Новый отчёт опубликован 12caa1a72920082d47da8f536efca0a5721cda59, remote SHA подтверждён. versionName повышен до 1.1.0, versionCode до 2; appId, min29/target37, Room schema1 и постоянный сертификат не меняются.
+- Двенадцать строк/описаний виджета вынесены в widget_strings.xml. Независимое XML-сравнение подтвердило те же значения и размеры. Lint06: 0 ошибок/9 неподавленных предупреждений; full07 уже использовал эти ресурсы и прошёл native RemoteViews проверки.
+- Файлы: app/build.gradle.kts, res/layout/diet_widget.xml, res/values/widget_strings.xml, docs/work-log.md. Проверены compile/debug/native tests, diff/XML; отдельный commit/push/remote SHA. Следующий шаг — R8/LintRelease, подпись тем же ключом и реальное install-r поверх сохранённого 1.0.0.

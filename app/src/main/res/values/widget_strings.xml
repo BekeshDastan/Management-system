@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_brand" translatable="false">Diet</string>
+    <string name="widget_diary">Дневник</string>
+    <string name="widget_refresh_symbol" translatable="false">↻</string>
+    <string name="widget_refresh_description">Обновить виджет</string>
+    <string name="widget_open_prompt">Откройте Diet</string>
+    <string name="widget_personal_diary">Личный дневник</string>
+    <string name="widget_food_label">＋ Еда</string>
+    <string name="widget_food_description">Добавить еду</string>
+    <string name="widget_weight_label">Вес</string>
+    <string name="widget_weight_description">Записать вес</string>
+    <string name="widget_sleep_label">Сон</string>
+    <string name="widget_sleep_description">Записать сон</string>
+</resources>
