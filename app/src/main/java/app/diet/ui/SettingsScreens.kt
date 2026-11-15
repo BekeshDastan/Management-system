@@ -46,6 +46,7 @@ internal val HomeLabels = mapOf("hero" to "Обложка", "nutrition" to "Пи
         }
         else -> {
             ScreenHeading("Больше вашего.", "Удобные инструменты и оформление под себя.")
+            WidgetSettingsCard()
             DietCard("Записать · ${dateLabel(h.date)}") { Action("Утренний вес", secondary = true) { h.openForm("weight") }; Action("Суммарный сон", secondary = true) { h.openForm("sleep") }; Action("Фото, настроение и заметка", secondary = true) { h.openForm("moment") }; Muted("Эти действия доступны, даже если карточки скрыты на главной.") }
             listOf("catalog" to "Библиотека продуктов и рецептов", "templates" to "Шаблоны приёмов пищи", "plans" to "План питания", "photo-feed" to "Фотолента еды", "search" to "Поиск по дневнику", "calendar" to "Календарь", "profile" to "Профиль", "goals" to "Ручные цели", "home-layout" to "Настраиваемая главная", "appearance" to "Акцент и обложка", "meals" to "Приёмы пищи", "categories" to "Категории", "game" to "Названия и уровни", "reminders" to "Напоминания", "drafts" to "Все черновики").forEach { (route, label) -> Action("$label  →", secondary = true) { h.navigate(route) } }
             DietCard("Как вам комфортнее") { Choices(listOf("system" to "Как в системе", "light" to "Светлая", "dark" to "Тёмная"), prefs.theme) { h.preference("theme", mapOf("theme" to it)) }; ToggleRow("Крупнее текст в приложении", prefs.largeText) { h.preference("font", mapOf("large" to it.toString())) }; Muted("Системный размер текста и настройка движения также учитываются.") }

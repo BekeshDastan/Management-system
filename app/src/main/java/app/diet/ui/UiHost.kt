@@ -14,6 +14,7 @@ import kotlinx.coroutines.sync.withLock
 import java.time.LocalDate
 
 internal data class UiRoute(val name: String, val id: String? = null)
+internal data class ReturnAnchor(val screen: String, val key: String, val y: Float)
 internal data class UiConfirmation(val title: String, val message: String, val confirmLabel: String, val action: () -> Unit)
 internal val LocalUi = staticCompositionLocalOf<UiHost> { error("Diet UI host missing") }
 
@@ -23,10 +24,19 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
     var mediaState by mutableStateOf(media.state.value)
     var route by mutableStateOf(UiRoute("home")); private set
     var date by mutableStateOf(today())
+    var focusMealId by mutableStateOf<String?>(null)
+    val anchorPositions = mutableMapOf<String, Float>()
+    var returnAnchor: ReturnAnchor? = null
+    val screenKey get() = route.name + ":" + (if (route.name == "editor") form?.entity?.id else route.id).orEmpty()
+    var scrollResetVersion by mutableLongStateOf(0L)
+    fun resetScroll() { scrollResetVersion++ }
     var form by mutableStateOf<UiFormSession?>(null)
     var openingForm by mutableStateOf(false); private set
     var error by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
+    var pendingDeletion by mutableStateOf<PendingDeletion?>(null)
+    var deleting by mutableStateOf(false)
+    var pendingPhotoRemoval by mutableStateOf<PendingPhotoRemoval?>(null)
     var confirmation by mutableStateOf<UiConfirmation?>(null)
     var pendingNavigation by mutableStateOf<(() -> Unit)?>(null)
     var preferencePreview by mutableStateOf<Map<String, String>?>(null)
@@ -43,6 +53,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
     val defaultMeal get() = activeMeals.firstOrNull()?.id.orEmpty()
     val currentEntries get() = state.entries.filter { it.localDate == date }
     val canGoBack get() = stack.isNotEmpty()
+    val activeRoot get() = (stack.toList() + route).lastOrNull { it.name in setOf("home", "plans", "reports", "settings") }?.name ?: "home"
 
     fun context(key: String, value: String) {
         view = view + (key to value)
@@ -112,7 +123,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
                 if (discard) { oldForm?.discard(); if (oldPreference?.obsolete != true) oldPreference?.discard() } else { oldForm?.checkpoint(); oldForm?.stopDebounce(); if (oldPreference?.obsolete != true) oldPreference?.checkpoint() }
                 form = null; preferenceForm = null; preferencePreview = null
                 oldPreference?.let(::forgetPreference)
-                if (oldForm != null && route.name in setOf("line-picker", "replace-picker", "template-picker")) pop()
+                if (oldForm != null && route.name in setOf("line-picker", "replace-picker", "template-picker", "batch-picker")) pop()
                 if (route.name == "editor" || oldPreference != null) pop()
                 after()
             } finally { oldForm?.busy = false; oldPreference?.busy = false }
@@ -132,6 +143,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
     fun resume(draft: DraftHeader) { resumeId(draft.id) }
     fun resumeId(id: String, verifiedFields: Map<String, String> = emptyMap()) { launch {
         val latest = repository.freshDraft(id) ?: throw DataFailure.Missing()
+        if (pendingDeletion?.editorDraftId == id) undoDeletion()
         if (latest.status != "OPEN") {
             val receipt = latest.operationId?.let { repository.recover(it) }
             if (receipt != null && receipt.first.originDraftId == id) { message = "Это действие уже сохранено на устройстве"; return@launch }
@@ -145,10 +157,15 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
 
     fun openForm(kind: String, id: String? = null, meal: String = defaultMeal, extra: Map<String, String> = emptyMap(), lines: List<UiLine>? = null) { launch {
         if (openingForm || form?.editable == false) return@launch
+        if (pendingDeletion != null && (id != null && pendingDeletion?.id == id || kind in setOf("weight", "sleep") && pendingDeletion?.editorKind == kind && pendingDeletion?.editorDate == date)) undoDeletion()
+        if (route.name == "home" && kind in setOf("weight", "sleep", "moment")) {
+            val key = screenKey + ":" + kind
+            anchorPositions[key]?.let { returnAnchor = ReturnAnchor(screenKey, key, it) }
+        }
         openingForm = true
         try {
         val selectedDate = date
-        val contextualMeal = kind in setOf("portion", "quick", "copy", "apply-template", "transfer", "plan", "template")
+        val contextualMeal = kind in setOf("portion", "quick", "copy", "apply-template", "transfer", "plan", "template", "batch-food")
         val useDate = when { id != null && kind !in setOf("portion", "apply-template", "transfer") -> false; kind in setOf("profile", "onboarding-profile", "onboarding-goal", "product", "recipe", "category", "meal") -> false; else -> true }
         val existing = repository.findOpenDraft(kind, id, if (useDate) selectedDate else null, if (useDate && contextualMeal) meal else null)
         if (existing != null) { resumeId(existing.id, if (kind == "moment") extra.filterKeys { it == "photoDefaultMeal" } else emptyMap()); return@launch }
@@ -158,7 +175,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
         var source = repository.state.value
         if (id != null) when (kind) {
             "product", "recipe", "portion", "quick-portions" -> { val item = repository.loadCatalogItem(id) ?: throw DataFailure.Missing(); source = source.copy(catalog = source.catalog.filterNot { it.id == id } + item, ingredients = if (kind == "recipe") repository.recipeIngredients(id) else source.ingredients) }
-            "entry" -> { val item = repository.loadEntry(id) ?: throw DataFailure.Missing(); source = source.copy(entries = source.entries.filterNot { it.id == id } + item) }
+            "entry", "move-entry", "repeat-entry" -> { val item = repository.loadEntry(id) ?: throw DataFailure.Missing(); source = source.copy(entries = source.entries.filterNot { it.id == id } + item) }
             "template", "apply-template" -> { val item = repository.loadTemplate(id) ?: throw DataFailure.Missing(); source = source.copy(templates = source.templates.filterNot { it.id == id } + item, templateLines = repository.templateLines(id)) }
             "plan", "transfer" -> { val item = repository.loadPlan(id) ?: throw DataFailure.Missing(); source = source.copy(plans = source.plans.filterNot { it.id == id } + item, planLines = repository.planLines(id)) }
         }
@@ -174,6 +191,12 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
         var initialLines = lines ?: emptyList()
         var initialPhotos = emptyList<UiPhoto>()
         when (kind) {
+            "move-entry", "repeat-entry" -> {
+                val old = state.entries.find { it.id == id } ?: return
+                base = old.revision
+                initial += mapOf("date" to old.localDate, "meal" to (old.mealId.takeIf { candidate -> activeMeals.any { it.id == candidate } } ?: defaultMeal), "name" to old.displayName())
+                initialLines = listOf(UiLine.from(repository.foodAsLine(old)))
+            }
             "profile", "onboarding-profile" -> state.profile?.let { p -> base = p.revision; initial += mapOf("name" to p.name, "age" to (p.age?.toString() ?: ""), "height" to (p.heightCentiCm?.let { decimal(it.toLong(), 2) } ?: ""), "weight" to (p.initialWeightCentiKg?.let { decimal(it.toLong(), 2) } ?: ""), "direction" to (p.direction ?: "maintain"), "onboardingRevision" to (state.onboarding?.revision ?: 1).toString()) }
             "weight" -> { val old = state.weights.find { it.localDate == date }; base = old?.revision; initial += "weight" to (old?.centiKg?.let { decimal(it.toLong(), 2) } ?: "") }
             "sleep" -> { val old = state.sleeps.find { it.localDate == date }; base = old?.revision; initial += mapOf("hours" to (old?.minutes?.div(60)?.toString() ?: ""), "minutes" to (old?.minutes?.rem(60)?.toString() ?: ""), "zero" to "false") }
@@ -200,10 +223,12 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
         val session = UiFormSession.create(repository, scope, kind, id, base, initial, initialLines, initialPhotos)
         if (kind == "moment") session.busy = true
         form = session; push(UiRoute("editor"))
+        if (kind == "batch-food") push(UiRoute("batch-picker"))
         if (kind == "moment") { launch { try { session.checkpoint(); ensureMomentRefs(session); session.checkpoint() } catch (e: CancellationException) { throw e } catch (_: Exception) { session.unknown("Не удалось подготовить связи фотографий. Проверьте состояние перед изменением или сохранением.") } finally { session.busy = false } } }
     }
 
     fun saveForm() {
+        if (pendingPhotoRemoval != null) { message = "Дождитесь удаления фото или отмените его"; return }
         val session = form ?: return
         if (session.busy || mediaState.busy && mediaState.draftId == session.entity.id) return
         if (session.uncertain) { checkFormOutcome(); return }
@@ -311,7 +336,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
         session.stopDebounce(); form = null; message = if (result.replayed) "Ранее сохранённое действие найдено; повторной записи нет" else "Сохранено на устройстве"
         if (session.entity.kind == "onboarding-profile") { stack.clear(); route = UiRoute("onboarding-goals") }
         else if (session.entity.kind == "onboarding-goal" && session.data["manualAfterOnboarding"] != "true" || session.entity.kind == "onboarding-skip") { stack.clear(); route = UiRoute("home") }
-        else if (session.entity.kind in setOf("portion", "quick")) { date = session.data["date"]; stack.clear(); route = UiRoute("home") }
+        else if (session.entity.kind in setOf("portion", "quick", "batch-food", "move-entry", "repeat-entry")) { date = session.data["date"]; focusMealId = session.data["meal"]; stack.clear(); route = UiRoute("home") }
         else {
             pop()
             if (session.entity.kind == "moment" && route.name == "photo-detail" && session.data.photos.none { it.id == route.id }) {
@@ -323,6 +348,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
     }
 
     fun command(action: String, id: String? = null, revision: Long? = null, fields: Map<String, String> = emptyMap()) {
+        if (action.startsWith("delete-")) { queueDeletion(action, id, revision, fields); return }
         if (form?.editable == false) return
         val replacingEditor = route.name == "editor"
         supersededForm = form; supersededForm?.stopDebounce()
@@ -343,6 +369,9 @@ internal suspend fun commitUiForm(h: UiHost, s: UiFormSession, op: Operation): C
         "onboarding-skip" -> r.completeOnboarding(op)
         "product" -> r.saveProduct(id, d["name"], FoodUnit.valueOf(d["unit"]), d["portion"].takeIf { d["unit"] == "PORTION" }, microNutrients(d), d["category"].ifEmpty { null }, rev, op)
         "recipe" -> r.saveRecipe(id, d["name"], Numbers.parseQuantityMicros(d["yield"]), d.lines.map(UiLine::input), d["category"].ifEmpty { null }, rev, op)
+        "batch-food" -> r.addFoods(d["date"], d["meal"], d.lines.map(UiLine::input), op)
+        "move-entry" -> r.moveFood(requireNotNull(id), requireNotNull(rev), d["date"], d["meal"], op)
+        "repeat-entry" -> r.repeatFood(requireNotNull(id), requireNotNull(rev), d["date"], d["meal"], op)
         "portion" -> r.addFood(d["date"], d["meal"], d.lines.single().input(), op)
         "quick" -> r.addQuickFood(d["date"], d["meal"], d["name"], microNutrients(d), op)
         "entry" -> if (d["replace"] == "true") r.replaceFoodSnapshot(requireNotNull(id), d.lines.single().input(), requireNotNull(rev), op) else r.editFood(requireNotNull(id), if (d["quick"] == "true") null else d.lines.single().input().quantityMicros, if (d["quick"] == "true") microNutrients(d) else null, if (d["quick"] == "true") d["name"] else null, requireNotNull(rev), op)

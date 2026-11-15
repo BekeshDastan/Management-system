@@ -76,7 +76,7 @@ class DietUiTest {
         }
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Начать").fetchSemanticsNodes().isNotEmpty() || repository.state.value.onboarding?.completed == true }
     }
-    private fun click(text: String) { compose.waitUntil(10_000) { compose.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }; compose.onNodeWithText(text, useUnmergedTree = true).performScrollTo().performClick(); compose.waitForIdle() }
+    private fun click(text: String) { compose.waitUntil(10_000) { compose.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }; val node = compose.onNodeWithText(text, useUnmergedTree = true); if (!node.isDisplayed()) node.performScrollTo(); node.performClick(); compose.waitForIdle() }
     private fun field(label: String, value: String) { compose.waitUntil(10_000) { compose.onAllNodesWithText(label).fetchSemanticsNodes().isNotEmpty() }; compose.onNodeWithText(label).performScrollTo().performTextReplacement(value) }
 
     @Test fun onboardingFoodWeightSleepAndReportUseRealPersistentRecords() {
@@ -99,8 +99,8 @@ class DietUiTest {
         assertEquals(450, repository.state.value.sleeps.single().minutes)
         compose.onNodeWithText("Прогресс").performClick()
         compose.onNodeWithText("Мой отчёт").assertExists()
-        click("+  Питание")
-        compose.onNodeWithText("Среднее по N=0 заполненным дням", substring = true).assertExists()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Заполнено 0 из", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Заполнено 0 из", substring = true).assertExists()
         // A partial food day must not silently enter the completed-day mean.
         assertTrue(repository.state.value.confirmations.isEmpty())
     }
@@ -109,15 +109,16 @@ class DietUiTest {
         runBlocking { repository.completeOnboarding(Operation()) }
         show(large = true)
         compose.onNodeWithText("Прогресс").performClick()
-        click("+  Вес")
+        click("Вес")
         compose.onNodeWithText("Нет измерений веса").assertExists()
-        click("+  Сон")
+        click("Сон")
         compose.onNodeWithText("Нет записей сна").assertExists()
         compose.onNodeWithText("Дневник").performClick()
         click("＋ Добавить еду")
-        click("Быстрая запись КБЖУ")
+        compose.onNodeWithText("＋ Создать").performClick()
+        compose.onNodeWithText("Быстрая запись КБЖУ").performClick()
         field("Калории, ккал", "200"); field("Белки, г", "0"); field("Жиры, г", "0"); field("Углеводы, г", "0")
-        compose.onNodeWithText("Добавить в дневник").performScrollTo().assertIsEnabled()
+        compose.onNodeWithText("Добавить в дневник").assertIsDisplayed().assertIsEnabled()
         assertTrue(repository.state.value.entries.isEmpty())
     }
 
@@ -347,6 +348,7 @@ class DietUiTest {
         contentSet = true
         compose.setContent { if (contentVisible) CompositionLocalProvider(LocalUi provides host) { DietTheme(VisualPreferences(ready = true)) { LazyColumn { item { Column { AccessibleChart(report, "food") } } } } } }
         click("Белки")
+        compose.onNodeWithTag("report-bars").performScrollTo().performClick()
         compose.onNodeWithText("Частично: 10,0 г", substring = true).performScrollTo().assertExists()
         click("Показывать частичные дни")
         assertEquals("false", host.view["report.partial"])

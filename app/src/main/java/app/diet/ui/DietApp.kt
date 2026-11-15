@@ -3,19 +3,22 @@ package app.diet.ui
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import app.diet.data.DietRepository
 import app.diet.data.VisualPreferencesRepository
@@ -24,6 +27,9 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepository, mediaActions: UiMediaActions) {
     val scope = rememberCoroutineScope()
+    val screenStates = rememberSaveableStateHolder()
+    val snackbar = remember { SnackbarHostState() }
+    val retainedKeys = rememberSaveable(saver = listSaver<java.util.LinkedHashSet<String>, String>(save = { it.toList() }, restore = { java.util.LinkedHashSet(it) })) { java.util.LinkedHashSet<String>() }
     val h = remember(repository, visualRepository, mediaActions) { UiHost(repository, visualRepository, mediaActions, scope) }
     ReportDrawnWhen { h.state.ready && h.preferences.ready }
     LaunchedEffect(h) { repository.state.collectLatest { h.state = it } }
@@ -31,7 +37,8 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
     LaunchedEffect(h) { mediaActions.state.collectLatest { m -> h.mediaState = m; val form = h.form; if (form != null && form.entity.id == m.draftId && !m.busy) form.mergePhotos(m.photos) } }
     LaunchedEffect(h.mediaState.openAction, h.state.ready, h.openingForm) { if (h.state.ready) h.mediaState.openAction?.let(h::openNotification) }
     LaunchedEffect(h) { if (!repository.state.value.ready) h.launch { repository.initialize() } }
-    LaunchedEffect(h.message) { if (h.message != null) { kotlinx.coroutines.delay(5_000); h.message = null } }
+    LaunchedEffect(h.message) { h.message?.let { message -> snackbar.showSnackbar(message, withDismissAction = true, duration = SnackbarDuration.Short); if (h.message == message) h.message = null } }
+    LaunchedEffect(h.error) { h.error?.let { snackbar.showSnackbar(it, withDismissAction = true, duration = SnackbarDuration.Long) } }
     LaunchedEffect(h.date, h.state.ready) { if (h.state.ready) { try { repository.setVisibleDate(h.date); if (h.viewLoaded) h.context("selectedDate", h.date) } catch (e: kotlinx.coroutines.CancellationException) { throw e } catch (e: Exception) { h.error = app.diet.messages.userMessage(e, "Не удалось открыть выбранную дату") } } }
     BackHandler(enabled = h.route.name != "home" || h.form != null || h.canGoBack) { h.back() }
     CompositionLocalProvider(LocalUi provides h) {
@@ -40,25 +47,33 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
                 if (!h.state.ready || !h.preferences.ready) {
                     Column(Modifier.fillMaxSize().padding(28.dp), Arrangement.Center, Alignment.CenterHorizontally) { Text("Diet", style = MaterialTheme.typography.displaySmall); Spacer(Modifier.height(24.dp)); CircularProgressIndicator(); ErrorNotice(h.error ?: h.state.error); PreferenceReadStatus(); if (h.error != null || h.state.error != null) Action("Повторить чтение дневника", onClick = { h.launch { repository.initialize() } }) }
                 } else {
-                    Scaffold(containerColor = MaterialTheme.colorScheme.background, bottomBar = {
-                        if (h.state.onboarding?.completed == true && h.route.name !in listOf("editor", "line-picker", "replace-picker", "template-picker", "appearance", "home-layout", "photo-detail")) DietNavigation()
+                    Scaffold(containerColor = MaterialTheme.colorScheme.background, snackbarHost = { Column { PendingDeletionNotice(h); SnackbarHost(snackbar) } }, bottomBar = {
+                        if (h.route.name == "editor") Box(Modifier.navigationBarsPadding().imePadding()) { EditorActions() }
+                        if (h.state.onboarding?.completed == true && h.route.name !in listOf("editor", "batch-picker", "line-picker", "replace-picker", "template-picker", "appearance", "home-layout", "photo-detail")) DietNavigation()
                     }) { padding ->
-                        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
-                            key(h.route) {
-                                val list = rememberLazyListState()
-                                LazyColumn(Modifier.widthIn(max = 760.dp).fillMaxHeight().imePadding(), state = list, contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                                    item {
-                                        Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
+                        Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (h.route.name in setOf("catalog", "add-food", "line-picker", "replace-picker", "batch-picker")) Box(Modifier.widthIn(max = 760.dp)) { CatalogTopBar(h.route.name) }
+                            val screenKey = h.route.name + ":" + (if (h.route.name == "editor") h.form?.entity?.id else h.route.id).orEmpty()
+                            DisposableEffect(screenKey) {
+                                retainedKeys.remove(screenKey); retainedKeys.add(screenKey)
+                                while (retainedKeys.size > 24) {
+                                    val old = retainedKeys.firstOrNull { it !in setOf("home:", "plans:", "reports:", "settings:") && it != screenKey } ?: break
+                                    retainedKeys.remove(old); screenStates.removeState(old)
+                                }
+                                onDispose { }
+                            }
+                            screenStates.SaveableStateProvider(screenKey) {
+                                RetainedViewport(screenKey) {
                                             if (h.route.name != "home" || h.canGoBack) TextButton(onClick = { h.back() }, contentPadding = PaddingValues(0.dp), enabled = h.form?.busy != true) { Text("← Назад") }
                                             ErrorNotice(h.state.error ?: h.error)
                                             PreferenceReadStatus()
                                             if (h.state.error != null) Action("Повторить чтение сохранённых данных", secondary = true) { h.launch { repository.initialize() } }
-                                            h.message?.let { message -> Surface(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }, color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.small) { Row(Modifier.padding(12.dp)) { Text(message, Modifier.weight(1f)); TextButton(onClick = { h.message = null }) { Text("Понятно") } } } }
                                             when (h.route.name) {
-                                                "home" -> if (h.state.onboarding?.completed != true) { if (h.state.onboarding?.step == "goals") OnboardingGoals() else WelcomeScreen() } else HomeScreen()
+                                                "home" -> if (h.state.onboarding?.completed != true) { if (h.state.onboarding?.step == "goals") OnboardingGoals() else WelcomeScreen() } else { GuidanceInvite(); HomeScreen() }
                                                 "onboarding-goals" -> OnboardingGoals()
+                                                "guide" -> GuidanceScreen()
                                                 "editor" -> EditorScreen()
-                                                "catalog", "add-food", "line-picker", "replace-picker" -> CatalogScreen(h.route.name)
+                                                "catalog", "add-food", "line-picker", "replace-picker", "batch-picker" -> CatalogScreen(h.route.name)
                                                 "template-picker" -> TemplatePickerScreen()
                                                 "calendar" -> CalendarScreen()
                                                 "profile" -> ProfileScreen()
@@ -69,16 +84,20 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
                                                 "appearance", "home-layout", "settings", "game", "meals", "categories", "reminders", "sources", "preference-resume", "drafts" -> SettingsScreen()
                                                 else -> EmptyState("Этот экран недоступен", "Вернитесь в дневник.", "В дневник") { h.root("home") }
                                             }
-                                            Spacer(Modifier.height(16.dp))
-                                        }
-                                    }
+                                            Spacer(Modifier.height(8.dp))
                                 }
                             }
                         }
                     }
                 }
-                h.confirmation?.let { c -> AlertDialog(onDismissRequest = { h.confirmation = null }, title = { Text(c.title) }, text = { Text(c.message) }, confirmButton = { TextButton(onClick = { h.confirmation = null; c.action() }) { Text(c.confirmLabel) } }, dismissButton = { TextButton(onClick = { h.confirmation = null }) { Text("Отмена") } }) }
-                if (h.pendingNavigation != null) AlertDialog(onDismissRequest = { h.cancelNavigation() }, title = { Text("Выйти из редактора?") }, text = { Text("Можно оставить постоянный черновик и вернуться к нему позже. Запись в дневник пока не добавляется.") }, confirmButton = { TextButton(onClick = { h.keepDraftAndLeave() }) { Text("Оставить черновик") } }, dismissButton = { Column { TextButton(onClick = { h.cancelNavigation() }) { Text("Продолжить") }; TextButton(onClick = { h.discardAndLeave() }) { Text("Удалить черновик и выйти") } } })
+                h.confirmation?.let { c ->
+                    AdaptiveDialog(c.title, c.message, { h.confirmation = null }) {
+                        Action(c.confirmLabel) { h.confirmation = null; c.action() }
+                        Action("Отмена", secondary = true) { h.confirmation = null }
+                    }
+                }
+                if (h.pendingNavigation != null) EditorExitDialog(h)
+
             }
         }
     }
@@ -89,6 +108,8 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
     val h = LocalUi.current
     val density = LocalDensity.current
     NavigationBar(modifier = Modifier.heightIn(min = (80 + (density.fontScale.coerceAtLeast(1f) - 1) * 40).dp), containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
-        listOf("home" to ("◒" to "Дневник"), "plans" to ("▦" to "План"), "reports" to ("↗" to "Прогресс"), "settings" to ("···" to "Ещё")).forEach { (route, label) -> NavigationBarItem(h.route.name == route, { h.root(route) }, icon = { CompositionLocalProvider(LocalDensity provides Density(density.density, 1f)) { Text(label.first, modifier = Modifier.clearAndSetSemantics { }, style = MaterialTheme.typography.titleLarge) } }, label = { Text(label.second) }) }
+        listOf("home" to (Icons.Outlined.MenuBook to "Дневник"), "plans" to (Icons.Outlined.CalendarMonth to "План"), "reports" to (Icons.Outlined.BarChart to "Прогресс"), "settings" to (Icons.Outlined.MoreHoriz to "Ещё")).forEach { (route, label) ->
+            NavigationBarItem(h.activeRoot == route, { h.root(route) }, icon = { Icon(label.first, contentDescription = null, modifier = Modifier.size(24.dp).clearAndSetSemantics { }) }, label = { Text(label.second) })
+        }
     }
 }

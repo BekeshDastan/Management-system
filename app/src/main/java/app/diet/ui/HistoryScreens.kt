@@ -20,13 +20,14 @@ import java.time.LocalDate
     var busy by remember { mutableStateOf(true) }; var error by remember { mutableStateOf<String?>(null) }
     fun field(key: String, value: String) { h.context("$prefix.$key", value); h.context("$prefix.page", "0") }
     LaunchedEffect(prefix, query, start, end, meal, page, h.state.dataRevision) {
-        busy = true; error = null; food = emptyList(); photos = emptyList(); delay(150)
+        busy = true; error = null; delay(150)
         try {
             val first = DomainDates.parse(start); val last = DomainDates.parse(end); require(first <= last && last <= LocalDate.now()) { "Проверьте диапазон дат" }
             if (feed) { photos = h.repository.queryPhotos(start, end, query, meal.ifEmpty { null }, page * 12L, 12); dates = photos.map { it.momentId }.distinct().associateWith { id -> h.repository.loadMoment(id)?.localDate ?: throw DataFailure.Missing() } }
             else { food = h.repository.queryHistory(start, end, query, meal.ifEmpty { null }, page * 12L, 12); completed = food.map { it.localDate }.distinct().associateWith { h.repository.dayComplete(it) } }
         } catch (e: CancellationException) { throw e } catch (e: Exception) { error = app.diet.messages.userMessage(e, "Не удалось прочитать историю") } finally { busy = false }
     }
+    ScreenLoad(busy)
     ScreenHeading(if (feed) "Моменты, которые остались." else "Найти в своём дневнике.", if (feed) "Только ваши сохранённые фотографии. Обложки и черновики сюда не попадают." else "Фактическая еда с историческими названиями, количеством и КБЖУ.")
     OutlinedTextField(query, { if (it.codePointCount(0, it.length) <= 100) field("query", it) }, Modifier.fillMaxWidth(), label = { Text(if (feed) "Найти по подписи" else "Что искать?") }, singleLine = true)
     CollapsiblePanel("Фильтры", "Период и приём пищи", initiallyOpen = false) {
@@ -45,7 +46,7 @@ import java.time.LocalDate
     else food.forEach { entry -> DietCard(entry.displayName(), "${dateLabel(entry.localDate)} · ${h.state.meals.find { it.id == entry.mealId }?.name ?: "Приём"}") {
         if (entry.kind == "quick") Muted("Быстрая запись · одна условная порция") else Muted("${decimal(requireNotNull(entry.quantityMicros))} ${unitLabel(requireNotNull(entry.snapshot).unit, entry.snapshot.portionName)}")
         NutritionText(entry.nutrients(), true); Pill(if (completed[entry.localDate] == true) "День заполнен" else "Частично заполнен")
-        TextButton(onClick = { h.date = entry.localDate; h.navigate("home") }) { Text("Открыть день") }; TextButton(onClick = { h.openForm("entry", entry.id) }) { Text("Исправить запись") }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { TextButton(onClick = { h.date = entry.localDate; h.navigate("home") }) { Text("Открыть день") }; FoodEntryActions(entry) }
     } }
     PageControls(page, (if (feed) photos.size else food.size) == 12, busy) { h.context("$prefix.page", it.toString()) }
 }

@@ -155,7 +155,7 @@ internal class UiFormSession(
             val data = DraftJson.decodeFromString<UiFormData>(entity.rawPayload)
             require(data.lines.size <= 500 && data.lines.all { it.snapshot.pairs.size == 8 } && data.photos.size <= 4) { "Структура черновика повреждена; данные сохранены" }
             data.lines.forEach { it.snapshot.columns().toDomain() }
-            if (entity.kind == "portion" || entity.kind == "entry" && data["quick"] != "true") require(data.lines.size == 1) { "Снимок записи повреждён; черновик сохранён" }
+            if (entity.kind in setOf("portion", "move-entry", "repeat-entry") || entity.kind == "entry" && data["quick"] != "true") require(data.lines.size == 1) { "Снимок записи повреждён; черновик сохранён" }
             return UiFormSession(repository, scope, entity, data, true)
         }
     }

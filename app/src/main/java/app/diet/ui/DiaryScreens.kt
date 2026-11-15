@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +48,7 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
     val h = LocalUi.current; val state = h.state
     var day by remember(h.date) { mutableStateOf<ReportDay?>(null) }; var dayError by remember(h.date) { mutableStateOf<String?>(null) }
     ReportDrawnWhen { day != null && dayError == null }
+    ScreenLoad(day == null && dayError == null)
     LaunchedEffect(h.date, state.dataRevision) { dayError = null; try { val selected = LocalDate.parse(h.date); day = h.repository.pageReportDays(selected, selected, 0, 1).days.single() } catch (e: CancellationException) { throw e } catch (e: Exception) { dayError = app.diet.messages.userMessage(e, "Не удалось посчитать выбранный день") } }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { Column(Modifier.weight(1f)) { Eyebrow("DIET · ДЛЯ СЕБЯ"); Text(if (state.profile?.name.isNullOrBlank()) "Хороший день для себя." else "${state.profile?.name.orEmpty()}, ваш день.", style = MaterialTheme.typography.headlineSmall) }; TextButton(onClick = { h.navigate("profile") }) { Text("Профиль") } }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { TextButton(onClick = { h.date = LocalDate.parse(h.date).minusDays(1).toString() }, enabled = !h.openingForm && h.date > "1900-01-01", modifier = Modifier.semantics { contentDescription = "Предыдущая дата" }) { Text("←") }; TextButton(onClick = { h.navigate("calendar") }, modifier = Modifier.weight(1f)) { Text(dateLabel(h.date), textAlign = TextAlign.Center) }; TextButton(onClick = { h.date = LocalDate.parse(h.date).plusDays(1).toString() }, enabled = !h.openingForm && h.date < today(), modifier = Modifier.semantics { contentDescription = "Следующая дата" }) { Text("→") } }
@@ -62,7 +64,7 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
         "meals" -> MealCards()
         "journal" -> {
             val moment = state.moments.find { it.localDate == h.date }; val photos = state.photos.filter { it.momentId == moment?.id }
-            DietCard("За кадром цифр") { Muted(moment?.note?.takeIf(String::isNotBlank) ?: "Как вы сегодня? Оставьте пару слов или фотографию."); moment?.mood?.let { Pill(when (it) { "great" -> "✦ Отлично"; "good" -> "☀ Хорошо"; "tired" -> "☾ Усталость"; else -> "◌ Обычно" }) }; photos.take(1).forEach { h.media.Thumbnail(it.assetId, Modifier.fillMaxWidth().height(180.dp), it.caption.ifBlank { "Фото дня" }) }; TextButton(onClick = { h.openForm("moment") }) { Text(if (moment == null) "Добавить момент →" else "Открыть мой день →") } }
+            DietCard(modifier = Modifier.returnAnchor("moment"), title = "За кадром цифр") { Muted(moment?.note?.takeIf(String::isNotBlank) ?: "Как вы сегодня? Оставьте пару слов или фотографию."); moment?.mood?.let { Pill(when (it) { "great" -> "✦ Отлично"; "good" -> "☀ Хорошо"; "tired" -> "☾ Усталость"; else -> "◌ Обычно" }) }; photos.take(1).forEach { h.media.Thumbnail(it.assetId, Modifier.fillMaxWidth().height(180.dp), it.caption.ifBlank { "Фото дня" }) }; TextButton(onClick = { h.openForm("moment") }) { Text(if (moment == null) "Добавить момент →" else "Открыть мой день →") } }
         }
         "prompt" -> DietCard(color = MaterialTheme.colorScheme.primaryContainer) { Eyebrow("Маленькое напоминание"); Text("Достаточно записать как было.", style = MaterialTheme.typography.headlineSmall); Muted("Не каждый день должен быть идеальным. Наблюдения помогают замечать свой ритм.") }
         "measurements" -> MeasurementsCards()
@@ -114,14 +116,17 @@ internal fun nutritionBalance(actual: Rational, goal: Rational, unit: String): S
 @Composable private fun MealCards() {
     val h = LocalUi.current
     var occupiedMeals by remember(h.date) { mutableStateOf<List<String>>(emptyList()) }
-    LaunchedEffect(h.date, h.state.dataRevision) { occupiedMeals = h.repository.mealsWithEntries(h.date) }
+    var occupiedLoading by remember(h.date) { mutableStateOf(true) }
+    ScreenLoad(occupiedLoading)
+    LaunchedEffect(h.date, h.state.dataRevision) { try { occupiedMeals = h.repository.mealsWithEntries(h.date) } finally { occupiedLoading = false } }
     Text("Приёмы пищи", style = MaterialTheme.typography.titleLarge)
     h.state.meals.filter { !it.archived || it.id in occupiedMeals }.forEach { meal ->
-        var page by remember(h.date, meal.id) { mutableIntStateOf(0) }; var entries by remember(h.date, meal.id) { mutableStateOf<List<FoodEntryEntity>>(emptyList()) }; var loading by remember { mutableStateOf(true) }; var error by remember { mutableStateOf<String?>(null) }
+        var page by rememberSaveable(h.date, meal.id) { mutableIntStateOf(0) }; var entries by remember(h.date, meal.id) { mutableStateOf<List<FoodEntryEntity>>(emptyList()) }; var loading by remember { mutableStateOf(true) }; var error by remember { mutableStateOf<String?>(null) }
         LaunchedEffect(h.date, meal.id, page, h.state.dataRevision) { loading = true; try { entries = h.repository.queryHistory(h.date, h.date, mealId = meal.id, offset = page * 40L, limit = 40) } catch (e: CancellationException) { throw e } catch (e: Exception) { error = app.diet.messages.userMessage(e) } finally { loading = false } }
-        DietCard(meal.name + if (meal.archived) " · архив" else "") {
+        ScreenLoad(loading)
+        DietCard(modifier = Modifier.mealAnchor(meal.id), title = meal.name + if (meal.archived) " · архив" else "") {
             if (loading) LinearProgressIndicator(Modifier.fillMaxWidth()); ErrorNotice(error); if (!loading && entries.isEmpty()) Muted("Пока ничего не записано")
-            entries.forEach { entry -> Row(Modifier.fillMaxWidth().clickable { h.openForm("entry", entry.id) }.padding(vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) { Column(Modifier.weight(1f)) { Text(entry.displayName(), style = MaterialTheme.typography.titleMedium); if (entry.kind != "quick") Muted("${decimal(requireNotNull(entry.quantityMicros))} ${unitLabel(requireNotNull(entry.snapshot).unit, entry.snapshot.portionName)}") }; Text("${entry.nutrients().kcal.format(1)} ккал", style = MaterialTheme.typography.labelLarge) } }
+            entries.forEach { entry -> Row(Modifier.fillMaxWidth().clickable { h.openForm("entry", entry.id) }.padding(vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) { Column(Modifier.weight(1f)) { Text(entry.displayName(), style = MaterialTheme.typography.titleMedium); if (entry.kind != "quick") Muted("${decimal(requireNotNull(entry.quantityMicros))} ${unitLabel(requireNotNull(entry.snapshot).unit, entry.snapshot.portionName)}") }; Text("${entry.nutrients().kcal.format(1)} ккал", style = MaterialTheme.typography.labelLarge); FoodEntryActions(entry) } }
             if (!meal.archived) TextButton(onClick = { h.navigate("add-food", meal.id) }) { Text("＋ Добавить в ${meal.name.lowercase()}") }
             TextButton(onClick = { h.openForm("moment", meal = meal.id, extra = mapOf("photoDefaultMeal" to meal.id)) }) { Text("Фото приёма →") }
             PageControls(page, entries.size == 40, loading) { page = it }
@@ -132,8 +137,8 @@ internal fun nutritionBalance(actual: Rational, goal: Rational, unit: String): S
 
 @Composable private fun MeasurementsCards() {
     val h = LocalUi.current; val weight = h.state.weights.find { it.localDate == h.date }; val sleep = h.state.sleeps.find { it.localDate == h.date }
-    DietCard("Утренний вес", color = LocalDietColors.current.peach) { Text(weight?.let { "${decimal(it.centiKg.toLong(), 2)} кг" } ?: "Нет измерения", style = MaterialTheme.typography.headlineSmall); if (h.preferences.gameNames) GameRules.weightName(weight?.centiKg?.toLong())?.let { Pill(it) }; TextButton(onClick = { h.openForm("weight") }) { Text(if (weight == null) "Записать вес →" else "Изменить вес →") } }
-    DietCard("Сон", color = LocalDietColors.current.lavender) { Text(sleep?.let { Numbers.formatSleepMinutes(it.minutes) } ?: "Нет записи", style = MaterialTheme.typography.headlineSmall); if (h.preferences.gameNames) GameRules.sleepName(sleep?.minutes)?.let { Pill(it) }; TextButton(onClick = { h.openForm("sleep") }) { Text(if (sleep == null) "Записать сон →" else "Изменить сон →") } }
+    DietCard(modifier = Modifier.returnAnchor("weight"), title = "Утренний вес", color = LocalDietColors.current.peach) { Text(weight?.let { "${decimal(it.centiKg.toLong(), 2)} кг" } ?: "Нет измерения", style = MaterialTheme.typography.headlineSmall); if (h.preferences.gameNames) GameRules.weightName(weight?.centiKg?.toLong())?.let { Pill(it) }; TextButton(onClick = { h.openForm("weight") }) { Text(if (weight == null) "Записать вес →" else "Изменить вес →") } }
+    DietCard(modifier = Modifier.returnAnchor("sleep"), title = "Сон", color = LocalDietColors.current.lavender) { Text(sleep?.let { Numbers.formatSleepMinutes(it.minutes) } ?: "Нет записи", style = MaterialTheme.typography.headlineSmall); if (h.preferences.gameNames) GameRules.sleepName(sleep?.minutes)?.let { Pill(it) }; TextButton(onClick = { h.openForm("sleep") }) { Text(if (sleep == null) "Записать сон →" else "Изменить сон →") } }
 }
 
 @Composable internal fun CalendarScreen() {

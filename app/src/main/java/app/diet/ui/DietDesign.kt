@@ -7,6 +7,12 @@ import android.content.ContextWrapper
 import androidx.core.view.WindowCompat
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -62,7 +68,7 @@ internal fun DietTheme(preferences: VisualPreferences, preview: Map<String, Stri
         LocalDensity provides Density(density.density, density.fontScale * if (preferences.largeText) 1.15f else 1f)) {
         MaterialTheme(colorScheme = scheme.copy(secondary = primary, onSecondary = scheme.onPrimary, secondaryContainer = soft, onSecondaryContainer = scheme.onPrimaryContainer), shapes = Shapes(extraSmall = RoundedCornerShape(12.dp), small = RoundedCornerShape(16.dp), medium = RoundedCornerShape(22.dp), large = RoundedCornerShape(28.dp)), typography = Typography(
             displaySmall = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.ExtraBold, fontSize = 40.sp, lineHeight = 44.sp, letterSpacing = (-1.8).sp),
-            headlineLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 36.sp, letterSpacing = (-1).sp),
+            headlineLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp, letterSpacing = (-1).sp),
             headlineSmall = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 30.sp, letterSpacing = (-.6).sp),
             titleLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 21.sp, lineHeight = 27.sp),
             titleMedium = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 24.sp),
@@ -76,7 +82,7 @@ private tailrec fun Context.dietActivity(): Activity? = when (this) { is Activit
 @Composable
 internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subtitle: String? = null, color: Color = MaterialTheme.colorScheme.surface, content: @Composable ColumnScope.() -> Unit) {
     Surface(modifier.fillMaxWidth(), shape = RoundedCornerShape(25.dp), color = color, tonalElevation = 0.dp) {
-        Column(Modifier.padding(20.dp).animateContentSize(tween(if (LocalReducedMotion.current) 0 else 180)), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.padding(18.dp).animateContentSize(tween(if (LocalReducedMotion.current) 0 else 180)), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             title?.let { Text(it, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() }) }
             subtitle?.let { Muted(it) }; content()
         }
@@ -89,8 +95,15 @@ internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subt
 @Composable internal fun Eyebrow(text: String) = Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
 @Composable internal fun Pill(text: String, modifier: Modifier = Modifier) { Surface(modifier, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)) { Text(text, Modifier.padding(horizontal = 11.dp, vertical = 6.dp), style = MaterialTheme.typography.labelMedium) } }
 @Composable internal fun Action(text: String, enabled: Boolean = true, secondary: Boolean = false, onClick: () -> Unit) {
-    if (secondary) OutlinedButton(onClick, Modifier.fillMaxWidth().heightIn(min = 52.dp), enabled = enabled, shape = RoundedCornerShape(16.dp)) { Text(text) }
-    else Button(onClick, Modifier.fillMaxWidth().heightIn(min = 52.dp), enabled = enabled, shape = RoundedCornerShape(16.dp)) { Text(text) }
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val reduced = LocalReducedMotion.current
+    val scale by animateFloatAsState(if (pressed && !reduced) .98f else 1f, tween(if (reduced) 0 else 90), label = "button press")
+    val haptic = LocalHapticFeedback.current
+    val click = { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); onClick() }
+    val modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp).scale(scale)
+    if (secondary) OutlinedButton(click, modifier, enabled = enabled, shape = RoundedCornerShape(16.dp), interactionSource = interaction) { Text(text) }
+    else Button(click, modifier, enabled = enabled, shape = RoundedCornerShape(16.dp), interactionSource = interaction) { Text(text) }
 }
 @Composable internal fun EmptyState(title: String, message: String, action: String? = null, onAction: () -> Unit = {}) {
     DietCard(color = MaterialTheme.colorScheme.primaryContainer) { Text("✦", style = MaterialTheme.typography.headlineLarge); Text(title, style = MaterialTheme.typography.titleLarge); Muted(message); action?.let { Action(it, onClick = onAction) } }
@@ -119,7 +132,7 @@ internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subt
             drawImage(bitmap, srcOffset = IntOffset(tile % 3 * sourceWidth + (sourceWidth - cropWidth) / 2, tile / 3 * sourceHeight + (sourceHeight - cropHeight) / 2), srcSize = IntSize(cropWidth, cropHeight), dstSize = IntSize(size.width.toInt(), size.height.toInt()))
             drawRect(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .08f), Color(0xFF123629).copy(alpha = .80f))))
         }
-        Column(Modifier.padding(24.dp).padding(top = 52.dp, end = 50.dp)) { Text("DIET · ДЛЯ СЕБЯ", style = MaterialTheme.typography.labelSmall, color = Color(0xFFD2EF75)); Spacer(Modifier.height(12.dp)); Text(title, style = MaterialTheme.typography.headlineLarge, color = Color.White) }
+        Column(Modifier.padding(24.dp).padding(top = 28.dp, end = 24.dp)) { Text("DIET · ДЛЯ СЕБЯ", style = MaterialTheme.typography.labelSmall, color = Color(0xFFD2EF75)); Spacer(Modifier.height(12.dp)); Text(title, style = MaterialTheme.typography.headlineLarge, color = Color.White) }
     }
 }
 

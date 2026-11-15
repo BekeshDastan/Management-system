@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -61,6 +62,27 @@ internal fun EditorScreen() {
                 DeleteLink("Удалить запись") { h.confirm("Удалить еду за ${dateLabel(d["date"])}?", "Изменится только выбранный факт. Если это последняя строка дня, отметка «Питание заполнено» снимется; пустота не станет подтверждённым нулевым днём. Продукт останется в библиотеке.", "Удалить") { h.command("delete-food", s.entity.targetEntityId, s.entity.baseRevision) } }
             }
         }
+        "batch-food" -> {
+            MealChoice(s)
+            Field(s, "date", "Дата ГГГГ-ММ-ДД")
+            Action("＋ Выбрать продукты", secondary = true, enabled = s.editable) { h.push(UiRoute("batch-picker")) }
+            if (d.lines.isEmpty()) EmptyState("Соберите приём пищи", "Выберите несколько продуктов, проверьте порции и добавьте всё одним действием.")
+            var batchPage by rememberSaveable(s.entity.id) { mutableIntStateOf(0) }
+            val visiblePage = minOf(batchPage, ((d.lines.size - 1).coerceAtLeast(0) / 20))
+            d.lines.drop(visiblePage * 20).take(20).forEach { line -> key(line.id) { DietCard(line.snapshot.name) {
+                QuantityField(s, line)
+                NutritionText(runCatching { line.input().let { it.snapshot.toDomain().portion(it.quantityMicros) } }.getOrNull(), true)
+                DeleteLink("Убрать из выбора") { s.removeLine(line.id) }
+            } } }
+            PageControls(visiblePage, (visiblePage + 1) * 20 < d.lines.size, s.busy) { batchPage = it }
+            if (d.lines.isNotEmpty()) DietCard("Итого · ${d.lines.size}") { PreviewLines(d.lines) }
+        }
+        "move-entry", "repeat-entry" -> {
+            DietCard(d["name"]) { PreviewLines(d.lines, showRows = true) }
+            Field(s, "date", "Дата ГГГГ-ММ-ДД")
+            MealChoice(s)
+            Muted(if (kind == "move-entry") "Запись переместится с прежним количеством и пищевой ценностью." else "Добавится ещё одна такая порция. Исходная запись останется.")
+        }
         "recipe", "template", "plan" -> {
             DietCard { Field(s, "name", "Название"); if (kind == "recipe") { Field(s, "yield", "Выход готового блюда, г", numeric = true); CategoryChoice(s); Muted("Ингредиенты — самостоятельные снимки. Вложенные рецепты не добавляются.") }; if (kind == "plan") { Field(s, "date", "Дата плана ГГГГ-ММ-ДД"); MealChoice(s); Muted("План можно создать на 90 дней вперёд. Съеденной еды пока не появится.") } }
             d.lines.forEach { line -> DietCard(line.snapshot.name) { QuantityField(s, line); NutritionText(runCatching { line.input().let { it.snapshot.toDomain().portion(it.quantityMicros) } }.getOrNull(), true); DeleteLink("Убрать из состава") { s.removeLine(line.id) } } }
@@ -88,11 +110,32 @@ internal fun EditorScreen() {
     ErrorNotice(s.error)
     val validation = formValidation(s)
     if (validation != null && s.dirty) ErrorNotice(validation)
-    val mediaBusy = h.mediaState.busy && h.mediaState.draftId == s.entity.id
-    if (s.uncertain && !s.busy) Action("Проверить результат сохранения") { h.checkFormOutcome() }
-    else Action(if (s.busy || mediaBusy) "Сохраняем…" else when (kind) { "portion", "quick" -> "Добавить в дневник"; "transfer", "apply-template", "copy" -> "Подтвердить добавление"; "onboarding-profile" -> "Далее"; "onboarding-goal" -> if (d["manualAfterOnboarding"] == "true") "Сохранить ручную цель" else "Сохранить и начать"; "command" -> "Повторить действие"; else -> "Сохранить" }, enabled = s.editable && !mediaBusy && validation == null) { h.saveForm() }
-    if (kind != "command") TextButton(onClick = { h.back() }, enabled = s.editable && !mediaBusy, modifier = Modifier.fillMaxWidth()) { Text("Отмена") }
     Muted(s.checkpointMessage)
+}
+
+/** Pinned by the host outside the form's scroll; safe even for a long meal or recipe. */
+@Composable internal fun EditorActions() {
+    val h = LocalUi.current
+    val s = h.form ?: return
+    val d = s.data
+    val kind = s.entity.kind
+    val validation = formValidation(s)
+    val mediaBusy = h.mediaState.busy && h.mediaState.draftId == s.entity.id
+    Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
+            if (s.uncertain && !s.busy) Action("Проверить результат сохранения") { h.checkFormOutcome() }
+            else Action(if (s.busy || mediaBusy) "Сохраняем…" else when (kind) {
+                "portion", "quick", "batch-food" -> "Добавить в дневник"
+                "move-entry" -> "Переместить запись"
+                "repeat-entry" -> "Добавить повторно"
+                "transfer", "apply-template", "copy" -> "Подтвердить добавление"
+                "onboarding-profile" -> "Далее"
+                "onboarding-goal" -> if (d["manualAfterOnboarding"] == "true") "Сохранить ручную цель" else "Сохранить и начать"
+                "command" -> "Повторить действие"
+                else -> "Сохранить"
+            }, enabled = s.editable && !mediaBusy && h.pendingPhotoRemoval == null && validation == null) { h.saveForm() }
+        }
+    }
 }
 
 @Composable internal fun Field(s: UiFormSession, key: String, label: String, numeric: Boolean = false, hint: String? = null, multiline: Boolean = false) {
@@ -118,18 +161,20 @@ internal fun EditorScreen() {
 @Composable private fun MomentEditor(s: UiFormSession) {
     val h = LocalUi.current; val d = s.data
     DietCard("Как прошёл день?") { Choices(listOf("great" to "✦ Отлично", "good" to "☀ Хорошо", "neutral" to "◌ Обычно", "tired" to "☾ Усталость"), d["mood"]) { s.field("mood", if (d["mood"] == it) "" else it) }; Field(s, "note", "Пара слов для себя", multiline = true); Muted("До 500 знаков; настроение не даёт игровых баллов.") }
-    DietCard("Моменты дня", "JPEG, PNG или WebP до 5 МиБ. Приложение подготовит свою оптимизированную копию.") {
+    DietCard("Моменты дня", "До четырёх фотографий для вашего дневника.") {
         d.photos.forEach { photo ->
             h.media.Thumbnail(photo.assetId, Modifier.fillMaxWidth().height(220.dp), photo.caption.ifBlank { "Фото дня" })
             OutlinedTextField(photo.caption, { s.photo(photo.id, caption = it) }, Modifier.fillMaxWidth(), label = { Text("Подпись к фото") }, enabled = s.editable, shape = MaterialTheme.shapes.small)
             Choices(listOf("" to "Момент дня") + h.state.meals.map { it.id to (it.name + if (it.archived) " · архив" else "") }, photo.mealId.orEmpty()) { s.photo(photo.id, mealId = it.ifEmpty { null }, changeMeal = true) }
-            DeleteLink("Убрать фото") { h.removeMomentPhoto(s, photo.assetId) }
+            DeleteLink("Убрать фото") { h.queuePhotoRemoval(s, photo.assetId) }
         }
         val importing = h.mediaState.busy && h.mediaState.draftId == s.entity.id
         Action(if (importing) "Подготавливаем фото…" else "＋ Добавить фото (${d.photos.size}/4)", enabled = s.editable && !importing && d.photos.size < 4, secondary = true) { h.launch { val checkpoint = s.checkpoint(); h.media.clearError(); h.media.pickPhotos(checkpoint.id, d["date"], 4 - d.photos.size) } }
         if (importing) TextButton(onClick = { h.media.cancelImport(s.entity.id) }) { Text("Отменить добавление фото") }
         if (h.mediaState.draftId == s.entity.id) ErrorNotice(h.mediaState.error)
-        Muted("Сохраняется как статическое фото — оптимизированная локальная JPEG-копия; у анимированного WebP берётся первый кадр. Оригинал не архивируется. По фотографии ничего не рассчитывается; еду добавляйте отдельно.")
+        CollapsiblePanel("О фотографиях", "Форматы и хранение") {
+            Muted("JPEG, PNG или WebP до 5 МиБ. Сохраняется оптимизированная локальная JPEG-копия; у анимированного WebP — первый кадр. Оригинал не архивируется. По фотографии ничего не рассчитывается; еду добавляйте отдельно.")
+        }
     }
 }
 
@@ -143,6 +188,8 @@ internal fun formValidation(s: UiFormSession): String? = runCatching {
         "product" -> { TextRules.name(d["name"]); if (d["unit"] == "PORTION") TextRules.name(d["portion"], 30); microNutrients(d) }
         "quick" -> { TextRules.optionalName(d["name"], 80); microNutrients(d) }
         "entry" -> if (d["quick"] == "true") microNutrients(d) else d.lines.single().input()
+        "batch-food" -> { DomainDates.validateFactDate(DomainDates.parse(d["date"]), LocalDate.now()); require(s.repository.state.value.meals.any { it.id == d["meal"] && !it.archived }) { "Выберите активный приём пищи" }; Numbers.validateOperationRows(d.lines.size); d.lines.forEach { it.input() } }
+        "move-entry", "repeat-entry" -> { DomainDates.validateFactDate(DomainDates.parse(d["date"]), LocalDate.now()); require(s.repository.state.value.meals.any { it.id == d["meal"] && !it.archived }) { "Выберите активный приём пищи" } }
         "portion" -> { require(d["meal"].isNotBlank()) { "Выберите приём" }; d.lines.single().input() }
         "recipe", "template", "plan" -> { TextRules.name(d["name"]); Numbers.validateOperationRows(d.lines.size); d.lines.forEach { it.input() }; if (s.entity.kind == "recipe") Numbers.parseQuantityMicros(d["yield"]); if (s.entity.kind == "plan") DomainDates.validatePlanDate(DomainDates.parse(d["date"]), LocalDate.now()) }
         "copy" -> { DomainDates.validateFactDate(DomainDates.parse(d["sourceDate"]), LocalDate.now()); DomainDates.validateFactDate(DomainDates.parse(d["date"]), LocalDate.now()); require(d["loadedDate"] == d["sourceDate"] && d["loadedMeal"] == d["sourceMeal"] && d.lines.isNotEmpty()) { "Обновите непустой предпросмотр" } }
