@@ -783,3 +783,9 @@
 - Privacy опубликован90251166062934ee0553af52efb19a44015f7b94 с remoteverification. Два independent integration cases проверили actualstarter60/provenance/controlportion/edit/delete/reopen/change-manifest, PASS29. Неизменённый source отличается от пользовательской revision; старые факты сохраняют snapshots.
 - Добавлен ensureExistingDraftAssets: existingmomentrefs соединяются со staged атомарно/идемпотентно; raw/revision не очищаются, date/owner/Ready/4photo guards сохранены. Два recovery cases PASS29; UI включает это в подготовку и Save.
 - Файлы: MediaMetadataRepository.kt, integration/StarterCatalogIntegrationTest.kt/DraftMediaRecoveryIntegrationTest.kt, docs/build-validation.md/work-log.md. Общий IntegrationDatabase helper опубликован предыдущей privacyчастью. Diff/compile/Lint0errors и4casesвреальномrunnerпроверены; отдельный commit/push/remoteSHA.
+
+## 2026-11-15 — проверка: WebP и первый кадр анимации
+
+- Media-draft/starterintegration опубликованыfa116fc19850767cc67fc5f4e5d8c7bab380510e, remoteпроверен. Добавлены3 native WebP checks: статическийlossy, transparent→whiteopaque, animated2frames→firstredframe. Все3PASS вAPI29runs09/10; используются настоящие ImageDecoder/Bitmap encoder и disk master, не mock.
+- Tiny fixture140B созданлокальноизкрасного/синегокадра и проверен Pillow; metadata/персональных/чужих фото нет. Fixture только testAPK, source/hash в androidTest/assets/README.md.
+- Файлы: androidTest/media/WebpPhotoEngineTest.kt, androidTest/assets/synthetic-first-frame.webp/README.md, docs/work-log.md. Production/media policy не меняется; wide-gamut/F16/gainmap/downsample новый блок отдельно и ещё неPASS. Compile/Lint0errors/diff проверены; отдельный commit/push/remoteSHA.
