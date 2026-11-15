@@ -979,3 +979,10 @@
 - Финальный ba191 отдельно установлен поверх кандидатов29/37; SHA установленного base.apk совпал на обоих.29: cold1112мс, профиль/250,5/72,40/7ч30, три новых графика, IME/Save.37 независимо: cold1933мс, данные/dark/goal1800/raw72,/сохранённый виджет/Food/реальная Gboard/исходный Viewer PASS. На boot37 наблюдались системные ANR; после Wait оболочка восстановилась. В наблюдённом журнале нет app.diet ANR/AndroidRuntime:E; весь run не называется ANR-free.
 - Все owned AVD остановлены после проверки имени, userdata сохранён;29 display/font/density/rotation восстановлены. Личный S23+/Android14 не выбирался. Физическая матрица/168случаев/OEM/performance остаются открыты и явно указаны.
 - Обновлены README, release-1.1.0/release-process/handoff/build-validation/coverage/widget/ux-v1.1/ux-validation/work-log. UTF-8/links/IDs/whitespace/diff проверены. Это отдельный документационный commit/push с проверкой remote SHA; далее обычная fast-forward интеграция main. Исходники APK больше не меняются.
+
+
+## 2026-11-15 — публикация 1.1 в main и завершение
+
+- Release-документация опубликована отдельным ed5502137c72f8d15853bbd64d80f8010ba0eee6, remote feature SHA проверен. После fetch подтверждён ancestor origin/main; main обновлён обычным fast-forward 898cebd→ed55021 и опубликован. git ls-remote main фактически совпал с ed5502137c72f8d15853bbd64d80f8010ba0eee6, рабочее дерево было чистым.
+- Эта заключительная документальная фиксация обновляет handoff фактом интеграции. APK остаётся ba191f8fd1f66e2d24b3805cf4615fe3f79e134e1b2ffa6e6a2e1f160bbc7f96 с source b3db83d40cfd89236f0d490602dafb1c06d7073f; код не изменён, пересборка после prose-only commit не нужна. Старый1.0.0/46ef сохранён.
+- Перед передачей повторно сверены SHA файлов, manifest/sidecar, metadata и UTF-8/links/IDs/diff. Готовый локальный APK передаётся ссылкой; установка поверх старого Diet, без удаления. Все результаты и открытая физическая приёмка описаны в release-1.1.0.md; ключи/реальные данные не опубликованы. Отдельная публикация этого завершения — commit/push main с проверкой remote SHA.
