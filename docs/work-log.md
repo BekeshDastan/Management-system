@@ -811,3 +811,10 @@
 - Compile13/debug/instrumentation/unit48/Lint0errorsPASS; fullAPI29run13 80cases/0failures за73.733с. Все24UI включаяудалениеphoto-detail→feed, scope-date notification, photo-removefreeze/intent восстановление пройдены. Детализацияcountsиограниченийвbuild-validation; physical/OEMнеPASS.
 - scripts/test-android.ps1 теперьвозвращаетexit1черезtrapи приошибкеизвнешнейPowerShellобёртки; отрицательныйserialcheckпрочиталтольконесуществующийdeviceи вернул1, никакихuninstall. Диагностическийadbdrootнаowned29возвращёнnonrootпослечтенияtombstone.
 - Файлы: androidTest/data/RepositoryTest.kt/media/PhotoEngineTest.kt/media/PhotoColorIntegrationTest.kt/notifications/ReminderSchedulerTest.kt, scripts/test-android.ps1, docs/build-validation.md/work-log.md. Diff/UTF-8/linksпроверяются; отдельныйcommit/push/remoteSHA. Тестовыеfixtures/tracesсинтетические, rawtombstone/Gitнепубликуются.
+
+## 2026-11-15 — native UI: оболочка, дизайн и устойчивые формы
+
+- Testlifecycle/Color опубликованыdd3451766ab57a4f9940ba3dd2e5396a90736a84, remoteпроверен. Публикация nativeUI разделена на экраннуюоснову, дневник/редакторы, библиотеку/настройки, историю/отчёты; вся рабочаякопия уже проходит24UItestsвfull80API29run13, branchинтеграцияследуетпослеслоёв.
+- Foundation: Compose theme/3accents/light-dark/system/large/reducedmotion, собственныйpresentationUiHost/dirtydialog, raw350mscheckpoints, freeze/receipt-first/unknownoutcomeproof, independentprefs. Date-boundopenawaitsource иphoto-remove durableintentguards; детальнаякартаandroid-ui.md.
+- Декоративные12foodtiles изпринятогопрототипа, явнаяграницаотличныхфото; vectorslauncherотдельно. Fixedflatpaletteконтрастрассчитан: mutedlight4D6253/outline697D6B/dark8DA78F, partialбезalpha; actual320dp проверяетсянафинальномdebug15. Nativeхукmediaещёпубликуетсяследующимслоем.
+- Файлы: ui/DietApp/DietDesign/UiHost/UiDrafts/UiPreferences/UiMediaActions, drawable-nodpi2sheets, docs/android-ui.md/work-log.md. Appunits48/Lint0errors/compile13/14PASS, новыхданных/экрановзаТЗнет; строкиархивныхдокументов«кода нет»обновятсявфинальнойинтеграции. Diff/UTF-8/links; отдельныйcommit/push/remoteSHA.
