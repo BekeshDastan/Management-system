@@ -21,6 +21,7 @@ class DietApplication : Application() {
     val visualPreferences by lazy { VisualPreferencesRepository(this, backgroundScope) }
     val photos by lazy { PhotoEngine(this, repository, backgroundScope) }
     val reminders by lazy { ReminderScheduler(this, repository) }
+    val widgets by lazy { app.diet.widget.DietWidgetController(this, repository, backgroundScope) }
     val mediaActions by lazy { AppMediaActions(this) }
     private val initialization = Mutex()
     private var prepared = false
@@ -33,6 +34,7 @@ class DietApplication : Application() {
         photos.recoverAndClean()
         reminders.reconcile()
         mediaActions.refreshNotifications()
+        widgets.startObserving()
         backgroundScope.launch {
             repository.state.map { it.reminders }.distinctUntilChanged().collect {
                 reminders.reconcile()

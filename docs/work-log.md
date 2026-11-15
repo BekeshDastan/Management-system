@@ -930,3 +930,10 @@
 - Data-флоу еды опубликованbbb1120988b87ac4944babb1714a4ffb0ce777ac, remoteSHA проверен. ReportQueries считает суммы/средние сегментов в том же Room snapshot/keyset, что общий отчёт;6названных приёмов+«Другие», ограниченные600интервалов, отдельные знаменатели completed/partial. Нули и пропуски не смешиваются; schema/deadline10с не изменены.
 - ReportMealSegmentsTest3 PASS наAPI37/16KiB targeted03: complete/partial/confirmedzero, >6приёмов без потери нутриентов, агрегированные интервалы/согласованность с общим итогом. Общий13case run4.906с включает отдельныеfood/widget проверки. Масштабный S2 повтор ещё не объявленпройденным.
 - Файлы: data/ReportQueries.kt, androidTest/data/ReportMealSegmentsTest.kt, docs/work-log.md. Compile03/diffreview/check PASS; отдельныйcommit/push/remoteSHA. Отрисовка публикуется отдельно после UIпрогона.
+
+## 2026-11-15 — виджет рабочего стола
+
+- Точная сегментация отчёта опубликованаe6c3784b29b076a03e2454c35716aaf69f23bfa3, remoteSHA проверен. Добавлен нативный RemoteViews без зависимостей: дата/ккал/ручная цель/полнота, быстрые кнопки еды/веса/сна/обновления. Отдельный reader одного дня не меняет дату открытого дневника; дата явно подписана при задержке ОС.
+- Обновления по Room, resume и системным событиям; неточная non-wakeup смена даты, без новых разрешений/сети/foregroundservice. CE-only, home_screen/not_keyguard36, placeholder при keyguard. Чужие данные в layout/лог не пишутся.
+- WidgetSummaryTest4 JVM PASS; WidgetIntegrationTest2 наAPI37/16KiB PASS в targeted03: actualRemoteViews, минимальные250×230dp/font1/2, 48dpactions/безellipsis, today-vs-visiblepastdate/цель/полнота. Pin в настоящем launcher ещё отдельно pending; физическийOEM не подтверждён.
+- Файлы: widget/**, widget-specific res, Manifest/Application/MainActivity wiring, test/widget/androidTest/widget, docs/widget.md/work-log.md. XMLпарсер/SDK37not_keyguard/diffreview и compile03 PASS. ОбщийLint03 остановлен после длительного PSI-обхода и повторяется новымпроцессом без отключения правил; не объявленPASS. Отдельныйcommit/push/remoteSHA.

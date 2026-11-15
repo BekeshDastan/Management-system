@@ -1,5 +1,7 @@
 package app.diet
 
+import app.diet.widget.DietWidgetController
+
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
     private val singlePicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> app.mediaActions.selected(listOfNotNull(uri)) }
     private val multiplePicker = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(4)) { uris -> app.mediaActions.selected(uris) }
     private val permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        app.backgroundScope.launch { app.reminders.reconcile(); app.mediaActions.refreshNotifications() }
+        app.backgroundScope.launch { app.reminders.reconcile(); app.mediaActions.refreshNotifications(); app.widgets.startObserving(); app.widgets.refresh() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,12 +81,12 @@ class MainActivity : ComponentActivity() {
     }
     override fun onResume() {
         super.onResume()
-        app.backgroundScope.launch { app.reminders.reconcile(); app.mediaActions.refreshNotifications() }
+        app.backgroundScope.launch { app.reminders.reconcile(); app.mediaActions.refreshNotifications(); app.widgets.startObserving(); app.widgets.refresh() }
     }
     override fun onStop() { if (!isChangingConfigurations) app.mediaActions.hostStopped(); super.onStop() }
     override fun onDestroy() { app.mediaActions.detach(hostId); super.onDestroy() }
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); acceptIntent(intent) }
     private fun acceptIntent(intent: Intent?) {
-        if (intent?.action == "app.diet.OPEN_REMINDER") { app.mediaActions.opened(intent.getStringExtra("open_form")); intent.removeExtra("open_form") }
+        if (intent?.action == "app.diet.OPEN_REMINDER" || intent?.action == DietWidgetController.ACTION_OPEN) { app.mediaActions.opened(intent.getStringExtra("open_form")); intent.removeExtra("open_form") }
     }
 }
