@@ -1,13 +1,18 @@
 package app.diet.ui
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.unit.Density
@@ -138,6 +143,73 @@ class NavigationUxTest {
         compose.runOnIdle { loading = false }
         awaitTag(tag)
         assertPosition(tag, before)
+    }
+
+    @Test fun returningViewportStillRevealsWhenARealDragInterruptsOffsetRestoration() {
+        var route by mutableStateOf("home")
+        var loading by mutableStateOf(false)
+        show {
+            val states = rememberSaveableStateHolder()
+            Box(Modifier.fillMaxSize().background(Color.Black)) {
+                states.SaveableStateProvider(route) {
+                    if (route == "home") RetainedViewport("gesture-home") {
+                        // A real returning screen may already have scrollable content while
+                        // another reader is still loading. Keep that case deterministic here.
+                        ScreenLoad(loading)
+                        repeat(80) { index ->
+                            Text("Строка $index", Modifier.fillMaxWidth().height(56.dp)
+                                .background(Color.Magenta).testTag("gesture-row-$index"))
+                        }
+                    } else Text("Открытая деталь", Modifier.testTag("gesture-detail"))
+                }
+            }
+        }
+        awaitTag("gesture-row-45")
+        compose.onNodeWithTag("gesture-row-45").performScrollTo()
+        compose.waitForIdle()
+        val viewportTag = "viewport-gesture-home"
+        fun scrollOffset() = compose.onNodeWithTag(viewportTag).fetchSemanticsNode()
+            .config[SemanticsProperties.VerticalScrollAxisRange].value()
+        assertTrue("The first visit must save a nonzero offset", scrollOffset() > 0f)
+        compose.runOnIdle { route = "detail" }
+        awaitTag("gesture-detail")
+
+        var fingerDown = false
+        compose.mainClock.autoAdvance = false
+        try {
+            compose.runOnIdle { loading = true; route = "home" }
+            compose.mainClock.advanceTimeByFrame()
+            compose.mainClock.advanceTimeByFrame()
+            val viewport = compose.onNodeWithTag(viewportTag)
+            val beforeDrag = scrollOffset()
+            // Do not release the pointer: UserInput owns the scroll mutation while
+            // loading finishes and the lower-priority saved-position scroll starts.
+            fingerDown = true
+            viewport.performTouchInput { down(center); moveBy(Offset(0f, -180f), delayMillis = 32) }
+            compose.mainClock.advanceTimeByFrame()
+            assertTrue("The actual gesture must move the returning list", scrollOffset() > beforeDrag)
+            compose.runOnIdle { loading = false }
+            compose.mainClock.advanceTimeBy(64)
+            viewport.performTouchInput { up() }
+            fingerDown = false
+            compose.mainClock.advanceTimeBy(1_000)
+        } finally {
+            if (fingerDown) runCatching { compose.onNodeWithTag(viewportTag).performTouchInput { up() } }
+            compose.mainClock.autoAdvance = true
+        }
+        compose.waitForIdle()
+        compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)).assertCountEquals(0)
+        // assertIsDisplayed accepts a node in an alpha=0 layer. Inspect pixels from
+        // the actual root instead, so a forever-transparent viewport cannot pass.
+        val pixels = compose.onRoot().captureToImage().toPixelMap()
+        var markerPixels = 0
+        var sampledPixels = 0
+        for (y in 0 until pixels.height step 12) for (x in 0 until pixels.width step 12) {
+            val color = pixels[x, y]
+            if (color.red > .85f && color.blue > .85f && color.green < .15f) markerPixels++
+            sampledPixels++
+        }
+        assertTrue("The restored viewport must render its content, not stay transparent", markerPixels > sampledPixels / 5)
     }
 
     @Test fun sleepEditorReturnsToSourceAfterKeepingNewDraft() {

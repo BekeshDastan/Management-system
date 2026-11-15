@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 internal class ViewportLoad {
     val readers = mutableStateMapOf<Any, Boolean>()
@@ -62,13 +63,18 @@ private val LocalViewportLoad = staticCompositionLocalOf<ViewportLoad?> { null }
         if (!loading.loading) {
             withFrameNanos { }; withFrameNanos { }
             if (!loading.loading) {
-                list.scrollToItem(target.first, target.second)
                 val anchor = h.returnAnchor?.takeIf { it.screen == key }
-                if (anchor != null) {
-                    withFrameNanos { }; withFrameNanos { }
-                    h.anchorPositions[anchor.key]?.let { current -> list.scrollBy(current - anchor.y) }
-                    h.returnAnchor = null
-                }
+                // User input may cancel a LazyList mutation. Keep that cancellation in a
+                // child so it cannot strand the viewport before revealing its content.
+                // Cancelling this effect for a new load still cancels the child normally.
+                launch {
+                    list.scrollToItem(target.first, target.second)
+                    if (anchor != null) {
+                        withFrameNanos { }; withFrameNanos { }
+                        h.anchorPositions[anchor.key]?.let { current -> list.scrollBy(current - anchor.y) }
+                    }
+                }.join()
+                if (anchor != null && h.returnAnchor === anchor) h.returnAnchor = null
                 restored = true
                 loading.restored = true
                 settling = false
