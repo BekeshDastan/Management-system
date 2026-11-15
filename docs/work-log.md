@@ -849,3 +849,10 @@
 - Всеuser-facingошибкипроходятuserMessage: boundedlocalizedmessagesлибоfriendlyfallback безSQL/serializer/URI/path. Trueunknownsaveотличаетсяототката, UIнеобъявляетуспехпоанимации.
 - Runtime37наsyntheticdata:первыйзапуск→USDAportion150г→250.5ккал→weight72.4/sleep7ч30→полнота/отчёт, actualsystempicker/import→caption/meal→feed→reopen/update/add/delete→правильныйвозвратPASS. ПослеAPK-rupdateQAданныесохранились; этопокаdebugsignature, финальныйrelease/samekeyupdateследуетотдельно.
 - Файлы: MainActivity.kt/DietApplication.kt/AppMediaActions.kt/messages/UserMessages.kt, docs/work-log.md. Debugcompile/unit/Lint/80case29+manual37проверены; EspressoхarnessAPI37обновляетсяотдельнойtest-onlyчастью. Diff/ссылки/UTF-8; отдельныйcommit/push/remoteSHA. Ключи/реальнаяистория/SDK/APKнепубликуютсявGit.
+
+## 2026-11-15 — исправление: стабильный UI test harness Android17
+
+- Полный nativewiring опубликован0c59fc447be851414f9b33e61f304e439ac24b22, remoteпроверен. ПервоеавтоисполнениеAPI37 выявило24UIharnessfailureиз81: transitiveEspresso3.5вызывалудалённыйhiddenInputManager.getInstance. MainappужеmanualPASS, ноавтоPASSненазывался.
+- Закреплёнexplicit androidTestEspresso3.7.0stable, официальныйsourceSDK23+getSystemService/релизныеоснованияпроверены. Толькотестоваяdependency, неновыйUI/network/runtimepermission. Metadata+29lines:core/idling3.7иerrorprone2.30SHA, существующиеhashesнетронуты.
+- Compile16(fullwriteverification)PASS5m54; normalstrictcompile17/lintPASS2m02. Official16KiB/API37getconf16384,fullrun17 81cases/0failure/0skip/111.131с:включая24UI/Gainmap/SQLite/DataStore/graphics. S2read7662мс/seed3831/PSS110113→121945KiB, emulatoronlysingleiteration. Физическийp95неPASS.
+- Файлы: app/build.gradle.kts, gradle/libs.versions.toml/verification-metadata.xml, docs/build-validation.md/work-log.md. ЗависимостьизGoogleMaven,primarydocs/sourceпроверены, разрешённыйmin29сохранён. Diff/UTF-8/links, отдельныйcommit/push/remoteSHA.

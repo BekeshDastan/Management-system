@@ -91,3 +91,13 @@ Targeted run11:5tests PASS (4ReportQueries+S2),19.504с всего. В неиз�
 Предыдущий full12 завершился SIGSEGV в native SQLite при переходе между media tests. Локальный tombstone сопоставлен с APK mapping/libsqliteJni/releaseMemArray; найден небезопасный teardown cancel→db.close без join при IO observer. Все такие test/reopen scopes теперь cancelAndJoin до close, без задержек «на удачу» и подавления ошибок. Production DB живёт весь процесс и не закрывается этой тестовой очисткой. После исправления весь набор80 прошёл; это один полный повтор, не доказательство всех crash-interleavings.
 
 Новый RGBA_F16/P3 case первоначально честно отказал: API29 Bitmap PNG encoder выдал8бит. Fixture заменена настоящим тестовым16-bit PNG (CRC32/Deflater + реальный native P3 iCCP); native decode подтвердил F16/wide gamut. Затем проверены свежий opaque ARGB_8888/sRGB JPEG, белая прозрачная область/цвет. Большой4096×1024 RGB565 PNG проходит выбранный адаптивный profile, пропорции/цвета сохранены, bitmap источника освобождён до импорта.
+
+## Android17/API37 и16KiB — полный run17
+
+Официальный Google APIs ps16k/x86_64 образ37.0, emulator37.2.13/WHPX,2vCPU/2048MiB; getconf PAGESIZE=16384. Full run17:81tests PASS/0failures/0skips за111.131с. Включён настоящий Gainmap JPEG case: source hasGainmap+MPF подтверждены, свежий master безgainmap/MPF/APP1 и с корректными SDR pixels. Это native synthetic codec check, не испытание S23 camera/HDR-display.
+
+S2food slice на этом run:100000facts/3653dates,seed3831мс/read7662мс; PSS110113→121945KiB. ТочностьN/Q/all4/600buckets/lastpage PASS; это одна итерация эмулятора, не физическийp95/3с. Статические16KiB ELF/ZIP проверки дополняются фактическим запуском всех nativeSQLite/DataStore/graphics компонентов в16KiB процессе.
+
+Первый стандартный API37/run15 выявил24отказа UI harness: Compose transitively выбрал Espresso3.5.0 с reflection InputManager.getInstance, удалённым Android17. Явно закреплён test-only стабильный Espresso3.7.0; его официальный source использует getSystemService наAPI23+, [release notes](https://developer.android.com/jetpack/androidx/releases/test) подтверждают изменение. Остальные57cases того run прошли. Main runtime dependencies/min29/target37 не изменены; SHA256 новых тестовых артефактов добавлены, прежние не ослаблены.
+
+После этого compile16 с обновлением metadata PASS; обычная strict compile17/lint PASS. Полный81case16KiB run17 выше подтверждает исправленный Espresso наSDK37; стандартный4KiB повтор записывается отдельно.
