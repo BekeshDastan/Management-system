@@ -54,7 +54,7 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
     ErrorNotice(dayError)
     Action("＋ Добавить еду") { h.navigate("add-food") }
     DayCompletionControl(day?.food)
-    state.drafts.take(3).forEach { draft -> DietCard("Черновик ждёт вас") { Muted("${draft.kind} · ${draft.selectedLocalDate?.let(::dateLabel).orEmpty()}"); Action("Продолжить", secondary = true) { h.resume(draft) } } }
+    state.drafts.take(3).forEach { draft -> DietCard("Черновик ждёт вас") { Muted("${formLabel(draft.kind)} · ${draft.selectedLocalDate?.let(::dateLabel).orEmpty()}"); Action("Продолжить", secondary = true) { h.resume(draft) } } }
     if (state.drafts.isNotEmpty()) TextButton(onClick = { h.navigate("drafts") }) { Text("Все черновики →") }
     h.preferences.homeOrder.filterNot { it in h.preferences.hiddenHome }.forEach { block -> when (block) {
         "hero" -> CoverArt(h.preferences.cover)
@@ -66,7 +66,7 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
         }
         "prompt" -> DietCard(color = MaterialTheme.colorScheme.primaryContainer) { Eyebrow("Маленькое напоминание"); Text("Достаточно записать как было.", style = MaterialTheme.typography.headlineSmall); Muted("Не каждый день должен быть идеальным. Наблюдения помогают замечать свой ритм.") }
         "measurements" -> MeasurementsCards()
-        "level" -> if (h.preferences.gameLevels) { val level = GameRules.level(state.completedDayCount); DietCard("${level.number} · ${level.name}") { Muted("${state.completedDayCount} заполненных дат. Уровень растёт за ведение дневника, а не за количество еды или изменение веса."); level.daysToNext?.let { Muted("До следующего уровня: $it дат") }; TextButton(onClick = { h.navigate("game") }) { Text("Названия и уровни →") } } }
+        "level" -> if (h.preferences.gameLevels) { val level = GameRules.level(state.completedDayCount); DietCard("${level.number} · ${level.name}") { Muted("Заполненных дат: ${state.completedDayCount}. Уровень растёт за ведение дневника, а не за количество еды или изменение веса."); level.daysToNext?.let { Muted("До следующего уровня — ещё ${recordedDateCount(it)}") }; TextButton(onClick = { h.navigate("game") }) { Text("Названия и уровни →") } } }
     } }
     Action("Открыть инструменты дня", secondary = true) { h.navigate("settings") }
 }

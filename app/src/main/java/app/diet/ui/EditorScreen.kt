@@ -15,12 +15,7 @@ import java.time.LocalDate
 @Composable
 internal fun EditorScreen() {
     val h = LocalUi.current; val s = h.form ?: return; val d = s.data; val kind = s.entity.kind
-    val title = when (kind) {
-        "profile", "onboarding-profile" -> "Немного о вас"; "weight" -> "Утренний вес"; "sleep" -> "Суммарный сон"; "goal", "onboarding-goal" -> "Ручные цели"
-        "product" -> "Свой продукт"; "recipe" -> "Свой рецепт"; "portion" -> "Добавить еду"; "entry" -> "Исправить запись"; "quick" -> "Быстрая запись"
-        "template" -> "Шаблон приёма"; "apply-template" -> "Добавить шаблон"; "plan" -> "План приёма"; "transfer" -> "Перенести в факт"; "copy" -> "Скопировать приём"
-        "moment" -> "Мой день"; "meal" -> "Приём пищи"; "category" -> "Категория"; "quick-portions" -> "Быстрые порции"; "reminder" -> "Напоминание"; else -> "Подтверждение действия"
-    }
+    val title = formLabel(kind)
     ScreenHeading(title, when (kind) { "weight" -> "Одна запись на дату. Любое значение — просто наблюдение."; "sleep" -> "Запишите общую длительность сна за выбранную дату."; "moment" -> "За кадром цифр. Без оценок и баллов."; else -> "Изменения появятся в дневнике после сохранения." })
     if (d["date"].isNotEmpty()) Pill(dateLabel(d["date"]))
     when (kind) {

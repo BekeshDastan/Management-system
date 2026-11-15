@@ -884,3 +884,10 @@
 - Реальныйsign+require-signature/staticcheckerуспешеннаfinalAPK14,219,379B/b62d72707dd43327c735ffad3029026bc2cea5339009af2fc24c919732168fd6. Публичныйсертификатпрежнийba726a7b3396655b56a2329827bc5de3874a12d37198ba8ac64134f783d43220; privatevalues/Gitникакнепечатались/непубликовались. appsource9c72,после негоMainнеизменён.
 - Nativeinstall29и37подписанногокандидатаужеуспешен; офлайнпервыйзапуск/food250.5/weight-sleep/profile37проверяютсяфактическимUI, финальныйsame-keyupdateещёpending. Этиchecksнепереносятсясdebug. Файлartifactsигнорируется, bin/privatekeysнеGit.
 - Файлы: scripts/sign_apk.py, docs/release-process.md/work-log.md. Проверкиpy_compile/реальноеsign/verify/Gitignore/diff/ссылки; отдельныйcommit/push/remoteSHA. Окончательныеinstall/updateитоги—следующаядокументальнаяфиксация.
+
+## 2026-11-15 — исправление видимых названий черновиков
+
+- ФинишныйпросмотрреальногоR8экранапоказалсыройkindweightнаhome; такойжеkind/groupбылвобщемспискечерновиков/настроек. ЭтоP2локализация,неполезнаяпользователюimplementationdetail. ОбщийUiLabelsпереводитизвестныетипыформ/групп,unknownпоказывается«Черновик/Настройки», исходныеpersistedкодынеизменены. Editorиспользуеттотжесловарьзаголовков, известныхзаголовкисохранены.
+- Заодноустраненаформа«1дат»: счётчик«Заполненныхдат:N», подписьследующегоуровнявыбираетдата/даты/датсучётом11–14. Диапазоны/счёт/наградыигры/Room/JSON/operationIDs не менялись.
+- Compile19+20/debug/R8/fullLintdebug-release/48JVMcasesPASS;20прошёл1m33. Этообратимаяправкаслов/окончаний; дополнительные зеркальныеunitтестыневводились. НовыйsignedAPKпроверяетсяустановкойповерхзаполненногоб62на29/37;businesssmokeстарогопакетасохраняетсявотчётесегоSHA,неподменяетсяновым.
+- Файлы: ui/UiLabels.kt/DiaryScreens.kt/EditorScreen.kt/SettingsScreens.kt, docs/work-log.md. Провереныполнотаdraftkind/groupсловаря/доступныйfallback, известныеeditorназваниянепереименованы, diff/UTF-8/Lint0errors. Отдельныйcommit/push/remoteSHA; источникзатемпереупаковываетсясзафиксированнымGitHEADдофинальнойподписи.
