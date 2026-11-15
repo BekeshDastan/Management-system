@@ -75,3 +75,11 @@ WebpPhotoEngineTest3 PASS API29: статический lossy WebP; прозра
 API29 ReminderSchedulerTest2 PASS в runs09/10: настоящие AlarmManager/PendingIntent/NotificationManager и отдельная синтетическая Room. После setWindow outbox подтверждается и immutable PendingIntent существует; handleAlarm публикует реальную notification с общим текстом/intent, повтор не создаёт второй occurrence; disable отменяет pending notification и alarm intent. Старая generation, чужая timezone и новая generation после уже claimed даты не дублируют dispatch.
 
 Это проверка реальных framework вызовов/каналов/posting с детерминированным временем, не ожидание ОС15минутного окна. Не подтверждены автоматическая доставка в Doze/после cold reboot/OEM, нажатие заблокированного экрана физического телефона, отсутствие задержек или фактическое прочтение пользователем. POSTED в ledger означает успешный вызов notify, не «доставлено». В UI эта неопределённость сформулирована.
+
+## История100000фактов — исправление чтения
+
+Первый S2food-only test на API29 не уложился в производственный10с deadline. По исходнику/EXPLAIN установлены повторные OFFSET-сканирования и повторная полная проверка одинаковых снимков. ReportQueries теперь проходит индекс(localDate,mealId,ordinal,id) compound keyset страницами250, без TEMP SORT/повторного начала диапазона; bounded LRU256 хранит только значения полного уже проверенного immutable ключа snapshot+quantity/quick в одном reader snapshot. Exact p/q и cancellation/deadline не ослаблены.
+
+Targeted run11:5tests PASS (4ReportQueries+S2),19.504с всего. В неизменённом S2fixture100000строк/3653даты:seed8169мс/read8305мс; PSSдо110432KiB/после124365KiB. N1826/Q913 и все4нутриента сверены независимой BigInteger cross-product arithmetic;≤600bucket и последние40точныхдат доступны, missing/zero/measurement-only различаются. Это одна итерация x86_64/2vCPUэмулятора, не p95 и не достижение3с наSamsung.
+
+Отдельные regressioncases:610строк одной даты с2приёмами, одинаковыми ordinal, >256unique key/eviction/изменённымquantity/quick/длинным диапазоном; NULL в quickнутриенте отклоняется, а не превращается черезSQLite.getLong в0. Их arithmetic/seek review выполнено независимо. Full12 позже прерван native teardownсбоем в другом классе; общийPASS не заявляется, отчётные cases до сбоя прошли.

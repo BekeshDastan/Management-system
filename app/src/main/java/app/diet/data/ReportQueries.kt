@@ -2,6 +2,8 @@ package app.diet.data
 
 import androidx.room.deferredTransaction
 import androidx.room.useReaderConnection
+import androidx.room.PooledConnection
+import androidx.sqlite.SQLiteStatement
 import app.diet.domain.DailyGoal
 import app.diet.domain.DatePeriod
 import app.diet.domain.DayStatus
@@ -75,7 +77,7 @@ data class ReportDay(
 
 data class ReportDayPage(val period: DatePeriod, val offset: Long, val totalDays: Long, val days: List<ReportDay>, val hasMore: Boolean)
 
-/** One Room read snapshot, 250-row cursors, one current food day and <=600 plot buckets. */
+/** One Room read snapshot, bounded 250-row cursors, one food day and <=600 plot buckets. */
 object ReportQueries {
     private const val CHUNK = 250
     private const val MAX_PLOT_BUCKETS = 600
@@ -87,7 +89,7 @@ object ReportQueries {
             withTimeout(DEADLINE_MS) {
                 val job = currentCoroutineContext()[Job]
                 database.useReaderConnection { connection -> connection.deferredTransaction {
-                    aggregate(database.dao(), period, MAX_PLOT_BUCKETS, job, collectExact = false).bundle
+                    aggregate(database.dao(), connection, period, MAX_PLOT_BUCKETS, job, collectExact = false).bundle
                 } }
             }
         }
@@ -105,7 +107,7 @@ object ReportQueries {
             withTimeout(DEADLINE_MS) {
                 val job = currentCoroutineContext()[Job]
                 database.useReaderConnection { connection -> connection.deferredTransaction {
-                    val result = aggregate(database.dao(), pagePeriod, limit, job, collectExact = true)
+                    val result = aggregate(database.dao(), connection, pagePeriod, limit, job, collectExact = true)
                     val rows = result.bundle.series.map { point ->
                         val saved = result.exactDays.getValue(point.start)
                         saved.copy(goal = point.goalMean)
@@ -118,7 +120,7 @@ object ReportQueries {
 
     private data class AggregateResult(val bundle: ReportBundle, val exactDays: Map<LocalDate, ReportDay>)
 
-    private suspend fun aggregate(dao: DietDao, period: DatePeriod, maxBuckets: Int, job: Job?, collectExact: Boolean): AggregateResult {
+    private suspend fun aggregate(dao: DietDao, connection: PooledConnection, period: DatePeriod, maxBuckets: Int, job: Job?, collectExact: Boolean): AggregateResult {
         val start = period.start.toString()
         val end = period.endInclusive.toString()
         val cancelled = { job?.isActive == false }
@@ -132,7 +134,15 @@ object ReportQueries {
             Bucket(DatePeriod(first, minOf(period.endInclusive, first.plusDays(width - 1))), cancelled)
         }
         val exact = if (collectExact) HashMap<LocalDate, ReportDay>() else null
-        val entries = Cursor { offset, limit -> dao.entriesPage(start, end, offset, limit) }
+        // OFFSET re-scans the history for each page. Seek in the existing compound index
+        // instead; the order within a date does not affect any exact nutrient sum.
+        val values = FoodValues()
+        var foodAfter: FoodKey? = null
+        val entries = Cursor { _, limit ->
+            foodPage(connection, start, end, foodAfter, limit, values, job).also { rows ->
+                rows.lastOrNull()?.let { foodAfter = it.key }
+            }
+        }
         val confirmations = Cursor { offset, limit -> dao.confirmationsPage(start, end, offset, limit) }
         val weights = Cursor { offset, limit -> dao.weightsPage(start, end, offset, limit) }
         val sleeps = Cursor { offset, limit -> dao.sleepsPage(start, end, offset, limit) }
@@ -184,7 +194,7 @@ object ReportQueries {
             var rowCount = 0
             while (entries.peek()?.localDate == key) {
                 job?.ensureActive()
-                total += checkNotNull(entries.take()).nutrients()
+                total += checkNotNull(entries.take()).nutrients
                 rowCount = Math.addExact(rowCount, 1)
             }
             val confirmed = confirmations.peek()?.localDate == key
@@ -252,6 +262,74 @@ object ReportQueries {
         var goalDays = 0
         var momentDays = 0L
         var recordedDays = 0L
+    }
+
+    private data class FoodKey(val date: String, val meal: String, val ordinal: Long, val id: String)
+    private data class FoodRow(val key: FoodKey, val nutrients: Nutrients) {
+        val localDate: String get() = key.date
+    }
+
+    /** Only immutable, fully validated values are memoised, for this read snapshot alone. */
+    private class FoodValues {
+        private data class Portion(val snapshot: SnapshotColumns, val quantity: Long)
+        private val cache = object : LinkedHashMap<Any, Nutrients>(256, .75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Any, Nutrients>?) = size > 256
+        }
+
+        fun read(row: SQLiteStatement): Nutrients {
+            val key: Any = when (row.getText(4)) {
+                "quick" -> {
+                    // SQLite getLong(NULL) returns zero; absence must never become
+                    // a saved explicit zero, even for a malformed historical row.
+                    require((22..25).none(row::isNull)) { "Повреждена быстрая запись питания" }
+                    MicroNutrients(row.getLong(22), row.getLong(23), row.getLong(24), row.getLong(25))
+                }
+                "portion" -> Portion(SnapshotColumns(
+                    name = row.getText(5), unit = row.getText(6), basisMicros = row.getLong(7),
+                    portionName = if (row.isNull(8)) null else row.getText(8),
+                    kcalNumerator = row.getText(9), kcalDenominator = row.getText(10),
+                    proteinNumerator = row.getText(11), proteinDenominator = row.getText(12),
+                    fatNumerator = row.getText(13), fatDenominator = row.getText(14),
+                    carbsNumerator = row.getText(15), carbsDenominator = row.getText(16),
+                    snapshotFormatVersion = checkedVersion(row.getLong(17)),
+                    calcContractVersion = checkedVersion(row.getLong(18)),
+                    sourceKind = row.getText(19), nameKey = row.getText(20),
+                ), row.getLong(21))
+                else -> throw IllegalArgumentException("Неизвестный вид записи питания")
+            }
+            return cache[key] ?: when (key) {
+                is MicroNutrients -> key.toDomain()
+                is Portion -> key.snapshot.toDomain().portion(key.quantity)
+                else -> error("Неизвестная пищевая ценность")
+            }.also { cache[key] = it }
+        }
+
+        private fun checkedVersion(value: Long): Int {
+            require(value in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()) { "Повреждена версия снимка" }
+            return value.toInt()
+        }
+    }
+
+    private suspend fun foodPage(connection: PooledConnection, start: String, end: String, after: FoodKey?, limit: Int, values: FoodValues, job: Job?): List<FoodRow> {
+        val projection = "SELECT id,localDate,mealId,ordinal,kind,snapshot_name,snapshot_unit,snapshot_basisMicros,snapshot_portionName," +
+            "snapshot_kcalNumerator,snapshot_kcalDenominator,snapshot_proteinNumerator,snapshot_proteinDenominator," +
+            "snapshot_fatNumerator,snapshot_fatDenominator,snapshot_carbsNumerator,snapshot_carbsDenominator," +
+            "snapshot_snapshotFormatVersion,snapshot_calcContractVersion,snapshot_sourceKind,snapshot_nameKey," +
+            "quantityMicros,quick_kcal,quick_protein,quick_fat,quick_carbs FROM food_entries "
+        // Do not retain a competing localDate >= start on later pages: SQLite may
+        // otherwise pick that weaker range and filter the tuple from the beginning.
+        val range = if (after == null) "localDate >= ? AND localDate <= ? " else "(localDate,mealId,ordinal,id) > (?,?,?,?) AND localDate <= ? "
+        return connection.usePrepared(projection + "WHERE " + range + "ORDER BY localDate,mealId,ordinal,id LIMIT ?") { row ->
+            if (after == null) { row.bindText(1, start); row.bindText(2, end) }
+            else { row.bindText(1, after.date); row.bindText(2, after.meal); row.bindLong(3, after.ordinal); row.bindText(4, after.id); row.bindText(5, end) }
+            row.bindLong(if (after == null) 3 else 6, limit.toLong())
+            buildList {
+                while (row.step()) {
+                    job?.ensureActive()
+                    add(FoodRow(FoodKey(row.getText(1), row.getText(2), row.getLong(3), row.getText(0)), values.read(row)))
+                }
+            }
+        }
     }
 
     private class Cursor<T>(private val load: suspend (Long, Int) -> List<T>) {

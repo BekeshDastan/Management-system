@@ -7,7 +7,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.diet.domain.*
 import java.io.File
+import java.math.BigInteger
 import java.time.LocalDate
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -149,6 +151,79 @@ class ReportQueriesTest {
                 assertEquals(comparison.actualMean.kcal * Rational.of(2), comparison.targetMean.kcal)
             }
             writer.join()
+        }
+    }
+
+    @Test fun compoundSeekAndBoundedValueCacheKeepEveryTiedRowAndEvictedValue(): Unit = runBlocking {
+        val first = LocalDate.of(2020, 1, 1)
+        val last = first.plusDays(601)
+        val left = UUID(0, 1).toString()
+        val right = UUID(0, 2).toString()
+        val componentNumerators = longArrayOf(1, 2, 5, 13)
+        val componentDenominators = longArrayOf(3, 7, 11, 17)
+        val base = Nutrients(Rational.of(1, 3), Rational.of(2, 7), Rational.of(5, 11), Rational.of(13, 17))
+        val original = SnapshotColumns.from(NutritionSnapshot("Снимок 0", FoodUnit.PORTION, nutrientsPerBasis = base))
+        var quantitySum = 7L // The final date repeats the first snapshot after more than 256 distinct keys.
+        write { dao ->
+            dao.put(MealEntity(left, "Первый", NameKeys.normalize("Первый"), ordinal = 1))
+            dao.put(MealEntity(right, "Второй", NameKeys.normalize("Второй"), ordinal = 2))
+            repeat(610) { index ->
+                val quantity = when (index) { 608 -> 2L; 609 -> 1L; else -> index % 19L + 1 }
+                quantitySum += quantity
+                val snapshot = if (index >= 608) original else SnapshotColumns.from(NutritionSnapshot("Снимок $index", FoodUnit.PORTION, nutrientsPerBasis = base))
+                dao.put(FoodEntryEntity(id = UUID(1, index.toLong()).toString(), localDate = first.toString(),
+                    mealId = if (index < 305) left else right, ordinal = 0, snapshot = snapshot,
+                    quantityMicros = quantity * Numbers.MICRO_FACTOR, createdByOperationId = newId()))
+            }
+            repeat(3) { index ->
+                dao.put(FoodEntryEntity(localDate = first.plusDays(1).toString(), mealId = left, ordinal = index.toLong(),
+                    kind = "quick", quick = MicroNutrients(7, 11, 13, 17), createdByOperationId = newId()))
+            }
+            dao.put(FoodEntryEntity(localDate = last.toString(), mealId = right, ordinal = 0, snapshot = original,
+                quantityMicros = 7 * Numbers.MICRO_FACTOR, createdByOperationId = newId()))
+            listOf(first, first.plusDays(1), last).forEach { dao.put(DayConfirmationEntity(localDate = it.toString())) }
+        }
+        val report = ReportQueries.read(db, first, last)
+        assertEquals(3, report.nutrition.n)
+        assertEquals(602L, report.nutrition.m)
+        assertTrue(report.series.size <= 600)
+        assertTrue(report.series.any { it.aggregated })
+        // This oracle uses only integer cross products, not ReportEngine or Rational arithmetic.
+        val quick = longArrayOf(7, 11, 13, 17)
+        val mean = checkNotNull(report.nutrition.mean).components()
+        repeat(4) { index ->
+            val p = BigInteger.valueOf(componentNumerators[index] * quantitySum * Numbers.MICRO_FACTOR + 3 * quick[index] * componentDenominators[index])
+            val q = BigInteger.valueOf(componentDenominators[index] * Numbers.MICRO_FACTOR * 3)
+            assertEquals("All rows, component $index", p * mean[index].denominator, mean[index].numerator * q)
+        }
+        val beginning = ReportQueries.pageReportDays(db, first, last, 0, 2)
+        assertEquals(610, beginning.days.first().food.entryCount)
+        assertEquals(3, beginning.days.last().food.entryCount)
+        assertTrue(beginning.hasMore)
+        val final = ReportQueries.pageReportDays(db, first, last, 562, 40)
+        assertEquals(40, final.days.size)
+        assertFalse(final.hasMore)
+        assertEquals(last, final.days.last().date)
+        assertEquals(1, final.days.last().food.entryCount)
+        assertEquals(DayStatus.COMPLETE, final.days.last().food.status)
+        val nutrients = final.days.last().food.nutrients.components()
+        repeat(4) { index ->
+            assertEquals(BigInteger.valueOf(componentNumerators[index] * 7) * nutrients[index].denominator,
+                nutrients[index].numerator * BigInteger.valueOf(componentDenominators[index]))
+        }
+    }
+
+    @Test fun nullQuickNutrientsAreRejectedInsteadOfBecomingAnExplicitZero(): Unit = runBlocking {
+        write { dao ->
+            dao.put(FoodEntryEntity(localDate = day(8).toString(), mealId = mealId, ordinal = 0,
+                kind = "quick", quick = null, createdByOperationId = newId()))
+            dao.put(DayConfirmationEntity(localDate = day(8).toString()))
+        }
+        try {
+            ReportQueries.read(db, day(8), day(8))
+            fail("A corrupt nullable quick value must not be interpreted as a recorded zero")
+        } catch (expected: IllegalArgumentException) {
+            assertEquals("Повреждена быстрая запись питания", expected.message)
         }
     }
 }
