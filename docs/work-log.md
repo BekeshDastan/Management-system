@@ -841,3 +841,11 @@
 -24UItestsвключеныздеськакобщаяисполняемаярегрессияnativeслоёв:full80API29run13 иtarget24final15PASS. Manual37:250.5→751.5послеexplicitplanrepeat, P/F/C/goalточки,missingбез0, custom1900..2026bucketN1/M8, раскрытияотчётов; photo-feed/ID/meal/default/reopen/update/delete-returnPASS.
 - Final15узкий320dp/font2:activeNext152px≈57.9dp/безclipping, datewrap;light/darkpalette/iconsвизуальноPASS, wm/fontвозвращены. Это неphysicalTalkBack/OEM/всяa11ymatrix. API37autotestотдельнообнаружилстарыйtransitiveEspresso3.5reflection; меняетсятолькоtestdependency, manualappнеподменяетсяэтимотказом.
 - Файлы: ui/HistoryScreens.kt/ReportScreens.kt, androidTest/ui/DietUiTest.kt, docs/work-log.md. Compile15/Lint0errors/units48/diffPASS. Nativewiringпубликуетсяследующимкоммитом; отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — native integration: activity, picker и запуск
+
+- История/reportUI опубликованы7365ade713998f587d7261d51009b7026ce177e1, remoteпроверен. Полныйappsourceсвязываетсяздесь: DietApplicationодинappscope/repository/prefs/PhotoEngine/ReminderScheduler, MainActivityCompose+explicitnotificationpermission, PhotoPicker single/multipleпоfreeSlots, nativeViewer/Thumbnail, callbackticket/hostownership/rotationcancel.
+- StartupUIинициализируетRoom/starter/mediarecovery; receiverне делаетseeding/photodecode. TTDFотмечаетсяпослепрочитанныхUIданных, нераньше. ProviderURIнеперсистятся; лимитbatch/all-or-none/error/RAMguardsвnativecoordinator; ReadyпослеcancelвосстанавливаетсяпопрямомуmetadatareadсостабильнымиPhotoID.
+- Всеuser-facingошибкипроходятuserMessage: boundedlocalizedmessagesлибоfriendlyfallback безSQL/serializer/URI/path. Trueunknownsaveотличаетсяототката, UIнеобъявляетуспехпоанимации.
+- Runtime37наsyntheticdata:первыйзапуск→USDAportion150г→250.5ккал→weight72.4/sleep7ч30→полнота/отчёт, actualsystempicker/import→caption/meal→feed→reopen/update/add/delete→правильныйвозвратPASS. ПослеAPK-rupdateQAданныесохранились; этопокаdebugsignature, финальныйrelease/samekeyupdateследуетотдельно.
+- Файлы: MainActivity.kt/DietApplication.kt/AppMediaActions.kt/messages/UserMessages.kt, docs/work-log.md. Debugcompile/unit/Lint/80case29+manual37проверены; EspressoхarnessAPI37обновляетсяотдельнойtest-onlyчастью. Diff/ссылки/UTF-8; отдельныйcommit/push/remoteSHA. Ключи/реальнаяистория/SDK/APKнепубликуютсявGit.
