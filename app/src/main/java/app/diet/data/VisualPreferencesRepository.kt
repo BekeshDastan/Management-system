@@ -22,6 +22,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.security.MessageDigest
+import app.diet.domain.Numbers
 
 @Serializable
 data class PreferenceDraft(val id: String, val group: String, val baseRevision: Long, val draftRevision: Long = 1, val rawFields: Map<String, String>, val status: String = "OPEN", val formatVersion: Int = 1)
@@ -29,24 +30,25 @@ data class UnsupportedPreferenceDraft(val group: String, val rawFingerprint: Str
 
 data class VisualPreferences(
     val ready: Boolean = false, val error: String? = null,
-    val theme: String = "system", val largeText: Boolean = false,
+    val theme: String = "dark", val largeText: Boolean = false,
     val accent: String = "fern", val cover: String = "5",
     val homeOrder: List<String> = listOf("hero", "nutrition", "meals", "journal", "prompt", "measurements", "level"),
     val hiddenHome: Set<String> = emptySet(), val gameNames: Boolean = true, val gameLevels: Boolean = true,
     val report: Map<String, String> = emptyMap(), val viewContext: Map<String, String> = emptyMap(),
+    val desiredWeightCentiKg: Long? = null,
     val revisions: Map<String, Long> = emptyMap(), val drafts: List<PreferenceDraft> = emptyList(),
     val unsupportedDrafts: List<UnsupportedPreferenceDraft> = emptyList(),
 ) {
     val unsupportedDraftGroups: Set<String> get() = unsupportedDrafts.map { it.group }.toSet()
 }
 
-/** Owns no domain facts. Each update changes one preference group and its token atomically. */
+/** Stores preferences and the optional personal weight intention, never measured weight facts. */
 class VisualPreferencesRepository internal constructor(private val store: DataStore<Preferences>, scope: CoroutineScope) {
     constructor(context: Context, scope: CoroutineScope) : this(preferenceStore(context, scope), scope)
     private val json = Json { ignoreUnknownKeys = false; encodeDefaults = true }
     private val mutableState = MutableStateFlow(VisualPreferences())
     val state: StateFlow<VisualPreferences> = mutableState.asStateFlow()
-    private val groups = setOf("theme", "font", "appearance", "home", "gameNames", "gameLevels", "report", "view")
+    private val groups = setOf("theme", "font", "appearance", "home", "gameNames", "gameLevels", "report", "view", "weightTarget")
     private val observationRequests = MutableStateFlow(0L)
 
     init {
@@ -137,13 +139,14 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
             catch (_: DataFailure.Invalid) { unsupported += UnsupportedPreferenceDraft(group, rawFingerprint(raw)); null }
         }
         return VisualPreferences(ready = true,
-            theme = fields(p, "theme")["theme"] ?: "system", largeText = fields(p, "font")["large"]?.toBooleanStrict() ?: false,
+            theme = fields(p, "theme")["theme"] ?: "dark", largeText = fields(p, "font")["large"]?.toBooleanStrict() ?: false,
             accent = appearance["accent"] ?: "fern", cover = appearance["cover"] ?: "5",
             homeOrder = home["order"]?.split(',') ?: VisualPreferences().homeOrder,
             hiddenHome = home["hidden"]?.split(',')?.filter { it.isNotEmpty() }?.toSet() ?: emptySet(),
             gameNames = fields(p, "gameNames")["enabled"]?.toBooleanStrict() ?: true,
             gameLevels = fields(p, "gameLevels")["enabled"]?.toBooleanStrict() ?: true,
             report = fields(p, "report"), viewContext = fields(p, "view"),
+            desiredWeightCentiKg = Numbers.parseOptionalWeightCentiKg(fields(p, "weightTarget")["kg"].orEmpty()),
             revisions = groups.associateWith { p[revisionKey(it)] ?: 1 },
             drafts = drafts, unsupportedDrafts = unsupported)
     }
@@ -155,6 +158,7 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
             "appearance" -> require(fields.keys == setOf("accent", "cover") && fields["accent"] in listOf("fern", "berry", "ocean") && fields["cover"] in listOf("0", "1", "2", "3", "4", "5"))
             "home" -> { val order = requireNotNull(fields["order"]).split(','); val all = VisualPreferences().homeOrder.toSet(); val hidden = fields["hidden"]?.split(',')?.filter { it.isNotEmpty() } ?: emptyList(); require(fields.keys == setOf("order", "hidden") && order.size == all.size && order.toSet() == all && hidden.all { it in all }) }
             "gameNames", "gameLevels" -> require(fields.keys == setOf("enabled") && fields["enabled"] in listOf("true", "false"))
+            "weightTarget" -> { require(fields.keys == setOf("kg")); Numbers.parseOptionalWeightCentiKg(requireNotNull(fields["kg"])) }
             "report", "view" -> { require(fields.size <= 30); require(fields.all { it.key.length <= 80 && it.value.length <= 512 }) }
         }
     }

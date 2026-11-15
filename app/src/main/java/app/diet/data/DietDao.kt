@@ -19,6 +19,7 @@ internal interface DietDao {
     @Query("SELECT * FROM food_entries WHERE localDate BETWEEN :start AND :end ORDER BY localDate, ordinal, id LIMIT :limit OFFSET :offset") suspend fun entriesPage(start: String, end: String, offset: Long, limit: Int): List<FoodEntryEntity>
     @Query("SELECT * FROM food_day_confirmations WHERE localDate BETWEEN :start AND :end ORDER BY localDate") suspend fun confirmationsRange(start: String, end: String): List<DayConfirmationEntity>
     @Query("SELECT * FROM weight_records WHERE localDate BETWEEN :start AND :end ORDER BY localDate") suspend fun weightsRange(start: String, end: String): List<WeightEntity>
+    @Query("SELECT * FROM weight_records WHERE localDate <= :onOrBefore ORDER BY localDate DESC LIMIT 1") suspend fun latestWeight(onOrBefore: String): WeightEntity?
     @Query("SELECT * FROM sleep_records WHERE localDate BETWEEN :start AND :end ORDER BY localDate") suspend fun sleepsRange(start: String, end: String): List<SleepEntity>
     @Query("SELECT * FROM weight_records WHERE localDate BETWEEN :start AND :end ORDER BY localDate LIMIT :limit OFFSET :offset") suspend fun weightsPage(start: String, end: String, offset: Long, limit: Int): List<WeightEntity>
     @Query("SELECT * FROM sleep_records WHERE localDate BETWEEN :start AND :end ORDER BY localDate LIMIT :limit OFFSET :offset") suspend fun sleepsPage(start: String, end: String, offset: Long, limit: Int): List<SleepEntity>

@@ -1,6 +1,6 @@
 # Diet — локальный подписанный APK и обновления
 
-**Состояние 15 ноября2026:** текущий R8 APK1.1.0 подписан тем же постоянным ключом, versionCode2. Статическая проверка и нативные результаты обновления указаны в manifest текущего выпуска. [Точный файл/source/SHA и наблюдённые результаты](release-1.1.0.md). Unsigned и debug не выдаются за конечный пользовательский выпуск. Ключ не является аккаунтом/облачной синхронизацией или функцией резервной копии приложения.
+**Состояние 15 ноября2026:** текущий R8 APK1.2.0 подписан тем же постоянным ключом, versionCode3. Статическая проверка и нативные результаты обновления указаны в manifest текущего выпуска. [Точный файл/source/SHA и наблюдённые результаты](release-1.2.0.md). Unsigned и debug не выдаются за конечный пользовательский выпуск. Ключ не является аккаунтом/облачной синхронизацией или функцией резервной копии приложения.
 
 ## Постоянная подпись
 
@@ -11,8 +11,8 @@
 ## Команды
 
 1. scripts/build.ps1 :app:assembleRelease — minified/shrunk unsigned.
-2. python scripts/sign_apk.py app/build/outputs/apk/release/app-release-unsigned.apk artifacts/Diet-1.1.0.apk — проверка zipalign -c -P16 до подписи, затем v2/v3 signing. --init-key нужен только при первом создании; существующий ключ никогда не заменяется.
-3. python scripts/verify_apk.py artifacts/Diet-1.1.0.apk --release --require-signature --report artifacts/Diet-1.1.0.validation.json — non-debug/min29/target37, permissions, оба compiled XML,9доменных исключений каждого транспорта, отсутствие DB/keys,60starter, все native PT_LOAD и ZIP16KiB, apksigner verify/публичный certificate SHA.
+2. python scripts/sign_apk.py app/build/outputs/apk/release/app-release-unsigned.apk artifacts/Diet-1.2.0.apk — проверка zipalign -c -P16 до подписи, затем v2/v3 signing. --init-key нужен только при первом создании; существующий ключ никогда не заменяется.
+3. python scripts/verify_apk.py artifacts/Diet-1.2.0.apk --release --require-signature --report artifacts/Diet-1.2.0.validation.json — non-debug/min29/target37, permissions, оба compiled XML,9доменных исключений каждого транспорта, отсутствие DB/keys,60starter, все native PT_LOAD и ZIP16KiB, apksigner verify/публичный certificate SHA.
 4. Установить именно подписанный minified APK на тестовые API29/37, пройти сценарии, force-stop/relaunch и same-key update с контрольными фактами/настройками/фото. Успех debug-тестов не доказывает отсутствие R8-specific проблем. Cloud/D2D/OEM/физические проверки остаются отдельными.
 
 [Android apksigner](https://developer.android.com/tools/apksigner) требует выравнивать APK до подписи; изменение ZIP после подписи делает её недействительной. [Сборка командной строкой](https://developer.android.com/build/building-cmdline) описывает отдельную ручную подпись. Использован BuildTools36.0.0 и JDK21 из принятой основы.
@@ -25,7 +25,7 @@
 
 ## Состав подписанного установочного выпуска
 
-Единственный текущий manifest файла — [release-1.1.0.md](release-1.1.0.md): размер, SHA256 APK, встроенный source revision, сертификат, исполненные установки/обновления и открытая физическая приёмка. Это избегает двух расходящихся источников контрольных сумм.
+Единственный текущий manifest файла — [release-1.2.0.md](release-1.2.0.md): размер, SHA256 APK, встроенный source revision, сертификат, исполненные установки/обновления и открытая физическая приёмка. Это избегает двух расходящихся источников контрольных сумм.
 
 Финальный источник скомпилирован/R8/Lint проверен, затем после commit переупакован, чтобы VCS metadata совпадали с GitSHA исходников. Sign script перед чтением ключа проверил, что оба private paths ignored/untracked. require-signature PASS вместе с9domains каждого compiled backup transport, отсутствием DirectBoot/INTERNET/broad media/camera/exact alarm/DB/keys, starter60 и12nativeбиблиотеками на4ABI; ELF LOAD/ZIP offsets16KiB подтверждены. APK не менялся после подписи.
 

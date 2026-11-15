@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.TextUnit
 import app.diet.data.VisualPreferences
 import app.diet.domain.Nutrients
 
@@ -54,35 +55,57 @@ internal val LocalReducedMotion = staticCompositionLocalOf { false }
 @Composable
 internal fun DietTheme(preferences: VisualPreferences, preview: Map<String, String>? = null, content: @Composable () -> Unit) {
     val dark = when (preferences.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }
+    // The primary palette is fixed; appearance accents only tint secondary surfaces.
     val accent = preview?.get("accent") ?: preferences.accent
-    val primary = when (accent) { "berry" -> if (dark) Color(0xFFF0BAD3) else Color(0xFF823F61); "ocean" -> if (dark) Color(0xFFA5D9E8) else Color(0xFF236678); else -> if (dark) Color(0xFFC2E88C) else Color(0xFF275E43) }
-    val soft = when (accent) { "berry" -> if (dark) Color(0xFF483240) else Color(0xFFF2E2E9); "ocean" -> if (dark) Color(0xFF29434B) else Color(0xFFE0EDF0); else -> if (dark) Color(0xFF304532) else Color(0xFFE9EEDC) }
-    val scheme = if (dark) darkColorScheme(primary = primary, onPrimary = Color(0xFF193125), primaryContainer = soft, onPrimaryContainer = Color(0xFFF0F2E6), background = Color(0xFF17251E), onBackground = Color(0xFFF0F2E6), surface = Color(0xFF22332A), onSurface = Color(0xFFF0F2E6), surfaceVariant = soft, onSurfaceVariant = Color(0xFFB2C0AE), outline = Color(0xFF8DA78F), error = Color(0xFFFFB0A6))
-        else lightColorScheme(primary = primary, onPrimary = Color.White, primaryContainer = soft, onPrimaryContainer = Color(0xFF1C382B), background = Color(0xFFF5F5EB), onBackground = Color(0xFF1C382B), surface = Color(0xFFFFFEF8), onSurface = Color(0xFF1C382B), surfaceVariant = soft, onSurfaceVariant = Color(0xFF4D6253), outline = Color(0xFF697D6B), error = Color(0xFFA03D37))
+    val secondaryTint = when (accent) { "berry" -> if (dark) Color(0xFF332633) else Color(0xFFF2E2E9); "ocean" -> if (dark) Color(0xFF222D34) else Color(0xFFDCE9EE); else -> if (dark) Color(0xFF2C2826) else Color(0xFFF4E5D9) }
+    val primary = if (dark) Color(0xFFB8F36B) else Color(0xFF3C6016)
+    val soft = if (dark) Color(0xFF292D33) else Color(0xFFE7EDD9)
+    val scheme = if (dark) darkColorScheme(
+        primary = primary, onPrimary = Color(0xFF0E1013), primaryContainer = soft, onPrimaryContainer = Color.White,
+        background = Color(0xFF0E1013), onBackground = Color.White,
+        surface = Color(0xFF1D2025), onSurface = Color.White,
+        surfaceVariant = Color(0xFF292D33), onSurfaceVariant = Color(0xFFA1A1AA),
+        surfaceContainerLowest = Color(0xFF0E1013), surfaceContainerLow = Color(0xFF1D2025),
+        surfaceContainer = Color(0xFF1D2025), surfaceContainerHigh = Color(0xFF292D33), surfaceContainerHighest = Color(0xFF292D33),
+        surfaceDim = Color(0xFF0E1013), surfaceBright = Color(0xFF292D33),
+        outline = Color(0xFF7E8590), outlineVariant = Color(0xFF393D43),
+        secondary = Color(0xFF68C8F1), tertiary = Color(0xFFFFAB80),
+        error = Color(0xFFFF9299), errorContainer = Color(0xFF49252C), onErrorContainer = Color(0xFFFFDADF)
+    ) else lightColorScheme(primary = primary, onPrimary = Color.White, primaryContainer = soft, onPrimaryContainer = Color(0xFF243316), background = Color(0xFFF4F5F2), onBackground = Color(0xFF171B20), surface = Color.White, onSurface = Color(0xFF171B20), surfaceVariant = Color(0xFFE8EBE5), onSurfaceVariant = Color(0xFF565D66), outline = Color(0xFF717984), outlineVariant = Color(0xFFD1D6DC), secondary = Color(0xFF21677C), tertiary = Color(0xFF9B4A25), error = Color(0xFFA03D37))
     val context = LocalContext.current
     val window = remember(context) { context.dietActivity()?.window }
     SideEffect { window?.let { WindowCompat.getInsetsController(it, it.decorView).apply { isAppearanceLightStatusBars = !dark; isAppearanceLightNavigationBars = !dark } } }
     val reduced = runCatching { Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f }.getOrDefault(false)
     val density = LocalDensity.current
-    CompositionLocalProvider(LocalDietColors provides DietColors(Color(0xFF163F2E), Color(0xFFD2EF75), if (dark) Color(0xFF5A4330) else Color(0xFFF4D4B4), if (dark) Color(0xFF423A50) else Color(0xFFE9E0F7), if (dark) Color(0xFF2B444B) else Color(0xFFDCE9EE)), LocalReducedMotion provides reduced,
+    CompositionLocalProvider(LocalDietColors provides DietColors(scheme.surface, primary, secondaryTint, if (dark) Color(0xFF292735) else Color(0xFFE9E0F7), if (dark) Color(0xFF222D34) else Color(0xFFDCE9EE)), LocalReducedMotion provides reduced,
         LocalDensity provides Density(density.density, density.fontScale * if (preferences.largeText) 1.15f else 1f)) {
-        MaterialTheme(colorScheme = scheme.copy(secondary = primary, onSecondary = scheme.onPrimary, secondaryContainer = soft, onSecondaryContainer = scheme.onPrimaryContainer), shapes = Shapes(extraSmall = RoundedCornerShape(12.dp), small = RoundedCornerShape(16.dp), medium = RoundedCornerShape(22.dp), large = RoundedCornerShape(28.dp)), typography = Typography(
+        MaterialTheme(colorScheme = scheme.copy(secondaryContainer = soft, onSecondaryContainer = scheme.onPrimaryContainer), shapes = Shapes(extraSmall = RoundedCornerShape(8.dp), small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(16.dp), large = RoundedCornerShape(20.dp)), typography = Typography(
             displaySmall = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.ExtraBold, fontSize = 40.sp, lineHeight = 44.sp, letterSpacing = (-1.8).sp),
             headlineLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp, letterSpacing = (-1).sp),
             headlineSmall = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 30.sp, letterSpacing = (-.6).sp),
             titleLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 21.sp, lineHeight = 27.sp),
             titleMedium = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 24.sp),
             bodyLarge = androidx.compose.ui.text.TextStyle(fontSize = 16.sp, lineHeight = 24.sp), bodyMedium = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, lineHeight = 21.sp),
-            labelLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 20.sp), labelSmall = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 1.sp)), content = content)
+            labelLarge = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 20.sp), labelSmall = androidx.compose.ui.text.TextStyle(fontWeight = FontWeight.Bold, fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 1.sp)).compact(), content = content)
     }
+}
+
+private fun Typography.compact(): Typography {
+    fun TextUnit.small() = if (this == TextUnit.Unspecified) this else this * .88f
+    fun androidx.compose.ui.text.TextStyle.small() = copy(fontSize = fontSize.small(), lineHeight = lineHeight.small(), letterSpacing = letterSpacing.small())
+    return copy(displayLarge = displayLarge.small(), displayMedium = displayMedium.small(), displaySmall = displaySmall.small(),
+        headlineLarge = headlineLarge.small(), headlineMedium = headlineMedium.small(), headlineSmall = headlineSmall.small(),
+        titleLarge = titleLarge.small(), titleMedium = titleMedium.small(), titleSmall = titleSmall.small(),
+        bodyLarge = bodyLarge.small(), bodyMedium = bodyMedium.small(), bodySmall = bodySmall.small(),
+        labelLarge = labelLarge.small(), labelMedium = labelMedium.small(), labelSmall = labelSmall.small())
 }
 
 private tailrec fun Context.dietActivity(): Activity? = when (this) { is Activity -> this; is ContextWrapper -> if (baseContext === this) null else baseContext.dietActivity(); else -> null }
 
 @Composable
 internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subtitle: String? = null, color: Color = MaterialTheme.colorScheme.surface, content: @Composable ColumnScope.() -> Unit) {
-    Surface(modifier.fillMaxWidth(), shape = RoundedCornerShape(25.dp), color = color, tonalElevation = 0.dp) {
-        Column(Modifier.padding(18.dp).animateContentSize(tween(if (LocalReducedMotion.current) 0 else 180)), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Surface(modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), color = color, tonalElevation = 0.dp) {
+        Column(Modifier.padding(16.dp).animateContentSize(tween(if (LocalReducedMotion.current) 0 else 180)), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             title?.let { Text(it, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() }) }
             subtitle?.let { Muted(it) }; content()
         }
@@ -93,7 +116,7 @@ internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subt
 
 @Composable internal fun Muted(text: String, modifier: Modifier = Modifier) = Text(text, modifier, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
 @Composable internal fun Eyebrow(text: String) = Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-@Composable internal fun Pill(text: String, modifier: Modifier = Modifier) { Surface(modifier, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)) { Text(text, Modifier.padding(horizontal = 11.dp, vertical = 6.dp), style = MaterialTheme.typography.labelMedium) } }
+@Composable internal fun Pill(text: String, modifier: Modifier = Modifier) { Surface(modifier, color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)) { Text(text, Modifier.padding(horizontal = 9.dp, vertical = 4.dp), style = MaterialTheme.typography.labelMedium) } }
 @Composable internal fun Action(text: String, enabled: Boolean = true, secondary: Boolean = false, onClick: () -> Unit) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -101,9 +124,9 @@ internal fun DietCard(modifier: Modifier = Modifier, title: String? = null, subt
     val scale by animateFloatAsState(if (pressed && !reduced) .98f else 1f, tween(if (reduced) 0 else 90), label = "button press")
     val haptic = LocalHapticFeedback.current
     val click = { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); onClick() }
-    val modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp).scale(scale)
-    if (secondary) OutlinedButton(click, modifier, enabled = enabled, shape = RoundedCornerShape(16.dp), interactionSource = interaction) { Text(text) }
-    else Button(click, modifier, enabled = enabled, shape = RoundedCornerShape(16.dp), interactionSource = interaction) { Text(text) }
+    val modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).scale(scale)
+    if (secondary) OutlinedButton(click, modifier, enabled = enabled, shape = RoundedCornerShape(12.dp), interactionSource = interaction) { Text(text) }
+    else Button(click, modifier, enabled = enabled, shape = RoundedCornerShape(12.dp), interactionSource = interaction) { Text(text) }
 }
 @Composable internal fun EmptyState(title: String, message: String, action: String? = null, onAction: () -> Unit = {}) {
     DietCard(color = MaterialTheme.colorScheme.primaryContainer) { Text("✦", style = MaterialTheme.typography.headlineLarge); Text(title, style = MaterialTheme.typography.titleLarge); Muted(message); action?.let { Action(it, onClick = onAction) } }

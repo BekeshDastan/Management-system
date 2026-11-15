@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
@@ -527,6 +528,12 @@ class DietRepository(
     suspend fun queryPlans(start: String, end: String, offset: Long = 0, limit: Int = 40): List<PlanEntity> { date(start, false); date(end, false); require(start <= end && offset >= 0 && limit in 1..100); return dao.plansPage(start, end, offset, limit) }
     suspend fun queryTransfers(planId: String, offset: Long = 0, limit: Int = 40): List<TransferEntity> { require(offset >= 0 && limit in 1..100); return dao.transfersPage(planId, offset, limit) }
     suspend fun readReport(start: LocalDate, endInclusive: LocalDate): ReportBundle = ReportQueries.read(database, start, endInclusive)
+    suspend fun latestWeight(onOrBefore: String = LocalDate.now(clock).toString()): WeightEntity? {
+        DomainDates.validateFactDate(DomainDates.parse(onOrBefore), LocalDate.now(clock))
+        return withContext(Dispatchers.IO) { database.useReaderConnection { connection -> connection.deferredTransaction {
+            dao.latestWeight(onOrBefore)?.also { app.diet.domain.WeightMeasurement(DomainDates.parse(it.localDate), it.centiKg.toLong()) }
+        } } }
+    }
     suspend fun pageReportDays(start: LocalDate, endInclusive: LocalDate, offset: Long = 0, limit: Int = 40): ReportDayPage = ReportQueries.pageReportDays(database, start, endInclusive, offset, limit)
     suspend fun catalogSeedV1Applied(): Boolean = writer.withLock {
         dao.getReceipt(CATALOG_SEED_V1)?.let { if (it.kind != "catalog-seed-v1") throw DataFailure.Conflict(); true } ?: false

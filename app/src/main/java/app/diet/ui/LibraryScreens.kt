@@ -146,14 +146,11 @@ private fun UiHost.catalogField(mode: String, key: String, value: String) {
         catch (e: CancellationException) { throw e } catch (e: Exception) { error = app.diet.messages.userMessage(e, "Не удалось прочитать записи") } finally { loading = false }
     }
     ScreenLoad(loading)
-    ScreenHeading(if (plan) "План питания" else "Шаблоны приёмов", if (plan) "Немного ясности на завтра. План и съеденная еда хранятся отдельно." else "Любимые сочетания — под рукой. В дневник они попадают после подтверждения.")
-    Choices(listOf("plans" to "План", "templates" to "Шаблоны"), mode) { h.root(it) }
-    if (!plan) DecorativeFoodStrip()
-    if (plan) { OutlinedTextField(date, { date = it; page = 0 }, Modifier.fillMaxWidth(), label = { Text("Дата начала ГГГГ-ММ-ДД") }, singleLine = true); ToggleRow("Показать неделю", week) { week = it; page = 0 }; Action("＋ Запланировать приём") { h.openForm("plan", extra = mapOf("date" to date)) } }
+    FullWidthTabs(listOf("plans" to "План", "templates" to "Шаблоны"), mode) { h.root(it) }
+    if (plan) { DateChoice("Начало плана", date, DomainDates.MIN, DomainDates.latestPlanDate(LocalDate.now())) { date = it; page = 0 }; ToggleRow("Показать неделю", week) { week = it; page = 0 }; Action("＋ Запланировать приём") { h.openForm("plan", extra = mapOf("date" to date)) } }
     else Action("＋ Создать шаблон") { h.openForm("template") }
     if (loading) LinearProgressIndicator(Modifier.fillMaxWidth()); ErrorNotice(error)
     if (plan) {
-        if (!loading && error == null && plans.isEmpty()) EmptyState("Здесь есть место для планов", "Составьте приём из продуктов или сохранённого шаблона. Автоматически еда не добавится.")
         plans.forEach { p -> DietCard(p.name, "${dateLabel(p.planDate)} · ${h.state.meals.find { it.id == p.mealId }?.name ?: "Приём"}") {
             TextButton(onClick = { h.openForm("plan", p.id) }) { Text("Открыть состав / изменить") }
             Action("Проверить и перенести в факт", secondary = true) { h.openForm("transfer", p.id) }
@@ -162,7 +159,6 @@ private fun UiHost.catalogField(mode: String, key: String, value: String) {
         } }
         PageControls(page, plans.size == 40, loading) { page = it }
     } else {
-        if (!loading && error == null && templates.isEmpty()) EmptyState("Сохраните свой завтрак", "Создайте сочетание здесь или сохраните наполненный приём с главной.")
         templates.forEach { t -> DietCard(t.name) { Action("Добавить в дневник", secondary = true) { h.openForm("apply-template", t.id) }; TextButton(onClick = { h.openForm("template", t.id) }) { Text("Открыть состав / изменить") }; DeleteLink("Удалить шаблон") { h.confirm("Удалить шаблон?", "Фактическая еда и планы останутся прежними.", "Удалить") { h.command("delete-template", t.id, t.revision) } } } }
         PageControls(page, templates.size == 40, loading) { page = it }
     }
