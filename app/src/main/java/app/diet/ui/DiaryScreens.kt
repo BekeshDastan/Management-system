@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -118,8 +119,16 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
     val days = overview?.week ?: List(7) { DiaryWeekDay(first.plusDays(it.toLong()), false, false) }
     BoxWithConstraints(Modifier.fillMaxWidth()) {
       val availableWidth = maxWidth
-      Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-       Row(Modifier.width(maxOf(availableWidth, 336.dp)), horizontalArrangement = Arrangement.SpaceBetween) {
+      val trackWidth = maxOf(availableWidth, 336.dp)
+      val scroll = rememberScrollState()
+      val density = LocalDensity.current
+      LaunchedEffect(selectedDate, availableWidth) {
+          withFrameNanos { }; withFrameNanos { }
+          val target = with(density) { (trackWidth * (selectedDate.dayOfWeek.value / 7f) - availableWidth).coerceAtLeast(0.dp).roundToPx() }
+          scroll.scrollTo(target.coerceIn(0, scroll.maxValue))
+      }
+      Box(Modifier.fillMaxWidth().horizontalScroll(scroll)) {
+       Row(Modifier.width(trackWidth), horizontalArrangement = Arrangement.SpaceBetween) {
         days.forEach { day ->
             val active = day.date == selectedDate; val enabled = day.date <= LocalDate.now() && day.date >= DomainDates.MIN
             Column(Modifier.weight(1f).heightIn(min = 60.dp).clickable(enabled = enabled) { h.date = day.date.toString() }
@@ -144,16 +153,16 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
 @Composable private fun NutritionHero(record: ReportDay?) {
     val h = LocalUi.current; val food = record?.food; val target = record?.goal; val actual = food?.nutrients
     Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Muted(if (target == null) "Цель калорий" else if (food == null) "Осталось калорий" else if ((target.kcal - food.nutrients.kcal).sign >= 0) "Осталось калорий" else "Сверх цели")
             Text(if (target == null) "Не задана" else actual?.let { (target.kcal - it.kcal).let { n -> (if (n.sign < 0) -n else n).format(1) } } ?: "—", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge)
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Muted("Употреблено калорий")
             Text(if (food == null || food.entryCount == 0 && !food.completed) "—" else "${actual?.kcal?.format(1)} ккал", style = MaterialTheme.typography.titleLarge)
         }
         if (actual != null && (food.entryCount > 0 || food.completed)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 MacroLabel("Б", actual.protein.format(1), Color(0xFF64C7FF))
                 MacroLabel("Ж", actual.fat.format(1), Color(0xFFFFBC66))
                 MacroLabel("У", actual.carbs.format(1), Color(0xFFC09AFF))

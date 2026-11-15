@@ -68,7 +68,11 @@ import java.util.Locale
             AdaptiveDialog("Выбрать дату", label, { open = false }) {
                 // On narrow screens the calendar scrolls horizontally rather than clipping days.
                 Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-                    DatePicker(state = state, modifier = Modifier.width(360.dp).semantics { contentDescription = "Календарь: $label" }, title = null, showModeToggle = false)
+                    DatePicker(state = state, modifier = Modifier.width(360.dp).semantics { contentDescription = "Календарь: $label" }, title = null, showModeToggle = false,
+                        headline = {
+                            val caption = state.selectedDateMillis?.let { dateLabel(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate().toString()) } ?: "Выберите день"
+                            Text(caption, Modifier.padding(horizontal = 24.dp, vertical = 12.dp), style = MaterialTheme.typography.headlineSmall)
+                        })
                 }
                 Action("Выбрать", enabled = state.selectedDateMillis != null) {
                     state.selectedDateMillis?.let { millis ->
