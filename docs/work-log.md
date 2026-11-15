@@ -575,3 +575,10 @@
 - Выбраны compileSdk 37 (minor 0) и targetSdk 37 при прежнем minSdk 29. Финальность сверена по Android 17 release announcement и официальному SDK XML: platform android-37.0 revision 2, без codename; preview-пакеты не приняты за стабильные. Это инженерный выбор по текущему поручению, а не выполненная сборка.
 - Описаны будущие проверки графа/KSP/Lint/debug/minified release/ABI; ни проект, ни установки, ни APK не создавались. Запрошены недостающая модель близких/One UI/тип памяти и удобный будущий способ установки, независимая работа продолжается.
 - Файлы: docs/android-build-baseline.md, docs/work-log.md. Текст, первичные ссылки, UTF-8/diff проверены; независимое read-only ревью подтвердило PASS без блокеров. Факт публикации сверяется по remote SHA.
+
+## 2026-11-15 — этап 0: каталог библиотек и AAR-метаданные
+
+- Инструменты/SDK опубликованы b125a59ef7ca29592d83e4b0c9503bbdc8610569, remote SHA подтверждён. Выбран базовый набор Compose BOM 2026.09.00 (UI 1.12.1 / Material 3 1.4.0), Core 1.19.1, Activity 1.13.0, Lifecycle 2.11.0, Coroutines 1.11.0, DataStore 1.3.0, Room 2.8.5, SQLite bundled 2.7.1, Navigation 3 1.2.1, Serialization 1.13.0.
+- Прочитаны первичные release notes, реальный BOM POM, девять AAR Manifest/build metadata и отдельные POM Navigation/Lifecycle/SQLite/Kotlinx/JUnit. Максимумы заявленных требований проверенных AAR — API 24 / compile 37 / AGP 9.1.0; выбранная база им соответствует. Это не полное разрешение транзитивного графа.
+- Обоснована Room 2 вместо отдельной ветки Room 3, собственный SQLite driver и обязательные будущие ABI/16 КБ проверки. Подключение compiler plugins и семей версий разграничено; экспорт схемы не превращён в исключённую функцию копий.
+- Файлы: docs/android-dependencies.md, docs/work-log.md. Текст/первичные ссылки/UTF-8/diff проверены, независимое read-only ревью — PASS без блокеров перед отдельным commit/push. Библиотеки читались в памяти, Android-код/Gradle/установки/тесты/сборка не создавались.
