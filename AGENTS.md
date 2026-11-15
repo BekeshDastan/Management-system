@@ -23,6 +23,7 @@
 - Reward recording habits, not eating less or losing weight faster.
 - Define and verify calculation rules and reference cases before implementing them.
 - Numeric rules and storage/draft/migration design are selected in [numeric-contract.md](docs/numeric-contract.md), [storage-model.md](docs/storage-model.md), [drafts.md](docs/drafts.md), and [migrations.md](docs/migrations.md). They are engineering contracts, not implemented Room schemas or tested Android logic.
+- Photo processing/memory and durable lifecycle are selected in [photo-processing.md](docs/photo-processing.md) and [media-storage.md](docs/media-storage.md). The noBackup/cloud/D2D exclusion plan is [system-backup-policy.md](docs/system-backup-policy.md); actual paths, APK rules and transports remain untested. Do not restore the excluded backup feature or treat these docs as implementation.
 - Keep real personal health records, credentials, backups, and signing keys out of the repository.
 
 ## Required commit workflow
