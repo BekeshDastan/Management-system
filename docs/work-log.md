@@ -717,3 +717,11 @@
 - TECH-007: framework AlarmManager.setWindow/15мин без exact permission/FGS/GMS, три независимых вида, local timezone/DST/generation/outbox,2ч grace, ограниченный receiver, честные задержки/возможный crash-пропуск без дубля. Новая runtime dependency не нужна.
 - TECH-008: fixed USDA SR Legacy April2018/CC0, цель60 независимо проверенных строк и идемпотентное наполнение без перезаписи пользователя; картинки имеют отдельный реестр. TECH-009: конкретные S0–S3 и p95/frames/heap/PSS/APK/a11y цели; это не результаты измерений и не лимит истории.
 - Файлы: docs/remaining-stage-zero.md, docs/technical-decisions.md, docs/work-log.md. UTF-8/ссылки/diff и независимое review PASS. Полная сборочная проверка продолжается отдельно; фактическую доставку на телефонах/производительность не заявляем выполненной.
+
+## 2026-11-15 — реализация: проверенный toolchain и сборочная основа
+
+- После53481b8/f05e7a8 работа выделена в codex/android-implementation; координатор публикует слои отдельными коммитами, финальная интеграция следует после проверок. Текущая база приложения не объявлена пользовательским выпуском.
+- Локально установлены checksum-verified Temurin21.0.13+9, Gradle9.5.0, AndroidCLI/SDK37.0r2/BuildTools36.0.0/PlatformTools37.0.1; изолированные cache/AVD/keys игнорируются. Wrapper с SHA256, точный version catalog, built-in Kotlin2.4.21, KSP/Room и verification metadata зафиксированы.
+- Наблюдённые проверки: Gradle tasks/dependency graph PASS; KSP/Room экспорт; debug/instrumentation APK и minified unsigned release собраны. domain-checks44/app48 JVMtests все0failures/0errors. Это48 уникальных unitcases, повторное исполнение ядра не удваивает покрытие. Android runtime ещё впереди.
+- Lint нашёл2 NewApi на min29; BigInteger exact заменён checked conversion, splash вынесен вvalues-v31. Итоговый Lint повторяется, подавлений/повышения min нет. Более новые AGP/Gradle предупреждения не равны несовместимости выбранной испытанной пары.
+- Файлы этой части: .gitignore, корневые/settings/app/domain-checks Gradle-файлы, Wrapper/catalog/verification, scripts/bootstrap_tools.py/build.ps1/install-sdk.ps1, README.md, docs/build-validation.md, docs/work-log.md. Частные кодовые слои публикуются следом; все реальные результаты и открытые ограничения отражены отдельно.

@@ -1,0 +1,19 @@
+
+# Local build tools, credentials and generated app data
+.local-tools/
+.gradle/
+.kotlin/
+**/build/
+local.properties
+*.jks
+*.keystore
+*.apk
+*.aab
+*.hprof
+*.db
+*.db-wal
+*.db-shm
+**/.unicode-source/
+artifacts/
+.idea/
+.DS_Store
