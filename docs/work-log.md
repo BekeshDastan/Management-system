@@ -1076,3 +1076,13 @@
 - Уточнение FR/маршрутов опубликовано925ba989958d75f763fa2f01a30e066f12f8e047, remote SHA проверен. В едином data-rules теперь явно описаны отдельное среднее внесённых complete+partial фактов, календарные goalDays и исходные независимые N/Q; сохранены exact fractions, missing/confirmedzero.
 - Правила календарных недель и серии еды согласованы с проверенной DiaryOverview/ReportPresentation реализацией; серия не заменяет игровые уровни, галочка остаётся полнотой. Обновлены ещё встречавшиеся старые формулировки UX-07/09 и добавлен маршрут желаемого веса.
 - Файлы: data-rules.md/user-flows.md/work-log.md. Это согласование документации с опубликованным кодом, не новая формула приложения; review по исходникам и JVM60/DiaryOverview3, UTF-8/ссылки/diffcheck. Отдельный commit/push/remote SHA; физическая матрица не закрывается текстом.
+
+
+## 2026-11-15 — конечный подписанный Diet1.2.0
+
+- Контракт обзора опубликован88c0c993dbf984ab2d42dbbc824aea348bff5723, remote SHA проверен. Финальный source37bcdb059ca13d389b1c4072ea33b5333434a396 после публикации перепакован09/18с, подписан прежним ключом и строго проверен. Размер/SHA/сертификат/source — единственно в release-1.2.0.md; будущие doc commits не меняют APK.
+- ZIP payload совпал с нативно проверенным07, кроме VCS metadata. min29/target37/version3/1.2.0/nondebug, privacy/9domainsexclusions/нетINTERNET/DB/keys, starter60/12ELF+ZIP16КиБ PASS. Старые APK1.0/1.1 сохранили прежние SHA.
+- Конечный install-r29/37 без clear/uninstall: installed base.apk SHA на обоих равен конечному. Питание250,5/вес72,4/сон7ч30 и предыдущие черновики сохранены;37также цели/dark/67,35/план/шаблон/фотоViewer/прикреплённыйвиджет/raw72,. RUcalendar и быстрые жесты при возвращении в прокрученный отчёт PASS. Контрольные факты не редактировались.
+- Все49 UI/data/preference повторены без ошибок,60JVM PASS; полный02/118 с3исправленными сбоями и red/green gesture regression честно сохранены в design-validation-1.2.md. Не суммировать повторённые тесты как уникальные.
+- На финальном boot37 системные SystemUI/GMS/SystemIntelligence ANR восстановились после Wait; app.diet ANR/AndroidRuntime:E в captured logs отсутствуют, весь запуск не ANR-free. Физические/OEM/Doze/cloud/D2D/TalkBack/p95 остаются открытыми.
+- Файлы: release-1.2.0.md/design-validation-1.2.md/work-log.md; ignored APK/sidecars/локальныеQAдоказательства. Все три owned AVD остановлены с проверкой имён, userdata/ключ сохранены. Review,ссылки/UTF-8/diff, отдельный commit/push/remote SHA; далее индекс/handoff и обычная интеграция истории.
