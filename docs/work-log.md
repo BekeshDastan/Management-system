@@ -870,3 +870,10 @@
 - R8assembleRelease+полныйlintRelease+domain-checksстрогоPASS3m22, debug/releaseLint0errors/7warnings. Подписанactual artifacts/Diet-1.0.0.apk:14219379байт/SHA256b62d72707dd43327c735ffad3029026bc2cea5339009af2fc24c919732168fd6,certificateba726a7b3396655b56a2329827bc5de3874a12d37198ba8ac64134f783d43220.
 - Подпись/SDK/compiledprivacy/noDirectBoot/9domains/12nativeLOAD+ZIP16KiB/4ABI/noDB-key/noInternet/staticstarter60PASS. Gitguardвsignscriptпередподписьюпроверяетобаprivatepathignored/untracked; самиприватныезначениянигденепечатались. Старыйrc05невыдаётсязафинальный.
 - Файлыэтогоtestcommit: androidTest/ui/DietUiTest.kt, docs/work-log.md. Signingguard/helper иточныеreleaseartifactsдокументируютсяотдельно; install/update наownedAPI29/37впроцессе, неphysicalS23. Diff/UTF-8;отдельныйcommit/push/remoteSHA. APKиrawvalidationJSONignored, sourceappнеизменёнпосле9c72.
+
+## 2026-11-15 — интеграция документации Android-реализации
+
+- AsyncUItestfix опубликован5680e3a223e3c56616f9ddeb3749a588cf09185d, remoteпроверен. README/AGENTS/ТЗ/план/приёмка/handoff и5technicalдокументовустраняютстарыеактивныеутверждения«проекта/кода нет». Предыдущиеобоснования,17этапов,25FR/8NFR/168cases/документальныеисториисохранены.
+- Добавленаimplementation-coverage.md:33активныхтребования→реальныйкод/meaningfultests→конкретныепробелы. Независимыепроверкидокументов/sourceподтвердилинавигацию/IDs/неиспользуемыеNav3API.Первоначальныйвыборбиблиотекневыдаётсязаихполноеиспользование, физ/OEM/всяS2/p95/168casesнетложногоPASS.
+- Фактическийсрез:48uniqueJVM,80API29,24finalUI29,оба81API37(4KiB/16KiB)PASS. GapfirstNativephysicsиfullCRUD/errorcombinationsотдельно; подписьAPK/staticprivacyвыполнены, actualsignedinstall/updateна29/37ещёдописываютсяпослепроверки. Primaryreferences/архивныеprototypesнепереписаны.
+- Файлы: AGENTS.md/README.md, docs/product-spec.md/development-plan.md/acceptance-tests.md/handoff.md/implementation-coverage.md, docs/android-build-baseline.md/android-dependencies.md/android-test-matrix.md/stack-proposal.md/technical-decisions.md, docs/work-log.md. НезависимопровереныTECH001–009/55links, затемобщийUTF-8/links/IDs/diffPASS; отдельныйcommit/push/remoteSHA.

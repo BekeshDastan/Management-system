@@ -1,6 +1,6 @@
 # Diet — фиксированный каталог базовых зависимостей
 
-Проверено: 15 ноября 2026 года. Статус: **инженерный выбор версий для будущего проекта**, без Gradle Sync, полного разрешённого графа и Android-кода. Инструменты и SDK — в [android-build-baseline.md](android-build-baseline.md). Каталог не является lockfile или доказательством совместной работы всех транзитивных зависимостей.
+Проверено и актуализировано: 15 ноября 2026 года. **Набор подключён в созданном Android-проекте:** граф разрешён, KSP/debug/JVM48/Lint0/R8 unsigned выполнены; API29 full80 и последующий UI24 PASS. Compile16/17 с test-only Espresso3.7.0 PASS; официальный API37.0 ps16k/x86_64 run17:81 PASS, обычный API37/4 KiB run17:81 PASS за141,638с. Версии — [version catalog](../gradle/libs.versions.toml), hashes — [verification metadata](../gradle/verification-metadata.xml); инструменты — [baseline](android-build-baseline.md), результаты — [validation](build-validation.md), функции — [coverage](implementation-coverage.md). Каталог версий не называется lockfile и не доказывает всю runtime-матрицу.
 
 ## 1. Выбранный набор
 
@@ -23,19 +23,19 @@
 
 BOM 2026.09.00 — реально прочитанный Stable POM, а не предположение по номеру месяца. Он задаёт UI/runtime/foundation/animation 1.12.1 и Material 3 1.4.0. Compiler plugin, Activity, Lifecycle, Room и прочие группы BOM не фиксирует. Alpha/Beta BOM и случайные preview-подстановки из примеров не используются.
 
-Serialization применяется к небольшим ключам навигации и версиям JSON-полей persistent draft по [правилам Navigation 3](https://developer.android.com/guide/navigation/navigation-3/save-state); это не функция экспорта/резервирования дневника. JSON 1.13.0 добавлен по контракту хранения; его POM проверен: core 1.13.0 и stdlib 2.4.10. Raw-числа и p/q кодируются точными строками, не Double; размеры payload ограничены numeric-contract. Факты и постоянные черновики остаются в транзакционном хранилище, а не в сериализованном back stack. POM Serialization 1.13.0 указывает stdlib 2.4.10, Coroutines 1.11.0 — 2.2.20; выбранный Kotlin 2.4.21 выше этих базовых версий. Это проверка заявленных версий, не бинарный тест.
+Serialization применяется к versioned JSON черновиков/контекста и receipt payload; это не экспорт/резервирование дневника. Изначально библиотека выбрана также по [правилам сохраняемых ключей Navigation3](https://developer.android.com/guide/navigation/navigation-3/save-state); фактический стек сейчас ведёт UiHost, без NavDisplay. Raw-числа и p/q сохраняются точными строками, не Double; payload ограничен numeric-contract. Первоначальная проверка POM установила core1.13.0/stdlib2.4.10 у Serialization и stdlib2.2.20 у Coroutines1.11.0; выбранный Kotlin2.4.21 выше этих баз. После проверки метаданных выполнены сборка и тесты, перечисленные в validation.
 
 ### Почему Room 2 и bundled SQLite
 
 Для Android-only дневника выбрана поддерживаемая стабильная ветка Room 2.8.5: её транзакции/миграции и SQLiteDriver достаточны для текущего контракта. Room 3.0.3 также стабилен, но вводит отдельные пакеты/координаты и обязательные coroutine/KSP API, преимущественно развивая KMP. Это не делает его плохим вариантом; смена ветки сейчас не нужна требованиям Diet. [Различия Room 3](https://developer.android.com/jetpack/androidx/releases/room3).
 
-Использовать androidx.room, не смешивать с androidx.room3. Room compiler/runtime/Gradle plugin имеют одну версию; KSP2 обязателен для выбранного Kotlin-пути. SQLite-библиотека 2.7.1 выбрана отдельно от версии Room. Экспорт схем в Git при будущей разработке допустим только как схема без пользовательских данных, а не экспорт дневника. Разрушительный fallback запрещён контрактом данных.
+Используется androidx.room, без смешивания с androidx.room3; compiler/runtime/Gradle plugin имеют одну версию, KSP2 генерирует код и schema v1. SQLite2.7.1 выбран отдельно от Room. В Git хранится только схема без пользовательских данных; это не экспорт дневника. Разрушительного fallback нет.
 
-BundledSQLiteDriver уменьшает зависимость SQL-поведения от прошивки телефона; единый файл БД остаётся в области приложения. В APK появляются готовые native-библиотеки: ARM64/эмуляторные ABI, размер, загрузка и 4/16 КБ требуют отдельной проверки. NDK-код Diet сейчас не создаётся. Полный механизм хранения/миграций остаётся TECH-004; выбор драйвера не закрывает его.
+BundledSQLiteDriver уменьшает зависимость SQL-поведения от прошивки; единый файл БД находится в CE noBackup. Собственного NDK-кода нет. Статические ABI/ELF/ZIP проверки кандидата, API29/x86_64 и API37.0 ps16k/x86_64 с PAGE_SIZE16384 выполнены. Физический ARM64 и другие окружения остаются отдельными проверками. Выбор драйвера сам по себе не закрывает TECH-004/матрицу миграций.
 
 ## 2. Проверенные AAR-границы
 
-Читались официальные AAR в памяти: AndroidManifest.xml и META-INF/com/android/build/gradle/aar-metadata.properties. Библиотеки не исполнялись и не сохранялись в репозиторий. В таблице Android-варианты multiplatform-артефактов; прямое подключение проекта остаётся по координатам раздела 1.
+Первоначальный read-only аудит читал официальные AAR в памяти: AndroidManifest.xml и META-INF/com/android/build/gradle/aar-metadata.properties. Таблица сохраняет эти декларации; последующее разрешение графа и исполнение описаны отдельно. Бинарники библиотек не добавляются в Git. Здесь Android-варианты multiplatform-артефактов; подключение — по координатам раздела1.
 
 | Проверенный Android AAR | minSdk | minCompileSdk | min AGP |
 |---|---:|---:|---:|
@@ -49,29 +49,32 @@ BundledSQLiteDriver уменьшает зависимость SQL-поведен
 | navigation3:navigation3-ui-android:1.2.1 | 24 | 36 | 8.9.1 |
 | core:core:1.19.1 | 23 | 37 | 9.1.0 |
 
-Для этих девяти AAR максимумы требований: minSdk 24, minCompileSdk 37, min AGP 9.1.0; у проверенных артефактов minor/extension не требуют повышения сверх выбранной платформы. База Diet 29/37/AGP 9.3.1 укладывается в эти декларации. Это не максимум всего ещё не разрешённого транзитивного графа.
+Для этих девяти AAR максимумы требований: minSdk24, minCompileSdk37, min AGP9.1.0; minor/extension не требуют повышения выбранной платформы. База29/37/AGP9.3.1 укладывается в декларации. Этот аудит не заменяет проверку всего графа; фактические Gradle metadata/KSP/build checks затем прошли без повышения minSdk.
 
 Первичный источник файлов — [Google Maven](https://dl.google.com/dl/android/maven2/). Воспроизводимый путь: группа с точками, заменёнными на слеши / artifact / version / artifact-version.aar; например [UI AAR](https://dl.google.com/dl/android/maven2/androidx/compose/ui/ui-android/1.12.1/ui-android-1.12.1.aar), [Room AAR](https://dl.google.com/dl/android/maven2/androidx/room/room-runtime-android/2.8.5/room-runtime-android-2.8.5.aar). Общий AndroidX default minSdk не заменяет эти отдельные декларации.
 
-Дополнительно прочитаны POM Navigation 3/runtime и Lifecycle/navigation3: базовые версии Compose/Lifecycle у них ниже выбранных, строгие связи внутри Lifecycle — 2.11.0. SQLite bundled требует sqlite-android ровно 2.7.1. В будущем разрешённом графе проверить выравнивание семей и отсутствие неожиданного повышения/preview; это остаётся задачей Gradle, не ручным обещанием на основании нескольких POM.
+Дополнительно прочитаны POM Navigation3/runtime и Lifecycle/navigation3: базовые Compose/Lifecycle ниже выбранных, связи Lifecycle —2.11.0. SQLite bundled требует sqlite-android ровно2.7.1. Выравнивание/отсутствие preview проверяются в реально разрешённом графе и повторно при изменении семей; несколько POM не заменяют этот контроль.
 
-## 3. Будущие тестовые зависимости
+## 3. Подключённые тестовые зависимости
 
-| Проверки | Версии для первой проверочной сборки |
+| Проверки | Закреплённые версии |
 |---|---|
 | JVM-правила и арифметика | junit:junit 4.13.2; org.jetbrains.kotlinx:kotlinx-coroutines-test 1.11.0 |
 | Android runner / контекст | androidx.test:runner 1.7.0, androidx.test:core 1.7.0 |
 | Android JUnit | androidx.test.ext:junit 1.3.0 |
 | Compose UI | ui-test-junit4 / ui-test-manifest / ui-tooling через тот же BOM; tooling только в debug/test |
+| Espresso для Compose instrumentation | androidx.test.espresso:espresso-core:3.7.0, явно только androidTest; заменяет разрешавшуюся транзитивно3.5 |
 | Room-миграции | androidx.room:room-testing 2.8.5 |
 
-Основания: [AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test), [JUnit POM](https://repo.maven.apache.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom), выбранные BOM/Coroutines/Room. Это будущие инструменты для каталога приёмки, не уже написанные тесты. Тестовый транзитивный граф и фактические задачи проверяются вместе с основным графом.
+Основания: [AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test), [JUnit POM](https://repo.maven.apache.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom), выбранные BOM/Coroutines/Room. Тесты созданы и исполняются; основной и тестовый classpath проверяются отдельно.
+
+На обычном API37 старый transitive Espresso3.5 вызвал24 UI failure при reflection `InputManager.getInstance`, хотя пользовательский UI запускался вручную. Явный test-only3.7.0 содержит переход на `getSystemService` по [официальным release notes](https://developer.android.com/jetpack/androidx/releases/test#espresso-3.7.0). Version catalog и verification metadata обновлены; compile16/17 PASS. На официальном API37 ps16k run17:81 PASS; обычный API37/4 KiB run17 также прошёл81 тест за141,638с. Прерванный ps16k run16 был отдельной ошибкой teardown: отзыв notification permission внутри UID завершал процесс; grant/restore перенесены во внешний CLI после runner. Эти изменения тестового окружения не меняют production-код и не добавляют Espresso в release.
 
 ## 4. Политика зависимостей
 
 - Сначала одна Android app-основа, понятные UI/правила/данные и ручное связывание зависимостей. Hilt/Koin, серверный клиент, ML/OCR, камера и дополнительные SDK не добавляются без предметной необходимости.
-- Графики можно строить средствами Compose с отдельными расчётами и доступными текстовыми значениями; сторонняя библиотека графиков сейчас не выбрана. Для фото выбран framework ImageDecoder API28+ (в min29) и уже названные Activity picker contracts; cache/очередь/bounded stream проектируются в [TECH-005](photo-processing.md). Новый сетевой image-loader/ExifInterface dependency сейчас не добавляется; BitmapFactory/Exif fallback, если понадобится, требует отдельной проверки графа. Реализация ещё не начата; реальный планировщик — TECH-007. Их отсутствие в каталоге не удаляет функции из релиза.
+- Графики реализованы средствами Compose с отдельными расчётами/текстовой таблицей, без внешнего chart SDK. Фото использует framework ImageDecoder API28+ (в min29), Activity picker contracts, собственный cache/очередь/bounded stream по [TECH-005](photo-processing.md). Сетевой image-loader/ExifInterface dependency не добавлены; возможный новый fallback требует проверки графа. Реальный планировщик использует framework AlarmManager/NotificationManager по TECH-007.
 - Фиксировать версии без +, latest.release, snapshots и preview. При изменении одного семейства повторять проверку связанной части графа; не обновлять всё одновременно.
-- После разрешения кода сохранить version catalog, Wrapper/verification metadata и фактически разрешённые версии. Проверить debug и release classpath, выравнивание Kotlin/Compose/Lifecycle/SQLite, KSP generation и Android minimum metadata. Сейчас ни одного такого build-файла нет.
+- Version catalog, Wrapper/checksum и verification metadata сохранены. При изменении зависимостей повторять debug/release/test classpath, выравнивание Kotlin/Compose/Lifecycle/SQLite, KSP generation и Android minimum metadata; не отключать verification ради нового артефакта.
 
-Выбор библиотек принят как плановая техническая база текущего поручения. Совместная сборочная/исполнительная проверка остаётся открытой в TECH-002; любые новые зависимости проходят ту же проверку перед своим этапом.
+Библиотеки являются текущей сборочной основой, а не только предложением. Сборочная часть TECH-002 и названные runtime-наборы подтверждены; обычный API37/4 KiB также прошёл81 тест, другие API/физическая матрица и полный каталог остаются открытыми. Новые зависимости проходят тот же контроль перед своим этапом.

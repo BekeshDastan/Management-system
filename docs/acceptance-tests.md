@@ -1,6 +1,6 @@
 # Diet — каталог приёмочных проверок v1.0
 
-Дата: 15 ноября 2026 года. Статус: ожидаемые результаты Android-приложения по принятому прототипу. Реализация не начата; здесь нет отметок о выполненных Android-тестах. Проверки HTML-макета находятся отдельно в [prototype/validation.md](prototype/validation.md).
+Дата: 15 ноября 2026 года. Статус: ожидаемые результаты Android-приложения по принятому прототипу. Реализация создана; здесь по-прежнему ожидаемые случаи, а не общий checklistPASS. Фактические Android/JVM результаты — [build-validation](build-validation.md), связь25FR/8NFR с кодом/пробелами — [implementation-coverage](implementation-coverage.md). Проверки HTML-макета находятся отдельно в [prototype/validation.md](prototype/validation.md).
 
 Все наборы синтетические. Сохранены прежние ID AC/ON/FD/DY/WT/SL/GM/PG; снятые AC-008/009,ON-007,BK/RS не переиспользуются. Точные правила — [data-rules.md](data-rules.md), требования — [product-spec.md](product-spec.md). При расхождении макетного ограничения с Android-контрактом применяется контракт/TECH-003, а исторический макетный случай помечается ниже.
 
