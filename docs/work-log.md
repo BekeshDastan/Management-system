@@ -1086,3 +1086,10 @@
 - Все49 UI/data/preference повторены без ошибок,60JVM PASS; полный02/118 с3исправленными сбоями и red/green gesture regression честно сохранены в design-validation-1.2.md. Не суммировать повторённые тесты как уникальные.
 - На финальном boot37 системные SystemUI/GMS/SystemIntelligence ANR восстановились после Wait; app.diet ANR/AndroidRuntime:E в captured logs отсутствуют, весь запуск не ANR-free. Физические/OEM/Doze/cloud/D2D/TalkBack/p95 остаются открытыми.
 - Файлы: release-1.2.0.md/design-validation-1.2.md/work-log.md; ignored APK/sidecars/локальныеQAдоказательства. Все три owned AVD остановлены с проверкой имён, userdata/ключ сохранены. Review,ссылки/UTF-8/diff, отдельный commit/push/remote SHA; далее индекс/handoff и обычная интеграция истории.
+
+
+## 2026-11-15 — индекс и передача выпуска1.2
+
+- Manifest и наблюдённые результаты опубликованыa211c0f93b447387641835f24778f4d6f3af8457, remote SHA проверен. README/процесс выпуска/handoff теперь ведут на1.2 и сохраняют1.1/1.0 как историю; контрольные суммы не размножены.
+- Карта соответствия обновлена для свёрнутой главной/трёх блоков/желаемого веса/нового отчёта и дополнена конкретными тестами. Build-validation разделяет текущий1.2, предыдущий1.1 и исходный1.0; повтор виджета назван коротким, прежние pin/live-update не присвоены заново.
+- Файлы: README.md, release-process.md/build-validation.md/implementation-coverage.md/widget.md/handoff.md/work-log.md. Review/ссылки/UTF-8/IDs/diffcheck, отсутствие app diff после source commit. Отдельный commit/push/remote SHA; далее проверка происхождения main и интеграция обычным fast-forward без переписывания отдельных коммитов.
