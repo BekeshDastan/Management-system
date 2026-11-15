@@ -51,7 +51,7 @@ D:\Diet, репозиторий https://github.com/BekeshDastan/Management-syste
 - [system-backup-policy](system-backup-policy.md): полное inventory, actual custom Room/DataStore paths, явный allowBackup=false и legacy/extraction rules с исключением всех9 domains, отдельно cloud/D2D. Нет backup UI/экспорта/восстановления. OEM/новые транспорты/старые копии не покрываются универсальным обещанием.
 - PH-001–016/BP-001–008 назначены [матрице](android-test-matrix.md); исходные144 строки неизменны. Арифметика профилей/дискового payload и независимые review пройдены; это не Android-тесты.
 
-Публикации, remote SHA сверялся после каждого push: 79956deb3eab8643ba3d49abf7489487bcfbee81 — policy; 5e1754597e121fc5ccc6c5771057dbf7fcc735b7 — processing; 20a79e139f323c807e8d8bb435b8b4036716e2ad — lifecycle/согласование хранения; e55d04911a0a78c6b6d7a8b19af2b989a4810577 — PH/BP/матрица. Итоговая интеграция и её запись публикуются отдельно; актуальный HEAD смотреть по Git.
+Публикации, remote SHA сверялся после каждого push: 79956deb3eab8643ba3d49abf7489487bcfbee81 — policy; 5e1754597e121fc5ccc6c5771057dbf7fcc735b7 — processing; 20a79e139f323c807e8d8bb435b8b4036716e2ad — lifecycle/согласование хранения; e55d04911a0a78c6b6d7a8b19af2b989a4810577 — PH/BP/матрица. Интеграция опубликована aaf3b74bd9b6a4c3a35c5b692b5a8d1005ec602e, remote SHA подтверждён, после неё рабочая папка чистая. Завершающая журнальная запись публикуется отдельно; актуальный HEAD смотреть по Git.
 
 ## Физический профиль и открытые проверки
 
