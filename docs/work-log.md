@@ -917,3 +917,10 @@
 
 - Пользователь на реальном телефоне обнаружил обрезанный диалог, создание блюда внизу списка и сброс позиции; разрешил предложенную переработку/дополнительные функции и новый APK. Согласованный объём вынесен в docs/ux-v1.1.md, связаны ТЗ/сценарии/README. Это требования, не преждевременный PASS.
 - Работа в codex/ux-v1-1; существующие данные/ключи/история сохранены. Независимые области отчётов, еды и виджета распределены по AGENTS; интеграция/Git у координатора. Проверены ссылки/UTF-8/diff; отдельный commit/push/remoteSHA.
+
+## 2026-11-15 — пакет еды, повтор и перенос
+
+- Согласование UX1.1 опубликовано1f026a5ae4dc0e1f43567b58467a0f40ac781119, remoteSHA сверён. Репозиторий добавляет addFoods одной транзакцией/receipt, moveFood сохраняетID/snapshot при revision-проверке, repeatFood создаёт новую точную историческую запись; schema1 не меняется.
+- Каталог сортирует избранное и недавнее перед остальными, стабильный tie-break для страниц. Не меняет пищевые значения существующих записей.
+- FoodWorkflowTest8 PASS наAPI37/16KiB в targeted03, совместно13cases/4.906с: batchrollback/replayconcurrent/exacthistorical,rawdraft,moveidentity/conflict/archive,quickrepeat/receipt,orderpaging. Debugcompile03/JVM54 PASS; полныйLint ещё выполняется и отдельно не объявленPASS.
+- Файлы: DietRepository.kt/DietDao.kt/FoodWorkflowTest.kt/docs/work-log.md. Независимый diffreview и diffcheck; отдельныйcommit/push/remoteSHA. UI-флоу проверяется следующей частью.

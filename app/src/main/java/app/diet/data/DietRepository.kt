@@ -300,6 +300,43 @@ class DietRepository(
     suspend fun deleteCatalogItem(id: String, baseRevision: Long, operation: Operation) = commit("delete-catalog", operation, listOf(id, baseRevision)) { val old = dao.getCatalogItem(id) ?: throw DataFailure.Missing(); revision(old.revision, baseRevision); dao.deleteCatalogItem(id); listOf("catalog" to id) }
 
     suspend fun addFood(localDate: String, mealId: String, input: LineInput, operation: Operation): CommitResult = commit("food", operation, listOf(localDate, mealId, input)) { insertFood(localDate, mealId, listOf(input), operation.id) }
+    /** One durable intent and one transaction for the whole reviewed meal. */
+    suspend fun addFoods(localDate: String, mealId: String, inputs: List<LineInput>, operation: Operation): CommitResult =
+        commit("food-batch", operation, listOf(localDate, mealId, inputs)) {
+            insertFood(localDate, mealId, inputs, operation.id)
+        }
+
+    /** A move keeps the original ID, historical nutrition and operation provenance. */
+    suspend fun moveFood(id: String, baseRevision: Long, targetDate: String, targetMealId: String, operation: Operation): CommitResult =
+        commit("move-food", operation, listOf(id, baseRevision, targetDate, targetMealId)) {
+            val old = dao.getFoodEntry(id) ?: throw DataFailure.Missing()
+            revision(old.revision, baseRevision)
+            date(targetDate); activeMeal(targetMealId)
+            if (old.localDate == targetDate && old.mealId == targetMealId) return@commit listOf("food" to id)
+            val ordinal = dao.lastMealOrdinal(targetDate, targetMealId)?.let(::increment) ?: 0
+            old.nutrients()
+            dao.put(old.copy(localDate = targetDate, mealId = targetMealId, ordinal = ordinal, revision = increment(old.revision)))
+            if (old.localDate != targetDate && !dao.hasFood(old.localDate)) dao.unconfirm(old.localDate)
+            listOf("food" to id)
+        }
+
+    /** Intentional repeat is a new ID; retries of the same operation never duplicate it. */
+    suspend fun repeatFood(id: String, baseRevision: Long, targetDate: String, targetMealId: String, operation: Operation): CommitResult =
+        commit("repeat-food", operation, listOf(id, baseRevision, targetDate, targetMealId)) {
+            val old = dao.getFoodEntry(id) ?: throw DataFailure.Missing()
+            revision(old.revision, baseRevision)
+            date(targetDate); activeMeal(targetMealId); old.nutrients()
+            val ordinal = dao.lastMealOrdinal(targetDate, targetMealId)?.let(::increment) ?: 0
+            val repeated = old.copy(id = newId(), localDate = targetDate, mealId = targetMealId, ordinal = ordinal,
+                revision = 1, sourceItemId = availableSource(old.sourceItemId), createdByOperationId = operation.id)
+            dao.put(repeated)
+            repeated.sourceItemId?.let { itemId ->
+                val recent = dao.recentForItem(itemId)
+                dao.put(RecentEntity(recent?.id ?: newId(), itemId, clock.millis()))
+            }
+            listOf("food" to repeated.id)
+        }
+
     private suspend fun insertFood(localDate: String, mealId: String, inputs: List<LineInput>, operationId: String): List<Pair<String, String>> {
         date(localDate); activeMeal(mealId); lines(inputs)
         val start = dao.lastMealOrdinal(localDate, mealId)?.let(::increment) ?: 0
