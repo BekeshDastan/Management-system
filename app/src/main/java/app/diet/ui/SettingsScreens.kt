@@ -26,7 +26,7 @@ internal val HomeLabels = mapOf("hero" to "Обложка", "nutrition" to "Пи
             DietCard { ToggleRow("Игровые названия веса и сна", prefs.gameNames) { h.preference("gameNames", mapOf("enabled" to it.toString())) }; ToggleRow("Уровни за заполнение дневника", prefs.gameLevels) { h.preference("gameLevels", mapOf("enabled" to it.toString())) }; Muted("Нет streak, штрафов за пропуски или наград за снижение веса и калорий.") }
             DietCard("Вес · просто названия") { listOf("До 60 кг — Искра", "60–<70 — Вихрь", "70–<80 — Метеор", "80–<90 — Шторм", "90–95 включительно — Машина", ">95–<100 — Титан", "100 кг и больше — Богатырь").forEach { Text(it) } }
             DietCard("Сон · просто названия") { listOf("Больше 0 и меньше 6 ч — Короткий привал", "6–<8 ч — Ловец снов", "8–<10 ч — Соня", "10 ч и больше — Хранитель подушки", "0 ч — без игрового названия").forEach { Text(it) } }
-            DietCard("Растём за привычку записывать") { listOf(0L, 1, 2, 7, 14, 30, 60).forEach { count -> Text("$count дат · ${GameRules.level(count).name}") }; Muted("Одна заполненная дата считается один раз. Изменение полноты пересчитывает уровень.") }
+            DietCard("Растём за привычку записывать") { listOf(0L, 1, 2, 7, 14, 30, 60).forEach { count -> Text("${recordedDateCount(count)} · ${GameRules.level(count).name}") }; Muted("Одна заполненная дата считается один раз. Изменение полноты пересчитывает уровень.") }
         }
         "meals" -> {
             ScreenHeading("Мои приёмы пищи", "Свой порядок и названия. Архив сохраняет историю.")
