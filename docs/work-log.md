@@ -682,3 +682,10 @@
 - Диск: один raw/один batch, максимум25MiB новых файлов, резерв32MiB с остатком≥128MiB; все IO-ошибки обрабатываются независимо от предварительного free-space. Cache≤128MiB, живые masters не вытесняются/история не обрезается. Функция восстановления/экспорта не добавлена.
 - Независимый review файлового протокола/арифметики — PASS после уточнений read-lease/fsync/verification bitmap. Проверки текста/ссылок/UTF-8/whitespace/diff перед отдельной публикацией. Файлы: docs/media-storage.md, docs/photo-processing.md, docs/storage-model.md, docs/drafts.md, docs/migrations.md, docs/work-log.md. Android-файлов/БД/кода и испытаний нет.
 - Второе независимое ревью уточнило disk-bound: JPEG пишется bounded stream ≤5MiB, overflow-temp очищается до следующего профиля, следующий raw не начинается после failed unlink. 25MiB — payload без filesystem overhead; запас/ошибки отдельно. Уточнения внесены до публикации, PH проверяют их; код encoder не создан.
+
+## 2026-11-15 — этап 0: приёмка фото и системных исключений
+
+- Файловый контракт опубликован 20a79e139f323c807e8d8bb435b8b4036716e2ad, remote SHA подтверждён. Добавлены PH-001–016 и BP-001–008: picker/bytes/EXIF/кодирование, память/native cancellation, batch/recovery/revisions/GC, disk/cache и отдельные inventory/manifest/cloud/D2D/OEM-проверки.
+- Android-матрица распределяет PH/BP по E29/E31/E34/E37/физическим механизмам; synthetic heap profiles отделены от измерений, отключённый transport не PASS. До первого APK с личными данными policy должна быть проверена, XML/тестов/устройств сейчас нет.
+- Независимое review — PASS после точного «ноль свободных слотов», bounded JPEG output и оговорки внутренних codec allocations. Python подтвердил 168 уникальных ID (144 прежних строк неизменны +24 новых), четыре примера memory и payload25MiB<reserve32MiB; это арифметическая проверка документов, не Android-тест.
+- Файлы: docs/acceptance-tests.md, docs/android-test-matrix.md, docs/work-log.md. Ссылки/UTF-8/whitespace/diff/ID проверяются перед отдельной публикацией; реальные БД/фото, приложение и APK не создаются.

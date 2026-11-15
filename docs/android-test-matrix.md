@@ -80,6 +80,21 @@ API 30/32 не добавляются автоматически: legacy backup 
 
 Backup проверяется двумя поколениями правил: на API ≤30 — legacy, на API ≥31 при target 37 — `dataExtractionRules` с независимыми cloud/D2D-исключениями. Один `allowBackup=false` не считается доказательством контроля OEM-переноса. [Auto Backup](https://developer.android.com/identity/data/autobackup), [тестирование транспорта](https://developer.android.com/identity/data/testingbackup).
 
+### Фото, память и системное исключение
+
+Документальные контракты TECH-005/006 — [обработка](photo-processing.md), [файлы](media-storage.md), [системное копирование](system-backup-policy.md). PH/BP дополняют CV/ST/AN, не заменяют их и не являются отчётом испытаний.
+
+| Набор | Назначенные окружения / доказательства |
+|---|---|
+| PH-001–005: picker/bytes/контейнер/EXIF/normalise | E29 fallback без GMS, E31 при доступном fallback/module и E34/E37 framework; все8 orientation, PNG alpha/static/animated WebP/HDR, границы bytes/pixels. Проверить single при одном слоте, весь callback при переполнении и bounded output перед повтором |
+| PH-006/007/016: allocations/очередь/cache/viewer | Параметризованные расчётные профили H64/128/256/512 и lowRam — отдельно от реального memoryClass. На E29/E37 и физических устройствах записать фактические heap/native peaks, config/allocationByteCount, UI-pinned изображения, отменённый native job, LRU и отзыв памяти. Симуляция бюджета не доказывает реальный OEM decoder |
+| PH-008–015: batch/kill/retry/GC/IO | E29/E37: fault injection каждой файловой/Room фазы с синтетикой; на физических — restart/reboot, source gone, offline, нехватка места и просмотр по безопасно согласованной процедуре. Не заполнять личный телефон автоматически |
+| BP-001/002: inventory/manifest | На каждом варианте APK статическая проверка merged ресурсов и путей; runtime E29 legacy, E31 extraction, E37 target; проверка custom Room/DataStore, WAL/SHM/temp и cache |
+| BP-003/004: cloud/D2D/OEM | Два отдельных реальных механизма на выделенных устройствах/аккаунтах; фиксируются источник/приёмник/OEM/OS/transport и маркеры всех классов. AVD/local transport — дополнительная диагностика, не доказательство физического D2D |
+| BP-005–008: update/старые копии/допуск | APK update с синтетикой и отдельная чистая установка; неприменимый/недоступный transport — pending/blocked, не PASS. OEM обход — дефект/решение о выпуске, без ложной гарантии или очистки личных записей |
+
+Фото-часть TECH-009 теперь имеет выбранные memory/disk бюджеты; общие пороги запуска/поиска/отчётов и измеренный максимум ещё открыты. Применение чисел из контракта не закрывает испытания и не подтверждает отсутствие OOM.
+
 ## 7. Статусы, доказательства и ворота выпуска
 
 - `planned / not run`: случай назначен окружению, но ещё не запускался; это статус назначенных тестов сейчас; сведения о физических устройствах отдельно помечены pending.
