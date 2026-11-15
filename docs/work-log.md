@@ -826,3 +826,10 @@
 - Quickportionsберутfrozenunit/basisдляitem41+, numericpaste>64cpсохраняетпредыдущее. Фотоприёмаdefaultтольконовымкадрам; persistedremoveintent/Savefreeze/возвратвлентупоследнегоудалённогоdetail. Nativepermission/pickerпубликуетсяотдельно.
 - Проверки:24DietUiвfull80run13PASS29; релевантныйполный24UIповторфинальной15сборкиPASSза47.655с, compile15/Lint0errors/units48PASS. Узкий320dpконтроль15на37выполняется, ещёневыдаётсязаPASS. DateRowweightудерживает48dp+стрелки.
 - Файлы: ui/DiaryScreens.kt/EditorScreen.kt, docs/work-log.md. UXконтрактынерасширены,Androidappбезbackup/account/formularecommendations. Diff/links/UTF-8; отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — native UI: библиотека, планы и настройки
+
+- Дневник/редакторы опубликованыaf427c327a096e560ae4c78c5753032dce8f4956, remoteпроверен. Отдельныеэкранныечасти:catalog/filter/favourites/recents, ownproduct/recipe/category, frozeningredientpickers, pagedtemplates,plan/transferpreview/historyrepeatconfirm; settings/profile/goals/meals/categories/drafts/game/appearance/homeorder/notification/sources.
+- Всеоперациичерезrepository/independentprefs, безвторогоисточникаhealthfacts вUI. Группыоформлениясохраняются/отменяютсяотдельно; неизвестныйdraftread-onlyсexplicitdiscardfingerprint, retryreadнеочищаетфайл. Канал/permissionдлякаждоговиданапоминанияпоказаныраздельно.
+- Проверки: sourceauditзакрылпрежниеP1безновыхподтверждённыхдефектов;24UItestsфинальной15на29PASS. Manual37:явнаязаменазанятойдатыцели/deleteinterval, frozen250.5template→plan→repeatconfirmation→751.5fact, deny→Allow→blockonlyweight иобратновключитьканалPASS. ДругиеполныеCRUDкомбинациипомеченыоткрытымивcoverage, не168PASS.
+- Файлы: ui/LibraryScreens.kt/SettingsScreens.kt, docs/work-log.md. Compile15/Lint0errors/units48PASS, diff/links/UTF-8; отдельныйcommit/push/remoteSHA.
