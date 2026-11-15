@@ -45,7 +45,7 @@
 - targetSdk — уровень поведения Android, под который приложение заявляет адаптацию; не заменяет minSdk.
 - compileSdk — доступные при сборке API. Само использование высокого compileSdk не делает новые API доступными на старом телефоне.
 
-Для Diet сейчас предложен только кандидат min26. Конкретные target/compile и набор проверяемых API выбираются вместе с актуальной стабильной конфигурацией TECH-002; нельзя просто поставить26во все три поля. Основание: [uses-sdk](https://developer.android.com/guide/topics/manifest/uses-sdk-element).
+Для Diet сейчас предложен только кандидат min26. Конкретные target/compile и набор проверяемых API выбираются вместе с актуальной стабильной конфигурацией TECH-002; нельзя просто поставить26во все три поля. Основание: [uses-sdk](https://developer.android.com/guide/topics/manifest/uses-sdk-element) и [настройки SDK при сборке](https://developer.android.com/build).
 
 ## 3. Проверенные факты и границы уверенности
 
