@@ -67,11 +67,14 @@ class ReportsUiTest {
     }
     private fun click(text: String) {
         compose.waitUntil(10_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText(text).performScrollTo().performClick()
+        val selectedNode = compose.onAllNodes(hasText(text) and SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsProperties.Selected))
+        val node = if (selectedNode.fetchSemanticsNodes().isNotEmpty()) selectedNode.onFirst() else compose.onNodeWithText(text)
+        if (!node.isDisplayed()) node.performScrollTo()
+        node.performClick()
         compose.waitForIdle()
     }
 
-    @Test fun tabsShowOneMetricAndDetailsOpenOnlyOnRequest() {
+    @Test fun fullWidthTabsShowRecordedTotalsAndFoodTableWithoutOldPanels() {
         runBlocking {
             val snapshot = SnapshotColumns.from(NutritionSnapshot("Тест", FoodUnit.GRAM, nutrientsPerBasis = MicroNutrients(100_000_000, 10_000_000, 0, 0).toDomain()))
             repository.addFood(today(), repository.state.value.meals.first().id, LineInput(snapshot, 100_000_000), Operation())
@@ -85,16 +88,20 @@ class ReportsUiTest {
         // The synthetic food is on the last day: tap its actual rightmost bar slot.
         compose.onNodeWithTag("report-bars").performScrollTo().performTouchInput { click(Offset(center.x * 1.86f, center.y)) }
         compose.waitForIdle()
-        compose.onNodeWithText("Частично: 100,0 ккал", substring = true).performScrollTo().assertExists()
+        compose.onAllNodesWithText("100,0 ккал").onLast().performScrollTo().assertExists()
+        compose.onNodeWithText("Показывать частичные дни").assertDoesNotExist()
+        compose.onNodeWithText("Подробнее").assertDoesNotExist()
+        compose.onNodeWithText("Полнота дневника").assertDoesNotExist()
+        compose.onNodeWithText("Съеденная пища").performScrollTo().assertExists()
+        compose.onNodeWithText("Продукт").assertExists()
+        compose.onNodeWithText("Кол-во").assertExists()
         click("Вес")
-        compose.onNodeWithText("72,40 кг").assertExists()
-        click("Подробнее")
-        compose.onNodeWithText("Точные даты и значения").performScrollTo().assertExists()
+        compose.onAllNodesWithText("72,40 кг").onFirst().assertExists()
         assertTrue(repository.state.value.confirmations.isEmpty())
         assertEquals(1, runBlocking { repository.queryHistory(today(), today()).size })
     }
 
-    @Test fun invalidCustomPeriodDoesNotReplaceLastValidSelection() {
+    @Test fun cancellingCustomCalendarKeepsLastValidPeriod() {
         show()
         compose.waitUntil(10_000) { compose.onAllNodesWithTag("report-bars").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("Изменить период отчёта").performScrollTo().performClick()
@@ -104,8 +111,9 @@ class ReportsUiTest {
         val validEnd = host.view["report.end"]
         compose.onNodeWithContentDescription("Изменить период отчёта").performScrollTo().performClick()
         compose.onNodeWithText("Свой период").performClick()
-        compose.onNodeWithText("По ГГГГ-ММ-ДД").performScrollTo().performTextReplacement(LocalDate.now().plusDays(1).toString())
-        click("Показать период")
+        click("Начало периода")
+        compose.onNodeWithText("Выбрать дату").assertExists()
+        compose.onNode(hasText("Отмена") and hasAnyAncestor(isDialog())).performScrollTo().performClick()
         assertEquals(validStart, host.view["report.start"])
         assertEquals(validEnd, host.view["report.end"])
         compose.onNodeWithText("Показать период").assertExists()

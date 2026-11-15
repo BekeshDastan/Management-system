@@ -1027,3 +1027,12 @@
 - Устранены инертные переключатели убранных/обязательных блоков; persisted order не сбрасывается. Переход к восстановлению независимого preference draft не вызывает ложный dirty-диалог.
 - WeightTargetPreferences3 + PersonalSettingsUi2 PASS в full02 и repeat03; проверены raw72,/ошибка apply/точные67,35/revision/replay/очистка, latestWeight при просмотре прошлой даты и отсутствие нового измерения. Compile03 и JVM60 PASS. Независимый review/noSchemaChange/diff; отдельный commit/push/remote SHA.
 - Файлы: DietDao/DietRepository/VisualPreferencesRepository/SettingsScreens, WeightTargetPreferencesTest/PersonalSettingsUiTest, docs/storage-model.md/work-log.md. Подписанное обновление остаётся следующим этапом.
+
+
+## 2026-11-15 — отчёт по образцу и таблица съеденной еды
+
+- Персональные настройки опубликованы 8efd6eeaf2e0eaf536186732433b4e10eb21041f, remote SHA подтверждён. Отчёт теперь начинается с компактного периода, равных вкладок показателей/нутриентов и итоговой карточки со столбиками. Указанные заголовки, partial toggle и четыре дополнительные секции удалены.
+- Калории раскладываются цветами по приёмам, Б/Ж/У показываются тремя соседними цветными столбиками в граммах. Пунктир цели рисуется последним, непрерывно по соседним равным целям и с историческими изменениями/пробелами. Калории не пересчитываются из БЖУ.
+- Новый overview восстанавливает точные суммы completed+partial через mean×count, затем считает среднее по записанным датам; missing не становится0, confirmedzero учтён. Доменные complete N/Q и ReportQueries не менялись. Под графиком цветные приёмы/доли и полная таблица исторических строк по40на страницу.
+- Переходы «Текущей недели» сохраняют понедельник–воскресенье и clipping today; 5JVM ReportOverview cases PASS вместе с60общими. ReportsUi2 PASS repeat03/48, nativeMath/ReportSegments/S2 PASS full02 (весь full02 имел отдельно названные3неотчётныхсбоя). Сетки/разделители=#393D43, строки минимум48dp, даты с годом, async таблица обновляется по dataRevision.
+- Файлы: ReportScreens/ReportPresentation/ReportOverviewTest/ReportsUiTest, docs/work-log.md. Независимый audit всех строк/арифметики/goal-order, diff; отдельный commit/push с remote SHA.
