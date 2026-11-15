@@ -3,12 +3,12 @@
 ## Project context
 
 - Build a personal Android app for tracking nutrition, weight, sleep, and progress.
-- Current phase: product and UX planning. Do not start app implementation until the user asks to proceed.
+- Current phase: product, UX, and stage-zero technical planning. Do not start app implementation until the user asks to proceed.
 - Communicate with the user in Russian.
 - Repository: https://github.com/BekeshDastan/Management-system
 - Local workspace: D:\Diet.
-- Kotlin, Jetpack Compose, and Room were selected by the user on 2026-11-15. Exact toolchain/library versions and supporting architecture choices remain open under TECH-002.
-- Minimum supported OS: Android 10 / API 29, selected by the user on 2026-11-15. Do not silently raise it. targetSdk, compileSdk, and the complete test matrix remain open under TECH-001.
+- Kotlin, Jetpack Compose, and Room were selected by the user on 2026-11-15. Planned toolchain/library versions are selected in [android-build-baseline.md](docs/android-build-baseline.md) and [android-dependencies.md](docs/android-dependencies.md); execution validation remains open under TECH-002.
+- Minimum supported OS: Android 10 / API 29, selected by the user on 2026-11-15. Do not silently raise it. Planned compileSdk 37 (minor 0), targetSdk 37; future checks are defined in [android-test-matrix.md](docs/android-test-matrix.md). Unknown physical-device details and unexecuted checks must remain explicit.
 
 ## Accepted product direction
 

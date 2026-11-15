@@ -19,7 +19,7 @@
 | Kotlin Symbol Processing | com.google.devtools.ksp, 2.3.14, KSP2 | [Официальный релиз](https://github.com/google/ksp/releases/tag/2.3.14), [требования KSP](https://kotlinlang.org/docs/ksp-overview.html) |
 | Java/Kotlin bytecode target | 17 для обоих языков | [JDK и JVM target](https://developer.android.com/build/jdks); не путать с JDK Gradle или Android API |
 
-Studio запускается на собственном bundled JBR; STUDIO_JDK не переназначается. JDK Gradle выбирается отдельно. Конкретный компьютер Windows x64 ещё не проверен на пригодность к эмулятору; при другой архитектуре хоста пересмотреть дистрибутив JDK и образы, не менять номера версий молча.
+Studio запускается на собственном bundled JBR; STUDIO_JDK не переназначается. JDK Gradle выбирается отдельно. Read-only проверка хоста подтвердила 64-битную Windows / AMD64; пригодность к эмулятору и аппаратное ускорение ещё не проверены; при другой архитектуре хоста пересмотреть дистрибутив JDK и образы, не менять номера версий молча.
 
 Не применять одновременно built-in Kotlin и org.jetbrains.kotlin.android; не добавлять org.jetbrains.kotlin.jvm в Android app-модуль. Не полагаться на более старый KGP по умолчанию внутри AGP. Повышение runtime KGP выполняется по официальным правилам AGP при будущем создании проекта; сейчас build-файлов нет.
 
