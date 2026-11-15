@@ -1,5 +1,7 @@
 # Diet — черновики, подтверждение и восстановление контекста
 
+**Исполнение 15 ноября:** первая Android-реализация Room/DataStore и raw checkpoints проверяется в ветке codex/android-implementation. Repository instrumentation на API29:22cases PASS, включая receipt-first после удаления факта, rollback, read-after-commit failure, конфликты, возобновление raw draft, future draft/preferences/schema без сброса. Для schema1 ещё нет перехода между двумя выпущенными версиями; будущие миграции и физический crash/power-loss не объявлены проверенными. См. [фактический отчёт](build-validation.md).
+
 Дата: 15 ноября 2026 года. **Статус: инженерный контракт TECH-004 для будущего Android-приложения. Код, хранилища и проверки ещё не созданы.** Документ конкретизирует [сценарии](user-flows.md), [правила данных](data-rules.md) и ON-002/003/005, AN-001–003 из [приёмки](acceptance-tests.md), не добавляет аккаунт, синхронизацию или резервные копии.
 
 ## 1. Три разных состояния

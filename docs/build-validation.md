@@ -14,8 +14,8 @@ Windows11/AMD64, Temurin21.0.13+9, Gradle9.5.0, AGP9.3.1, Kotlin/compiler2.4.21,
 | Чистый JVM domain-checks | 8 suites/44 tests,0failures/0errors:38domain +6local-time; Unicode15.1 полная NormalizationTest/CaseFolding фикстура |
 | app JVM tests | 9 suites/48 tests,0failures/0errors: то же ядро плюс4media budget/bounded-output |
 | Minified release | R8/ресурсы/сборка выполнены; первый universal unsigned APK11233695байт. Это ещё не подписанный пользовательский выпуск |
-| Lint debug | Первоначально2NewApi: BigInteger.intValueExact и splash31 при min29. Исправлены checked range/toInt и values-v31; итоговый повтор pending, подавления/поднятия min нет |
-| Android runtime/UI/media/Room/notification | Эмуляторы и тесты подготовлены, исполнительные результаты добавляются отдельно; not run здесь не PASS |
+| Lint debug | Первоначально2NewApi: BigInteger.intValueExact и splash31 при min29. Исправлены checked range/toInt и values-v31; повтор PASS,0errors, подавления/поднятия min нет |
+| Android runtime/UI/media/Room/notification | API29:36data/media/report cases PASS; UI и notifications проверяются отдельно, полного PASS пока нет |
 | Физические S23+/близкие, cloud/D2D/OEM | Устройства/транспорт не подключены и не проверены; неподтверждённая совместимость/доставка/скорость не заявляются |
 
 Зависимые исходники публикуются отдельными коммитами в codex/android-implementation; эта начальная фиксация toolchain не является готовым приложением. Один app-модуль плюс JVM-only domain-checks, который компилирует тот же чистый source отдельно от Android/UI; второй APK приложения не создаётся.
@@ -35,3 +35,11 @@ Gradle runtime/artifacts разрешаются только из Google Maven, 
 ## Пока не подтверждено
 
 Личные данные не вводились. Нет физической матрицы/OEM cloud/D2D, длительного idle/performance-прогона и магазинной публикации. Не путать unit-test PASS/сборку с полной приёмкой NFR. Подпись конечного APK, фактический native ABI/page alignment, холодный старт, screenshots и Android результаты фиксируются после исполнения.
+
+## Хранение и отчёты — Android10/API29
+
+Сборка06: реальный instrumentation runner на отдельном DietApi29/x86_64, BundledSQLiteDriver/Room/DataStore. 36tests PASS за11.03с:22Repository,3ReportQueries и11PhotoEngine. Тесты используют UUID-файлы и синтетические значения; production dataset и личные данные не изменяются.
+
+Repository: повтор после удалённого факта/закрытого draft возвращает старый receipt; конфликт не перезаписывает чужую revision; rollback не оставляет частичных строк/receipt; подтверждённая операция остаётся успешной при последующей ошибке refresh. Проверены отдельная явная замена снимка, отложенная ручная цель после onboarding, идемпотентное наполнение с изменённым manifest, полнота/нулевой день/удаление последней строки, raw draft после reopen, paged headers без raw JSON в StateFlow, история вне первых40, goal timeline, future schema/draft/preferences без сброса, изменение timezone и повторы планов. DataStore: независимые группы, token/fingerprint, recovery barrier и сериализация TreeMap как Map.
+
+ReportQueries: эталон N/Q/нулей и moment-only даты; весь диапазон1900–9999 с ограничением600bucket и доступной точной последней страницей; параллельный writer не смешивает еду и цели разных снимков. Это не измерение скорости на Samsung и не доказательство100000строк под физическим memory pressure.

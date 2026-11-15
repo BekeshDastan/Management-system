@@ -1,5 +1,7 @@
 # Diet — версии хранения и миграции
 
+**Исполнение 15 ноября:** первая Android-реализация Room/DataStore и raw checkpoints проверяется в ветке codex/android-implementation. Repository instrumentation на API29:22cases PASS, включая receipt-first после удаления факта, rollback, read-after-commit failure, конфликты, возобновление raw draft, future draft/preferences/schema без сброса. Для schema1 ещё нет перехода между двумя выпущенными версиями; будущие миграции и физический crash/power-loss не объявлены проверенными. См. [фактический отчёт](build-validation.md).
+
 Дата: 15 ноября 2026 года. **Статус: инженерный контракт TECH-004 для будущего приложения; миграции, схемы и APK ещё не созданы и не проверены исполнением.** Код приложения сейчас не разрешён. Основания продукта — [правила данных](data-rules.md), [ТЗ](product-spec.md) и [приёмка](acceptance-tests.md); выбранные Room 2 и BundledSQLiteDriver — в [каталоге зависимостей](android-dependencies.md).
 
 ## 1. Что версионируется
