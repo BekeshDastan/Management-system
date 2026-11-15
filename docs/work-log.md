@@ -1036,3 +1036,11 @@
 - Новый overview восстанавливает точные суммы completed+partial через mean×count, затем считает среднее по записанным датам; missing не становится0, confirmedzero учтён. Доменные complete N/Q и ReportQueries не менялись. Под графиком цветные приёмы/доли и полная таблица исторических строк по40на страницу.
 - Переходы «Текущей недели» сохраняют понедельник–воскресенье и clipping today; 5JVM ReportOverview cases PASS вместе с60общими. ReportsUi2 PASS repeat03/48, nativeMath/ReportSegments/S2 PASS full02 (весь full02 имел отдельно названные3неотчётныхсбоя). Сетки/разделители=#393D43, строки минимум48dp, даты с годом, async таблица обновляется по dataRevision.
 - Файлы: ReportScreens/ReportPresentation/ReportOverviewTest/ReportsUiTest, docs/work-log.md. Независимый audit всех строк/арифметики/goal-order, diff; отдельный commit/push с remote SHA.
+
+
+## 2026-11-15 — metadata выпуска1.2 и проверка новых сценариев
+
+- Отчёт опубликован отдельным коммитом, remote SHA проверен. app versionCode повышен2→3, versionName1.2.0; appId/min29/target37/schema1 и постоянный ключ сохранены.
+- Старые DietUi assertions обновлены под принятый overview с внесёнными partial-фактами, но отдельно проверяют complete N=0/partialDays=1 и отсутствие автоматической завершённости. Клик вкладки выбирает selectable-узел вместо одноимённого заголовка. Убраны проверки исключённого toggle; переключение Б/Ж и сохранность фактов проверяются.
+- Preference recovery test ждёт подтверждённую revision: новый defaultdark раньше совпадал с ожидаемым цветом до завершения наблюдателя и создавал ложный fail. Проверка revision+1 остаётся строгой. Repeat03:48PASS/156,512с, JVM60PASS; первая неуспешная compile01 (root missing withContext import) исправлена до02 и не объявляется PASS.
+- Файлы: app/build.gradle.kts, DietUiTest.kt, docs/android-ui.md/work-log.md. Проверки ссылок/UTF-8/diff, отдельный commit/push/remote SHA. Дальше R8/LintRelease и подпись/нативный upgrade с неизменёнными личными данными.

@@ -76,7 +76,13 @@ class DietUiTest {
         }
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Начать").fetchSemanticsNodes().isNotEmpty() || repository.state.value.onboarding?.completed == true }
     }
-    private fun click(text: String) { compose.waitUntil(10_000) { compose.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }; val node = compose.onNodeWithText(text, useUnmergedTree = true); if (!node.isDisplayed()) node.performScrollTo(); node.performClick(); compose.waitForIdle() }
+    private fun click(text: String) {
+        compose.waitUntil(10_000) { compose.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }
+        val tabs = compose.onAllNodes(hasText(text) and SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsProperties.Selected))
+        val node = if (tabs.fetchSemanticsNodes().isNotEmpty()) tabs.onFirst() else compose.onNodeWithText(text, useUnmergedTree = true)
+        if (!node.isDisplayed()) node.performScrollTo()
+        node.performClick(); compose.waitForIdle()
+    }
     private fun field(label: String, value: String) { compose.waitUntil(10_000) { compose.onAllNodesWithText(label).fetchSemanticsNodes().isNotEmpty() }; compose.onNodeWithText(label).performScrollTo().performTextReplacement(value) }
 
     @Test fun onboardingFoodWeightSleepAndReportUseRealPersistentRecords() {
@@ -98,9 +104,11 @@ class DietUiTest {
         assertEquals(7240, repository.state.value.weights.single().centiKg)
         assertEquals(450, repository.state.value.sleeps.single().minutes)
         compose.onNodeWithText("Прогресс").performClick()
-        compose.onNodeWithText("Мой отчёт").assertExists()
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("Заполнено 0 из", substring = true).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Заполнено 0 из", substring = true).assertExists()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("Записано 1 из", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Записано 1 из", substring = true).assertExists()
+        val report = runBlocking { repository.readReport(java.time.LocalDate.now(), java.time.LocalDate.now()) }
+        assertEquals(0, report.nutrition.n)
+        assertEquals(1, report.nutrition.partialDays)
         // A partial food day must not silently enter the completed-day mean.
         assertTrue(repository.state.value.confirmations.isEmpty())
     }
@@ -110,9 +118,9 @@ class DietUiTest {
         show(large = true)
         compose.onNodeWithText("Прогресс").performClick()
         click("Вес")
-        compose.onNodeWithText("Нет измерений веса").assertExists()
+        compose.onNodeWithText("— кг").assertExists()
         click("Сон")
-        compose.onNodeWithText("Нет записей сна").assertExists()
+        compose.onAllNodesWithText("—").onFirst().assertExists()
         compose.onNodeWithText("Дневник").performClick()
         click("＋ Добавить еду")
         compose.onNodeWithText("＋ Создать").performClick()
@@ -173,7 +181,7 @@ class DietUiTest {
         session.checkpoint()
         preferences.apply("theme", session.fields, initial.baseRevision, session.token, session.draft.id, session.draft.draftRevision)
         session.apply() // The UI lost the first completion and still holds an OPEN-looking revision.
-        val state = withTimeout(10_000) { preferences.state.first { it.theme == "dark" } }
+        val state = withTimeout(10_000) { preferences.state.first { it.theme == "dark" && it.revisions["theme"] == initial.baseRevision + 1 } }
         assertEquals(initial.baseRevision + 1, state.revisions["theme"])
         assertTrue(state.drafts.none { it.group == "theme" })
     }
@@ -183,7 +191,7 @@ class DietUiTest {
         val session = UiPreferenceSession(preferences, scope, initial, false)
         preferences.checkpoint(initial.copy(rawFields = session.fields + mapOf("__operation" to session.token, "__pending" to "false")), null)
         session.apply()
-        val state = withTimeout(10_000) { preferences.state.first { it.theme == "dark" } }
+        val state = withTimeout(10_000) { preferences.state.first { it.theme == "dark" && it.revisions["theme"] == initial.baseRevision + 1 } }
         assertEquals(initial.baseRevision + 1, state.revisions["theme"])
     }
 
@@ -337,7 +345,7 @@ class DietUiTest {
         assertEquals(2, repository.queryHistory(today(), today()).size)
     }
 
-    @Test fun nutritionChartSelectsMacrosAndPartialVisibilityNeverChangesFactsOrMeanN() {
+    @Test fun nutritionChartShowsRecordedMacrosWithoutChangingCompletedMeanOrFacts() {
         val report = runBlocking {
             val meal = repository.state.value.meals.first().id
             val snapshot = SnapshotColumns.from(app.diet.domain.NutritionSnapshot("Тестовый состав", FoodUnit.GRAM, nutrientsPerBasis = MicroNutrients(100_000_000, 10_000_000, 5_000_000, 20_000_000).toDomain()))
@@ -349,9 +357,11 @@ class DietUiTest {
         compose.setContent { if (contentVisible) CompositionLocalProvider(LocalUi provides host) { DietTheme(VisualPreferences(ready = true)) { LazyColumn { item { Column { AccessibleChart(report, "food") } } } } } }
         click("Белки")
         compose.onNodeWithTag("report-bars").performScrollTo().performClick()
-        compose.onNodeWithText("Частично: 10,0 г", substring = true).performScrollTo().assertExists()
-        click("Показывать частичные дни")
-        assertEquals("false", host.view["report.partial"])
+        compose.onNodeWithText("10,0 г").performScrollTo().assertExists()
+        compose.onNodeWithText("Показывать частичные дни").assertDoesNotExist()
+        click("Жиры")
+        assertEquals("fat", host.view["report.component"])
+        click("Белки")
         assertEquals("protein", host.view["report.component"])
         runBlocking { val after = repository.readReport(java.time.LocalDate.now(), java.time.LocalDate.now()); assertEquals(0, after.nutrition.n); assertEquals(1, after.nutrition.partialDays); assertEquals(1, repository.queryHistory(today(), today()).size) }
     }
