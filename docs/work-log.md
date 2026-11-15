@@ -725,3 +725,10 @@
 - Наблюдённые проверки: Gradle tasks/dependency graph PASS; KSP/Room экспорт; debug/instrumentation APK и minified unsigned release собраны. domain-checks44/app48 JVMtests все0failures/0errors. Это48 уникальных unitcases, повторное исполнение ядра не удваивает покрытие. Android runtime ещё впереди.
 - Lint нашёл2 NewApi на min29; BigInteger exact заменён checked conversion, splash вынесен вvalues-v31. Итоговый Lint повторяется, подавлений/повышения min нет. Более новые AGP/Gradle предупреждения не равны несовместимости выбранной испытанной пары.
 - Файлы этой части: .gitignore, корневые/settings/app/domain-checks Gradle-файлы, Wrapper/catalog/verification, scripts/bootstrap_tools.py/build.ps1/install-sdk.ps1, README.md, docs/build-validation.md, docs/work-log.md. Частные кодовые слои публикуются следом; все реальные результаты и открытые ограничения отражены отдельно.
+
+## 2026-11-15 — реализация: точное числовое ядро и Unicode
+
+- Сборочная основа опубликована0c9b7d5c4d3492aeab9341b97c732db34ba7b2b8, remote branch SHA сверялся. Чистое ядро включает Rational/Numbers/Nutrition/Reports/StreamingReports/GameRules/NameKeys и фиксированные Unicode15.1 таблицы без системного locale/Normalizer.
+- Основные проверки:38domain cases, включая полный NormalizationTest15.1(19074строки×5NFC) и1530fullCaseFolding records; все0failures/errors на JDK21. Потоковые аккумулируемые сводки не держат100000снимков в RAM и не подменяют диапазон fakeднём; Android cursor adapter публикуется с data отдельно.
+- Независимое ревью подтвердило точность/снимки/даты. Lint выявил intValueExact API31; добавлена совместимая checked range конверсия+boundarytest, multiplyExactLong/Long. ПределAndroid10/API29 сохранён, suppress не применялся.
+- Файлы: app/src/main/java/app/diet/domain, app/src/test/java/app/diet/domain, app/src/test/resources/unicode15, app/src/main/res/raw/unicode_license.txt, docs/numeric-contract.md, docs/work-log.md. Diff/UTF-8/ссылки проверены, сырые временные Unicode sources удалены только из своей области; Git содержит лишь generated data/проверочные общедоступные фикстуры/лицензию. Реальные личные записи не используются.

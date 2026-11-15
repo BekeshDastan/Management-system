@@ -81,3 +81,11 @@ textKeyVersion=1: NFC(full default Unicode case folding(NFC(trimWhiteSpace(input
 Превышение ввода/количества строк объясняется у поля/операции, прежние данные и durable draft остаются. Повреждённая сохранённая пара/дата/версия не исправляется молча: объект не участвует как ноль или пропуск, операция/отчёт показывает ошибку данных. Миграция не обрезает значения, не округляет архив и не пересоздаёт БД ради нового предела.
 
 Синтетические арифметические эталоны и границы этого документа проверены Python Fraction/Decimal: точные трети, HALF_UP, максимальный рецепт, суммы по датам, bitLength и выбранные Unicode-примеры. Host Unicode — 15.1.0. Это проверка математики документа, не Kotlin/Room/Android-тесты и не полная Unicode-conformance. Реализация обязана повторить NC/FD/WT/SL/PG и границы на выбранном стеке; защитные бюджеты проверяются на нагрузке.
+
+## Реализация и наблюдённые проверки
+
+По новому поручению пользователя чистое Kotlin-ядро реализовано в app/src/main/java/app/diet/domain и проверяется теми же исходниками в JVM-only domain-checks, отдельно от Android UI. 38 domain tests прошли: точные p/q/порции/рецепты, ввод/границы/округление, missing/partial/complete/Q, игры и bounded streaming. В full app JVM-наборе вместе с media/timing48tests; эти числа не означают исполнение всех168Android-приёмочных случаев.
+
+NameKeys использует закреплённые canonical decomposition/CCC/composition exclusions/full casefold Unicode15.1 и Hangul без зависимости от системной Unicode-версии Android. Полные официальные NormalizationTest15.1 и CaseFolding15.1 с лицензией сохранены сжатыми тестовыми фикстурами; conformance прошёл на JDK21. Android/runtime ещё проверяется отдельно.
+
+Lint обнаружил BigInteger.intValueExact на API31: использован явный checkedInt с проверкой Int.MIN/MAX и совместимый toInt; перегрузки Math.multiplyExact выбраны Long/Long(API24). min29 и числовые границы сохранены, suppress нет. [Фактический отчёт](build-validation.md) отделяет unit/runtime результаты.
