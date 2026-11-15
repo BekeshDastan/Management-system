@@ -37,7 +37,11 @@ data class ReportBundle(
     val topFoods: List<FrequentFood>,
     val moments: MomentSummary = MomentSummary(),
     val recordedDays: Long = 0,
+    val meals: List<ReportMealSummary> = emptyList(),
 )
+
+/** At most six named meal segments plus Other; all totals use exact historical values. */
+data class ReportMealSummary(val id: String, val name: String, val completeTotal: Nutrients, val partialTotal: Nutrients, val colorIndex: Int = 0)
 
 data class MomentSummary(val photoCount: Long = 0, val noteCount: Long = 0, val moodCounts: Map<String, Long> = emptyMap(), val recordedDays: Long = 0)
 
@@ -57,6 +61,8 @@ data class ReportSeriesPoint(
     val goalDays: Int,
     val momentDays: Long = 0,
     val recordedDays: Long = 0,
+    val mealMeans: Map<String, Nutrients> = emptyMap(),
+    val partialMealMeans: Map<String, Nutrients> = emptyMap(),
 ) {
     val date: LocalDate get() = start
     val calendarDays: Long get() = ChronoUnit.DAYS.between(start, endInclusive) + 1
@@ -133,6 +139,12 @@ object ReportQueries {
             val first = period.start.plusDays(index * width)
             Bucket(DatePeriod(first, minOf(period.endInclusive, first.plusDays(width - 1))), cancelled)
         }
+        // Bounded legend is read in the same transaction as the facts. Additional/archived
+        // custom meals remain in an explicit Other segment, never omitted from totals.
+        val mealNames = connection.usePrepared("SELECT id,name FROM meals ORDER BY ordinal,id LIMIT 6") { row ->
+            buildMap { while (row.step()) put(row.getText(0), row.getText(1)) }
+        }
+        val otherMealId = "__other_meals__"
         val exact = if (collectExact) HashMap<LocalDate, ReportDay>() else null
         // OFFSET re-scans the history for each page. Seek in the existing compound index
         // instead; the order within a date does not affect any exact nutrient sum.
@@ -190,19 +202,24 @@ object ReportQueries {
             require(date in period && (previousDate == null || date > previousDate)) { "Повреждённый порядок дат отчёта" }
             previousDate = date
             while (goals.peek()?.startDate?.let { it <= key } == true) takeGoal()
-            var total = Nutrients.ZERO
+            val mealTotals = linkedMapOf<String, Nutrients>()
             var rowCount = 0
             while (entries.peek()?.localDate == key) {
                 job?.ensureActive()
-                total += checkNotNull(entries.take()).nutrients
+                val row = checkNotNull(entries.take())
+                val meal = row.key.meal.takeIf { it in mealNames } ?: otherMealId
+                mealTotals[meal] = (mealTotals[meal] ?: Nutrients.ZERO) + row.nutrients
                 rowCount = Math.addExact(rowCount, 1)
             }
             val confirmed = confirmations.peek()?.localDate == key
             if (confirmed) confirmations.take()
+            val total = mealTotals.values.fold(Nutrients.ZERO) { sum, value -> sum + value }
             val food = NutritionDay(date, total, rowCount, confirmed, confirmed && rowCount == 0)
             val bucket = buckets[bucketIndex(date)]
             foodSummary.add(food, effectiveGoal)
             bucket.food.add(food, effectiveGoal)
+            val mealSums = if (confirmed) bucket.completeMeals else bucket.partialMeals
+            mealTotals.forEach { (id, nutrients) -> mealSums[id] = (mealSums[id] ?: Nutrients.ZERO) + nutrients }
             val weight = if (weights.peek()?.localDate == key) checkNotNull(weights.take()).centiKg.toLong() else null
             weight?.let {
                 val row = WeightMeasurement(date, it)
@@ -244,13 +261,20 @@ object ReportQueries {
             val sleep = bucket.sleep.summary()
             ReportSeriesPoint(bucket.period.start, bucket.period.endInclusive, nutrition.mean, nutrition.n,
                 bucket.food.partialMean, nutrition.partialDays, weight.meanKg, weight.n, sleep.meanMinutes, sleep.n,
-                if (bucket.goalDays == 0) null else bucket.goalSum / Rational.of(bucket.goalDays.toLong()), bucket.goalDays, bucket.momentDays, bucket.recordedDays)
+                if (bucket.goalDays == 0) null else bucket.goalSum / Rational.of(bucket.goalDays.toLong()), bucket.goalDays, bucket.momentDays, bucket.recordedDays,
+                if (nutrition.n == 0) emptyMap() else bucket.completeMeals.mapValues { (_, sum) -> sum / Rational.of(nutrition.n.toLong()) },
+                if (nutrition.partialDays == 0) emptyMap() else bucket.partialMeals.mapValues { (_, sum) -> sum / Rational.of(nutrition.partialDays.toLong()) })
         }
         if (exact != null) {
             require(period.dayCount <= 50) { "Точный список дней запрашивается только страницей" }
             points.forEach { point -> exact.putIfAbsent(point.start, ReportDay(point.start, NutritionDay(point.start), null, null, null)) }
         }
-        val bundle = ReportBundle(period, foodSummary.summary(), weightSummary.summary(), sleepSummary.summary(), points, dao.frequentFoods(start, end, 5), MomentSummary(photoCount, noteCount, moodCounts.toMap(), momentDayCount), recordedDayCount)
+        val mealSummaries = (mealNames + (otherMealId to "Другие приёмы")).entries.mapIndexed { index, (id, name) ->
+            ReportMealSummary(id, name,
+                buckets.fold(Nutrients.ZERO) { sum, bucket -> sum + (bucket.completeMeals[id] ?: Nutrients.ZERO) },
+                buckets.fold(Nutrients.ZERO) { sum, bucket -> sum + (bucket.partialMeals[id] ?: Nutrients.ZERO) }, index)
+        }.filter { summary -> buckets.any { summary.id in it.completeMeals || summary.id in it.partialMeals } }
+        val bundle = ReportBundle(period, foodSummary.summary(), weightSummary.summary(), sleepSummary.summary(), points, dao.frequentFoods(start, end, 5), MomentSummary(photoCount, noteCount, moodCounts.toMap(), momentDayCount), recordedDayCount, mealSummaries)
         return AggregateResult(bundle, exact ?: emptyMap())
     }
 
@@ -258,6 +282,8 @@ object ReportQueries {
         val food = NutritionAccumulator(period, cancelled)
         val weight = WeightAccumulator(period, cancelled)
         val sleep = SleepAccumulator(period, cancelled)
+        val completeMeals = linkedMapOf<String, Nutrients>()
+        val partialMeals = linkedMapOf<String, Nutrients>()
         var goalSum = Nutrients.ZERO
         var goalDays = 0
         var momentDays = 0L

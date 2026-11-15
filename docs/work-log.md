@@ -924,3 +924,9 @@
 - Каталог сортирует избранное и недавнее перед остальными, стабильный tie-break для страниц. Не меняет пищевые значения существующих записей.
 - FoodWorkflowTest8 PASS наAPI37/16KiB в targeted03, совместно13cases/4.906с: batchrollback/replayconcurrent/exacthistorical,rawdraft,moveidentity/conflict/archive,quickrepeat/receipt,orderpaging. Debugcompile03/JVM54 PASS; полныйLint ещё выполняется и отдельно не объявленPASS.
 - Файлы: DietRepository.kt/DietDao.kt/FoodWorkflowTest.kt/docs/work-log.md. Независимый diffreview и diffcheck; отдельныйcommit/push/remoteSHA. UI-флоу проверяется следующей частью.
+
+## 2026-11-15 — точные сегменты отчётов по приёмам пищи
+
+- Data-флоу еды опубликованbbb1120988b87ac4944babb1714a4ffb0ce777ac, remoteSHA проверен. ReportQueries считает суммы/средние сегментов в том же Room snapshot/keyset, что общий отчёт;6названных приёмов+«Другие», ограниченные600интервалов, отдельные знаменатели completed/partial. Нули и пропуски не смешиваются; schema/deadline10с не изменены.
+- ReportMealSegmentsTest3 PASS наAPI37/16KiB targeted03: complete/partial/confirmedzero, >6приёмов без потери нутриентов, агрегированные интервалы/согласованность с общим итогом. Общий13case run4.906с включает отдельныеfood/widget проверки. Масштабный S2 повтор ещё не объявленпройденным.
+- Файлы: data/ReportQueries.kt, androidTest/data/ReportMealSegmentsTest.kt, docs/work-log.md. Compile03/diffreview/check PASS; отдельныйcommit/push/remoteSHA. Отрисовка публикуется отдельно после UIпрогона.
