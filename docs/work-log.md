@@ -1018,3 +1018,12 @@
 - В узком окне недельная полоса получает конечную ширину перед горизонтальным scroll; это исправляет игнорируемые weights. Состав открывается отдельно, страницы и фото/копия/шаблон сохранены. После сохранения нужный приём раскрывается. План/Шаблоны — равные вкладки с линией, дата через календарь, указанные пустые баннеры сняты.
 - DiaryRedesign2 и DiaryOverview3 PASS в full02 и repeat03, DiaryPresentation JVM1 PASS. Проверены43продукта/две страницы и601строка/9приёмов в data reader, отсутствие удалённых надписей и явная завершённость. Полный повтор03=48 PASS; новая математика серии не использует вес/калории как награду.
 - Файлы: DiaryScreens/LibraryScreens/DiaryPresentation, DiaryRedesignTest/DiaryPresentationTest; docs/design-v1.2.md/work-log.md. Удаление одной дублирующей ссылки целей после03 — обратимая визуальная правка; проверяется в signed release. Diff/review/UTF-8; отдельный commit/push с remote SHA.
+
+
+## 2026-11-15 — персональный раздел и желаемый вес
+
+- Дневник/план опубликованы 2f4adabbb63944e8fa01ab990b2c577144af9a6d, remote SHA проверен. «Ещё» показывает сегодняшние внесённые калории/цель, последний фактический вес и отдельный желаемый ориентир, переход к калориям/целям. Все прежние инструменты находятся внутри закрытых «Настроек».
+- Последний вес читается по дате с LIMIT1 независимо от selectedDate и проходит WeightMeasurement validation. Желаемый вес хранится отдельной DataStoreгруппой weightTarget, сохраняет raw/revision/token/fingerprint и не создаёт Room измерение. Пустое поле удаляет только ориентир. По умолчанию dark, явные light/system пользователя сохраняются.
+- Устранены инертные переключатели убранных/обязательных блоков; persisted order не сбрасывается. Переход к восстановлению независимого preference draft не вызывает ложный dirty-диалог.
+- WeightTargetPreferences3 + PersonalSettingsUi2 PASS в full02 и repeat03; проверены raw72,/ошибка apply/точные67,35/revision/replay/очистка, latestWeight при просмотре прошлой даты и отсутствие нового измерения. Compile03 и JVM60 PASS. Независимый review/noSchemaChange/diff; отдельный commit/push/remote SHA.
+- Файлы: DietDao/DietRepository/VisualPreferencesRepository/SettingsScreens, WeightTargetPreferencesTest/PersonalSettingsUiTest, docs/storage-model.md/work-log.md. Подписанное обновление остаётся следующим этапом.
