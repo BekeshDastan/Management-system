@@ -1,0 +1,422 @@
+[
+  {
+    "ndb": "1001",
+    "fdcId": 173410,
+    "name": "Масло сливочное, солёное",
+    "category": "dairy",
+    "expectedEnglish": "Butter, salted"
+  },
+  {
+    "ndb": "1077",
+    "fdcId": 171265,
+    "name": "Молоко 3,25%, с витамином D",
+    "category": "dairy",
+    "expectedEnglish": "Milk, whole, 3.25% milkfat, with added vitamin D"
+  },
+  {
+    "ndb": "1079",
+    "fdcId": 171267,
+    "name": "Молоко 2%, с витаминами A и D",
+    "category": "dairy",
+    "expectedEnglish": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D"
+  },
+  {
+    "ndb": "1082",
+    "fdcId": 170872,
+    "name": "Молоко 1%, с витаминами A и D",
+    "category": "dairy",
+    "expectedEnglish": "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D"
+  },
+  {
+    "ndb": "1009",
+    "fdcId": 173414,
+    "name": "Сыр чеддер",
+    "category": "dairy",
+    "expectedEnglish": "Cheese, cheddar (Includes foods for USDA's Food Distribution Program)"
+  },
+  {
+    "ndb": "1028",
+    "fdcId": 170847,
+    "name": "Сыр моцарелла из частично обезжиренного молока",
+    "category": "dairy",
+    "expectedEnglish": "Cheese, mozzarella, part skim milk"
+  },
+  {
+    "ndb": "1123",
+    "fdcId": 171287,
+    "name": "Яйцо куриное целое, сырое",
+    "category": "eggs",
+    "expectedEnglish": "Egg, whole, raw, fresh"
+  },
+  {
+    "ndb": "1129",
+    "fdcId": 173424,
+    "name": "Яйцо куриное целое, сваренное вкрутую",
+    "category": "eggs",
+    "expectedEnglish": "Egg, whole, cooked, hard-boiled"
+  },
+  {
+    "ndb": "9003",
+    "fdcId": 171688,
+    "name": "Яблоко с кожурой, сырое",
+    "category": "fruit",
+    "expectedEnglish": "Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)"
+  },
+  {
+    "ndb": "9040",
+    "fdcId": 173944,
+    "name": "Банан, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Bananas, raw"
+  },
+  {
+    "ndb": "9050",
+    "fdcId": 171711,
+    "name": "Голубика, сырая",
+    "category": "fruit",
+    "expectedEnglish": "Blueberries, raw"
+  },
+  {
+    "ndb": "9200",
+    "fdcId": 169097,
+    "name": "Апельсин, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Oranges, raw, all commercial varieties"
+  },
+  {
+    "ndb": "9266",
+    "fdcId": 169124,
+    "name": "Ананас, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Pineapple, raw, all varieties"
+  },
+  {
+    "ndb": "9236",
+    "fdcId": 169928,
+    "name": "Персик жёлтый, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Peaches, yellow, raw"
+  },
+  {
+    "ndb": "9316",
+    "fdcId": 167762,
+    "name": "Клубника, сырая",
+    "category": "fruit",
+    "expectedEnglish": "Strawberries, raw"
+  },
+  {
+    "ndb": "9252",
+    "fdcId": 169118,
+    "name": "Груша, сырая",
+    "category": "fruit",
+    "expectedEnglish": "Pears, raw"
+  },
+  {
+    "ndb": "9042",
+    "fdcId": 173946,
+    "name": "Ежевика, сырая",
+    "category": "fruit",
+    "expectedEnglish": "Blackberries, raw"
+  },
+  {
+    "ndb": "9218",
+    "fdcId": 169105,
+    "name": "Мандарин, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Tangerines, (mandarin oranges), raw"
+  },
+  {
+    "ndb": "9148",
+    "fdcId": 168153,
+    "name": "Киви зелёный, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Kiwifruit, green, raw"
+  },
+  {
+    "ndb": "9150",
+    "fdcId": 167746,
+    "name": "Лимон без кожуры, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Lemons, raw, without peel"
+  },
+  {
+    "ndb": "9132",
+    "fdcId": 174683,
+    "name": "Виноград красный или зелёный, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Grapes, red or green (European type, such as Thompson seedless), raw"
+  },
+  {
+    "ndb": "9038",
+    "fdcId": 171706,
+    "name": "Авокадо калифорнийский, сырой",
+    "category": "fruit",
+    "expectedEnglish": "Avocados, raw, California"
+  },
+  {
+    "ndb": "11090",
+    "fdcId": 170379,
+    "name": "Брокколи, сырая",
+    "category": "vegetables",
+    "expectedEnglish": "Broccoli, raw"
+  },
+  {
+    "ndb": "11124",
+    "fdcId": 170393,
+    "name": "Морковь, сырая",
+    "category": "vegetables",
+    "expectedEnglish": "Carrots, raw"
+  },
+  {
+    "ndb": "11205",
+    "fdcId": 168409,
+    "name": "Огурец с кожурой, сырой",
+    "category": "vegetables",
+    "expectedEnglish": "Cucumber, with peel, raw"
+  },
+  {
+    "ndb": "11529",
+    "fdcId": 170457,
+    "name": "Помидор красный спелый, сырой",
+    "category": "vegetables",
+    "expectedEnglish": "Tomatoes, red, ripe, raw, year round average"
+  },
+  {
+    "ndb": "11282",
+    "fdcId": 170000,
+    "name": "Лук репчатый, сырой",
+    "category": "vegetables",
+    "expectedEnglish": "Onions, raw"
+  },
+  {
+    "ndb": "11352",
+    "fdcId": 170026,
+    "name": "Картофель с кожурой, сырой",
+    "category": "vegetables",
+    "expectedEnglish": "Potatoes, flesh and skin, raw"
+  },
+  {
+    "ndb": "11457",
+    "fdcId": 168462,
+    "name": "Шпинат, сырой",
+    "category": "vegetables",
+    "expectedEnglish": "Spinach, raw"
+  },
+  {
+    "ndb": "11135",
+    "fdcId": 169986,
+    "name": "Капуста цветная, сырая",
+    "category": "vegetables",
+    "expectedEnglish": "Cauliflower, raw"
+  },
+  {
+    "ndb": "11109",
+    "fdcId": 169975,
+    "name": "Капуста, сырая",
+    "category": "vegetables",
+    "expectedEnglish": "Cabbage, raw"
+  },
+  {
+    "ndb": "16056",
+    "fdcId": 173756,
+    "name": "Нут, сухие зрелые семена",
+    "category": "legumes",
+    "expectedEnglish": "Chickpeas (garbanzo beans, bengal gram), mature seeds, raw"
+  },
+  {
+    "ndb": "16057",
+    "fdcId": 173757,
+    "name": "Нут, варёный без соли",
+    "category": "legumes",
+    "expectedEnglish": "Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt"
+  },
+  {
+    "ndb": "16069",
+    "fdcId": 172420,
+    "name": "Чечевица, сухая",
+    "category": "legumes",
+    "expectedEnglish": "Lentils, raw"
+  },
+  {
+    "ndb": "16070",
+    "fdcId": 172421,
+    "name": "Чечевица, варёная без соли",
+    "category": "legumes",
+    "expectedEnglish": "Lentils, mature seeds, cooked, boiled, without salt"
+  },
+  {
+    "ndb": "16014",
+    "fdcId": 173734,
+    "name": "Фасоль чёрная, сухие зрелые семена",
+    "category": "legumes",
+    "expectedEnglish": "Beans, black, mature seeds, raw"
+  },
+  {
+    "ndb": "16015",
+    "fdcId": 173735,
+    "name": "Фасоль чёрная, варёная без соли",
+    "category": "legumes",
+    "expectedEnglish": "Beans, black, mature seeds, cooked, boiled, without salt"
+  },
+  {
+    "ndb": "20038",
+    "fdcId": 169705,
+    "name": "Овёс, зерно",
+    "category": "grains",
+    "expectedEnglish": "Oats (Includes foods for USDA's Food Distribution Program)"
+  },
+  {
+    "ndb": "20044",
+    "fdcId": 168877,
+    "name": "Рис белый длиннозёрный, обогащённый, сухой",
+    "category": "grains",
+    "expectedEnglish": "Rice, white, long-grain, regular, raw, enriched"
+  },
+  {
+    "ndb": "20045",
+    "fdcId": 168878,
+    "name": "Рис белый длиннозёрный, обогащённый, варёный",
+    "category": "grains",
+    "expectedEnglish": "Rice, white, long-grain, regular, enriched, cooked"
+  },
+  {
+    "ndb": "20008",
+    "fdcId": 170286,
+    "name": "Гречиха, зерно",
+    "category": "grains",
+    "expectedEnglish": "Buckwheat"
+  },
+  {
+    "ndb": "20009",
+    "fdcId": 170685,
+    "name": "Крупа гречневая обжаренная, сухая",
+    "category": "grains",
+    "expectedEnglish": "Buckwheat groats, roasted, dry"
+  },
+  {
+    "ndb": "20035",
+    "fdcId": 168874,
+    "name": "Киноа, сухая",
+    "category": "grains",
+    "expectedEnglish": "Quinoa, uncooked"
+  },
+  {
+    "ndb": "20137",
+    "fdcId": 168917,
+    "name": "Киноа, варёная",
+    "category": "grains",
+    "expectedEnglish": "Quinoa, cooked"
+  },
+  {
+    "ndb": "5062",
+    "fdcId": 171077,
+    "name": "Куриная грудка без кожи и костей, сырая",
+    "category": "meat-fish",
+    "expectedEnglish": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw"
+  },
+  {
+    "ndb": "5064",
+    "fdcId": 171477,
+    "name": "Куриная грудка без кожи, запечённая",
+    "category": "meat-fish",
+    "expectedEnglish": "Chicken, broilers or fryers, breast, meat only, cooked, roasted"
+  },
+  {
+    "ndb": "15076",
+    "fdcId": 173686,
+    "name": "Лосось атлантический дикий, сырой",
+    "category": "meat-fish",
+    "expectedEnglish": "Fish, salmon, Atlantic, wild, raw"
+  },
+  {
+    "ndb": "15121",
+    "fdcId": 173709,
+    "name": "Тунец светлый в воде, консервы без жидкости",
+    "category": "meat-fish",
+    "expectedEnglish": "Fish, tuna, light, canned in water, drained solids (Includes foods for USDA's Food Distribution Program)"
+  },
+  {
+    "ndb": "15015",
+    "fdcId": 171955,
+    "name": "Треска атлантическая, сырая",
+    "category": "meat-fish",
+    "expectedEnglish": "Fish, cod, Atlantic, raw"
+  },
+  {
+    "ndb": "12061",
+    "fdcId": 170567,
+    "name": "Миндаль",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Nuts, almonds"
+  },
+  {
+    "ndb": "12036",
+    "fdcId": 170562,
+    "name": "Ядра семян подсолнечника, сушёные",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Seeds, sunflower seed kernels, dried"
+  },
+  {
+    "ndb": "12155",
+    "fdcId": 170187,
+    "name": "Орех грецкий",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Nuts, walnuts, english"
+  },
+  {
+    "ndb": "12014",
+    "fdcId": 170556,
+    "name": "Ядра семян тыквы и других тыквенных, сушёные",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Seeds, pumpkin and squash seed kernels, dried"
+  },
+  {
+    "ndb": "12120",
+    "fdcId": 170581,
+    "name": "Фундук",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Nuts, hazelnuts or filberts"
+  },
+  {
+    "ndb": "12087",
+    "fdcId": 170162,
+    "name": "Кешью, сырой",
+    "category": "nuts-seeds",
+    "expectedEnglish": "Nuts, cashew nuts, raw"
+  },
+  {
+    "ndb": "4053",
+    "fdcId": 171413,
+    "name": "Масло оливковое для салата и приготовления",
+    "category": "oils",
+    "expectedEnglish": "Oil, olive, salad or cooking"
+  },
+  {
+    "ndb": "4506",
+    "fdcId": 171025,
+    "name": "Масло подсолнечное, линолевое около 65%",
+    "category": "oils",
+    "expectedEnglish": "Oil, sunflower, linoleic, (approx. 65%)"
+  },
+  {
+    "ndb": "19296",
+    "fdcId": 169640,
+    "name": "Мёд",
+    "category": "other",
+    "expectedEnglish": "Honey"
+  },
+  {
+    "ndb": "19335",
+    "fdcId": 169655,
+    "name": "Сахар-песок",
+    "category": "other",
+    "expectedEnglish": "Sugars, granulated"
+  },
+  {
+    "ndb": "19165",
+    "fdcId": 169593,
+    "name": "Какао-порошок без сахара",
+    "category": "other",
+    "expectedEnglish": "Cocoa, dry powder, unsweetened"
+  }
+]

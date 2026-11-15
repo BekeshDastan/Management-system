@@ -1,0 +1,2102 @@
+{
+  "formatVersion": 1,
+  "source": "USDA FoodData Central / SR Legacy April 2018",
+  "sourceUrl": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
+  "sourceSha256": "b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0",
+  "license": "CC0 1.0 / public domain",
+  "baseGrams": 100,
+  "categories": [
+    {
+      "code": "dairy",
+      "name": "Молочные продукты",
+      "id": "5ed8f833-c34e-3af7-81d9-9a885c2fca52"
+    },
+    {
+      "code": "eggs",
+      "name": "Яйца",
+      "id": "e8f04790-7fbb-322d-998a-36faff25c4e1"
+    },
+    {
+      "code": "fruit",
+      "name": "Фрукты и ягоды",
+      "id": "858a61ee-0c69-3611-8919-233c8e07257f"
+    },
+    {
+      "code": "vegetables",
+      "name": "Овощи",
+      "id": "4610e891-5cfa-3597-ad96-6916b028ee27"
+    },
+    {
+      "code": "legumes",
+      "name": "Бобовые",
+      "id": "0f8f3bcc-7736-32c5-9553-4ef0ee2add5a"
+    },
+    {
+      "code": "grains",
+      "name": "Крупы и злаки",
+      "id": "608ae69f-ddd3-3d10-859b-10ab6e11eddd"
+    },
+    {
+      "code": "meat-fish",
+      "name": "Мясо и рыба",
+      "id": "8a1ea247-2bc0-3e30-82db-1291c2d1f53c"
+    },
+    {
+      "code": "nuts-seeds",
+      "name": "Орехи и семена",
+      "id": "9ad52cab-04d7-37d5-96ae-21ec5d6cbe7f"
+    },
+    {
+      "code": "oils",
+      "name": "Масла",
+      "id": "4675dddc-9382-3186-9c68-0c0190e05e25"
+    },
+    {
+      "code": "other",
+      "name": "Другое",
+      "id": "e55e5e91-d077-351f-83dd-df843c0cdf7c"
+    }
+  ],
+  "items": [
+    {
+      "ndb": "1001",
+      "fdcId": 173410,
+      "name": "Масло сливочное, солёное",
+      "category": "dairy",
+      "expectedEnglish": "Butter, salted",
+      "id": "17e3ec44-d9ef-3d08-bc6e-70801847c753",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "717",
+          "micros": 717000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.85",
+          "micros": 850000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "81.11",
+          "micros": 81110000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0.06",
+          "micros": 60000
+        }
+      }
+    },
+    {
+      "ndb": "1077",
+      "fdcId": 171265,
+      "name": "Молоко 3,25%, с витамином D",
+      "category": "dairy",
+      "expectedEnglish": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "id": "9dca3145-a3c4-353d-aa9f-654e943df5fc",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "61",
+          "micros": 61000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "3.15",
+          "micros": 3150000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "3.25",
+          "micros": 3250000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "4.8",
+          "micros": 4800000
+        }
+      }
+    },
+    {
+      "ndb": "1079",
+      "fdcId": 171267,
+      "name": "Молоко 2%, с витаминами A и D",
+      "category": "dairy",
+      "expectedEnglish": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+      "id": "ea968796-7910-365e-84e0-d7df9d19c7ab",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "50",
+          "micros": 50000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "3.3",
+          "micros": 3300000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "1.98",
+          "micros": 1980000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "4.8",
+          "micros": 4800000
+        }
+      }
+    },
+    {
+      "ndb": "1082",
+      "fdcId": 170872,
+      "name": "Молоко 1%, с витаминами A и D",
+      "category": "dairy",
+      "expectedEnglish": "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+      "id": "bda1797c-204f-39e3-b875-e79cb51f7b64",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "42",
+          "micros": 42000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "3.37",
+          "micros": 3370000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.97",
+          "micros": 970000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "4.99",
+          "micros": 4990000
+        }
+      }
+    },
+    {
+      "ndb": "1009",
+      "fdcId": 173414,
+      "name": "Сыр чеддер",
+      "category": "dairy",
+      "expectedEnglish": "Cheese, cheddar (Includes foods for USDA's Food Distribution Program)",
+      "id": "cd695600-b5bb-32d9-a038-7ffaa81c2da3",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "403",
+          "micros": 403000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "22.87",
+          "micros": 22870000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "33.31",
+          "micros": 33310000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "3.37",
+          "micros": 3370000
+        }
+      }
+    },
+    {
+      "ndb": "1028",
+      "fdcId": 170847,
+      "name": "Сыр моцарелла из частично обезжиренного молока",
+      "category": "dairy",
+      "expectedEnglish": "Cheese, mozzarella, part skim milk",
+      "id": "a86872f5-11cb-30e5-8dba-0ba0f5ed6ef9",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "254",
+          "micros": 254000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "24.26",
+          "micros": 24260000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "15.92",
+          "micros": 15920000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "2.77",
+          "micros": 2770000
+        }
+      }
+    },
+    {
+      "ndb": "1123",
+      "fdcId": 171287,
+      "name": "Яйцо куриное целое, сырое",
+      "category": "eggs",
+      "expectedEnglish": "Egg, whole, raw, fresh",
+      "id": "6821c335-0a8b-3f72-b017-98a46ce0b9a0",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "143",
+          "micros": 143000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "12.56",
+          "micros": 12560000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "9.51",
+          "micros": 9510000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0.72",
+          "micros": 720000
+        }
+      }
+    },
+    {
+      "ndb": "1129",
+      "fdcId": 173424,
+      "name": "Яйцо куриное целое, сваренное вкрутую",
+      "category": "eggs",
+      "expectedEnglish": "Egg, whole, cooked, hard-boiled",
+      "id": "440789d5-7d01-3161-a8d8-de3e80347c90",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "155",
+          "micros": 155000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "12.58",
+          "micros": 12580000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "10.61",
+          "micros": 10610000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "1.12",
+          "micros": 1120000
+        }
+      }
+    },
+    {
+      "ndb": "9003",
+      "fdcId": 171688,
+      "name": "Яблоко с кожурой, сырое",
+      "category": "fruit",
+      "expectedEnglish": "Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)",
+      "id": "9d49f899-0b36-3f16-b114-1714563fd220",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "52",
+          "micros": 52000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.26",
+          "micros": 260000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.17",
+          "micros": 170000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "13.81",
+          "micros": 13810000
+        }
+      }
+    },
+    {
+      "ndb": "9040",
+      "fdcId": 173944,
+      "name": "Банан, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Bananas, raw",
+      "id": "ce442304-ebe0-3ca5-adf3-007e5ae81fb5",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "89",
+          "micros": 89000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.09",
+          "micros": 1090000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.33",
+          "micros": 330000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "22.84",
+          "micros": 22840000
+        }
+      }
+    },
+    {
+      "ndb": "9050",
+      "fdcId": 171711,
+      "name": "Голубика, сырая",
+      "category": "fruit",
+      "expectedEnglish": "Blueberries, raw",
+      "id": "5269633b-feac-3c27-bf5c-5842617f7902",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "57",
+          "micros": 57000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.74",
+          "micros": 740000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.33",
+          "micros": 330000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "14.49",
+          "micros": 14490000
+        }
+      }
+    },
+    {
+      "ndb": "9200",
+      "fdcId": 169097,
+      "name": "Апельсин, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Oranges, raw, all commercial varieties",
+      "id": "d6da31f2-3494-3156-a7fc-5ddbcdedd5b5",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "47",
+          "micros": 47000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.94",
+          "micros": 940000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.12",
+          "micros": 120000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "11.75",
+          "micros": 11750000
+        }
+      }
+    },
+    {
+      "ndb": "9266",
+      "fdcId": 169124,
+      "name": "Ананас, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Pineapple, raw, all varieties",
+      "id": "94ee81e4-92b2-3e41-bb16-a6f16579a7a2",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "50",
+          "micros": 50000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.54",
+          "micros": 540000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.12",
+          "micros": 120000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "13.12",
+          "micros": 13120000
+        }
+      }
+    },
+    {
+      "ndb": "9236",
+      "fdcId": 169928,
+      "name": "Персик жёлтый, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Peaches, yellow, raw",
+      "id": "3f833167-7cce-3169-96c6-e467ecd024ff",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "39",
+          "micros": 39000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.91",
+          "micros": 910000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.25",
+          "micros": 250000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "9.54",
+          "micros": 9540000
+        }
+      }
+    },
+    {
+      "ndb": "9316",
+      "fdcId": 167762,
+      "name": "Клубника, сырая",
+      "category": "fruit",
+      "expectedEnglish": "Strawberries, raw",
+      "id": "d43ddcc2-1c62-3bc5-8ca8-8734646a9866",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "32",
+          "micros": 32000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.67",
+          "micros": 670000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.3",
+          "micros": 300000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "7.68",
+          "micros": 7680000
+        }
+      }
+    },
+    {
+      "ndb": "9252",
+      "fdcId": 169118,
+      "name": "Груша, сырая",
+      "category": "fruit",
+      "expectedEnglish": "Pears, raw",
+      "id": "0d85e5f7-4d16-3234-8e67-4a51a78b44bc",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "57",
+          "micros": 57000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.36",
+          "micros": 360000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.14",
+          "micros": 140000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "15.23",
+          "micros": 15230000
+        }
+      }
+    },
+    {
+      "ndb": "9042",
+      "fdcId": 173946,
+      "name": "Ежевика, сырая",
+      "category": "fruit",
+      "expectedEnglish": "Blackberries, raw",
+      "id": "28f90fc3-d635-3b9f-9d17-59b939dbb49b",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "43",
+          "micros": 43000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.39",
+          "micros": 1390000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.49",
+          "micros": 490000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "9.61",
+          "micros": 9610000
+        }
+      }
+    },
+    {
+      "ndb": "9218",
+      "fdcId": 169105,
+      "name": "Мандарин, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Tangerines, (mandarin oranges), raw",
+      "id": "a5063415-3930-339d-897f-61d653293715",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "53",
+          "micros": 53000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.81",
+          "micros": 810000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.31",
+          "micros": 310000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "13.34",
+          "micros": 13340000
+        }
+      }
+    },
+    {
+      "ndb": "9148",
+      "fdcId": 168153,
+      "name": "Киви зелёный, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Kiwifruit, green, raw",
+      "id": "28dc569d-61f0-3b07-a7b8-dfd43e37f28c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "61",
+          "micros": 61000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.14",
+          "micros": 1140000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.52",
+          "micros": 520000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "14.66",
+          "micros": 14660000
+        }
+      }
+    },
+    {
+      "ndb": "9150",
+      "fdcId": 167746,
+      "name": "Лимон без кожуры, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Lemons, raw, without peel",
+      "id": "a72516b2-d239-3059-92c1-9a1ed653cf38",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "29",
+          "micros": 29000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.1",
+          "micros": 1100000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.3",
+          "micros": 300000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "9.32",
+          "micros": 9320000
+        }
+      }
+    },
+    {
+      "ndb": "9132",
+      "fdcId": 174683,
+      "name": "Виноград красный или зелёный, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Grapes, red or green (European type, such as Thompson seedless), raw",
+      "id": "056bcb4f-87a9-36c6-b458-6bdf80a98fa0",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "69",
+          "micros": 69000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.72",
+          "micros": 720000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.16",
+          "micros": 160000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "18.1",
+          "micros": 18100000
+        }
+      }
+    },
+    {
+      "ndb": "9038",
+      "fdcId": 171706,
+      "name": "Авокадо калифорнийский, сырой",
+      "category": "fruit",
+      "expectedEnglish": "Avocados, raw, California",
+      "id": "557b740b-b78c-3524-a33c-f4a9a8dd0fa6",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "167",
+          "micros": 167000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.96",
+          "micros": 1960000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "15.41",
+          "micros": 15410000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "8.64",
+          "micros": 8640000
+        }
+      }
+    },
+    {
+      "ndb": "11090",
+      "fdcId": 170379,
+      "name": "Брокколи, сырая",
+      "category": "vegetables",
+      "expectedEnglish": "Broccoli, raw",
+      "id": "7acf8565-76ff-3604-87c6-c3afb4697c8d",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "34",
+          "micros": 34000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "2.82",
+          "micros": 2820000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.37",
+          "micros": 370000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "6.64",
+          "micros": 6640000
+        }
+      }
+    },
+    {
+      "ndb": "11124",
+      "fdcId": 170393,
+      "name": "Морковь, сырая",
+      "category": "vegetables",
+      "expectedEnglish": "Carrots, raw",
+      "id": "080f3643-a163-3571-8326-c7d35cd1631e",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "41",
+          "micros": 41000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.93",
+          "micros": 930000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.24",
+          "micros": 240000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "9.58",
+          "micros": 9580000
+        }
+      }
+    },
+    {
+      "ndb": "11205",
+      "fdcId": 168409,
+      "name": "Огурец с кожурой, сырой",
+      "category": "vegetables",
+      "expectedEnglish": "Cucumber, with peel, raw",
+      "id": "f3402399-19c3-3070-ab0f-e583f05ff831",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "15",
+          "micros": 15000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.65",
+          "micros": 650000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.11",
+          "micros": 110000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "3.63",
+          "micros": 3630000
+        }
+      }
+    },
+    {
+      "ndb": "11529",
+      "fdcId": 170457,
+      "name": "Помидор красный спелый, сырой",
+      "category": "vegetables",
+      "expectedEnglish": "Tomatoes, red, ripe, raw, year round average",
+      "id": "2068f1ed-d788-3284-b2b8-c005e67900e1",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "18",
+          "micros": 18000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.88",
+          "micros": 880000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.2",
+          "micros": 200000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "3.89",
+          "micros": 3890000
+        }
+      }
+    },
+    {
+      "ndb": "11282",
+      "fdcId": 170000,
+      "name": "Лук репчатый, сырой",
+      "category": "vegetables",
+      "expectedEnglish": "Onions, raw",
+      "id": "6d883099-407b-3dbd-9a11-e6ba454bf31c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "40",
+          "micros": 40000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.1",
+          "micros": 1100000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.1",
+          "micros": 100000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "9.34",
+          "micros": 9340000
+        }
+      }
+    },
+    {
+      "ndb": "11352",
+      "fdcId": 170026,
+      "name": "Картофель с кожурой, сырой",
+      "category": "vegetables",
+      "expectedEnglish": "Potatoes, flesh and skin, raw",
+      "id": "04960c7a-d9db-3d60-a994-d63a2f5599bf",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "77",
+          "micros": 77000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "2.05",
+          "micros": 2050000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.09",
+          "micros": 90000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "17.49",
+          "micros": 17490000
+        }
+      }
+    },
+    {
+      "ndb": "11457",
+      "fdcId": 168462,
+      "name": "Шпинат, сырой",
+      "category": "vegetables",
+      "expectedEnglish": "Spinach, raw",
+      "id": "de745c26-e817-36dc-849e-215c9f4e66aa",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "23",
+          "micros": 23000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "2.86",
+          "micros": 2860000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.39",
+          "micros": 390000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "3.63",
+          "micros": 3630000
+        }
+      }
+    },
+    {
+      "ndb": "11135",
+      "fdcId": 169986,
+      "name": "Капуста цветная, сырая",
+      "category": "vegetables",
+      "expectedEnglish": "Cauliflower, raw",
+      "id": "b0a367df-faf1-3bfd-8d5c-0d66f51ad357",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "25",
+          "micros": 25000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.92",
+          "micros": 1920000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.28",
+          "micros": 280000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "4.97",
+          "micros": 4970000
+        }
+      }
+    },
+    {
+      "ndb": "11109",
+      "fdcId": 169975,
+      "name": "Капуста, сырая",
+      "category": "vegetables",
+      "expectedEnglish": "Cabbage, raw",
+      "id": "14d7911a-2488-31b6-aedf-548065bcb5fc",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "25",
+          "micros": 25000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "1.28",
+          "micros": 1280000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.1",
+          "micros": 100000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "5.8",
+          "micros": 5800000
+        }
+      }
+    },
+    {
+      "ndb": "16056",
+      "fdcId": 173756,
+      "name": "Нут, сухие зрелые семена",
+      "category": "legumes",
+      "expectedEnglish": "Chickpeas (garbanzo beans, bengal gram), mature seeds, raw",
+      "id": "6af6779d-9e0e-3287-b34c-f2b35c78bca8",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "378",
+          "micros": 378000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "20.47",
+          "micros": 20470000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "6.04",
+          "micros": 6040000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "62.95",
+          "micros": 62950000
+        }
+      }
+    },
+    {
+      "ndb": "16057",
+      "fdcId": 173757,
+      "name": "Нут, варёный без соли",
+      "category": "legumes",
+      "expectedEnglish": "Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",
+      "id": "7b055c5d-7ee2-30c4-a1b2-15381e5c4a67",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "164",
+          "micros": 164000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "8.86",
+          "micros": 8860000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "2.59",
+          "micros": 2590000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "27.42",
+          "micros": 27420000
+        }
+      }
+    },
+    {
+      "ndb": "16069",
+      "fdcId": 172420,
+      "name": "Чечевица, сухая",
+      "category": "legumes",
+      "expectedEnglish": "Lentils, raw",
+      "id": "c9844a20-7528-3831-a32f-56b9fbc5ceff",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "352",
+          "micros": 352000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "24.63",
+          "micros": 24630000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "1.06",
+          "micros": 1060000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "63.35",
+          "micros": 63350000
+        }
+      }
+    },
+    {
+      "ndb": "16070",
+      "fdcId": 172421,
+      "name": "Чечевица, варёная без соли",
+      "category": "legumes",
+      "expectedEnglish": "Lentils, mature seeds, cooked, boiled, without salt",
+      "id": "4a36ba23-4b12-35a7-bbcd-558cd408b073",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "116",
+          "micros": 116000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "9.02",
+          "micros": 9020000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.38",
+          "micros": 380000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "20.13",
+          "micros": 20130000
+        }
+      }
+    },
+    {
+      "ndb": "16014",
+      "fdcId": 173734,
+      "name": "Фасоль чёрная, сухие зрелые семена",
+      "category": "legumes",
+      "expectedEnglish": "Beans, black, mature seeds, raw",
+      "id": "085fc1c7-68ab-352c-a877-3a08ec28ce2c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "341",
+          "micros": 341000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "21.6",
+          "micros": 21600000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "1.42",
+          "micros": 1420000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "62.36",
+          "micros": 62360000
+        }
+      }
+    },
+    {
+      "ndb": "16015",
+      "fdcId": 173735,
+      "name": "Фасоль чёрная, варёная без соли",
+      "category": "legumes",
+      "expectedEnglish": "Beans, black, mature seeds, cooked, boiled, without salt",
+      "id": "8cdf8607-32df-30d1-a3e1-de0f4c9b55ae",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "132",
+          "micros": 132000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "8.86",
+          "micros": 8860000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.54",
+          "micros": 540000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "23.71",
+          "micros": 23710000
+        }
+      }
+    },
+    {
+      "ndb": "20038",
+      "fdcId": 169705,
+      "name": "Овёс, зерно",
+      "category": "grains",
+      "expectedEnglish": "Oats (Includes foods for USDA's Food Distribution Program)",
+      "id": "bc617dd3-3881-3713-8420-cb9339a95e07",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "389",
+          "micros": 389000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "16.89",
+          "micros": 16890000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "6.9",
+          "micros": 6900000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "66.27",
+          "micros": 66270000
+        }
+      }
+    },
+    {
+      "ndb": "20044",
+      "fdcId": 168877,
+      "name": "Рис белый длиннозёрный, обогащённый, сухой",
+      "category": "grains",
+      "expectedEnglish": "Rice, white, long-grain, regular, raw, enriched",
+      "id": "8c91e0b3-ddfc-3a0b-b4ab-8429a58667b7",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "365",
+          "micros": 365000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "7.13",
+          "micros": 7130000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.66",
+          "micros": 660000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "79.95",
+          "micros": 79950000
+        }
+      }
+    },
+    {
+      "ndb": "20045",
+      "fdcId": 168878,
+      "name": "Рис белый длиннозёрный, обогащённый, варёный",
+      "category": "grains",
+      "expectedEnglish": "Rice, white, long-grain, regular, enriched, cooked",
+      "id": "d0f066ba-acbe-30a5-bb28-623001334d9c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "130",
+          "micros": 130000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "2.69",
+          "micros": 2690000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.28",
+          "micros": 280000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "28.17",
+          "micros": 28170000
+        }
+      }
+    },
+    {
+      "ndb": "20008",
+      "fdcId": 170286,
+      "name": "Гречиха, зерно",
+      "category": "grains",
+      "expectedEnglish": "Buckwheat",
+      "id": "303c8233-ab4e-3e4b-994c-c4dfbf8d59ff",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "343",
+          "micros": 343000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "13.25",
+          "micros": 13250000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "3.4",
+          "micros": 3400000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "71.5",
+          "micros": 71500000
+        }
+      }
+    },
+    {
+      "ndb": "20009",
+      "fdcId": 170685,
+      "name": "Крупа гречневая обжаренная, сухая",
+      "category": "grains",
+      "expectedEnglish": "Buckwheat groats, roasted, dry",
+      "id": "dfb25c03-550f-3114-84b3-ce82b2bfd14c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "346",
+          "micros": 346000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "11.73",
+          "micros": 11730000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "2.71",
+          "micros": 2710000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "74.95",
+          "micros": 74950000
+        }
+      }
+    },
+    {
+      "ndb": "20035",
+      "fdcId": 168874,
+      "name": "Киноа, сухая",
+      "category": "grains",
+      "expectedEnglish": "Quinoa, uncooked",
+      "id": "40c2aa4a-0ef0-3cc4-81bf-468f46bac1df",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "368",
+          "micros": 368000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "14.12",
+          "micros": 14120000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "6.07",
+          "micros": 6070000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "64.16",
+          "micros": 64160000
+        }
+      }
+    },
+    {
+      "ndb": "20137",
+      "fdcId": 168917,
+      "name": "Киноа, варёная",
+      "category": "grains",
+      "expectedEnglish": "Quinoa, cooked",
+      "id": "d1c79020-09aa-324a-af72-bbffce884306",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "120",
+          "micros": 120000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "4.4",
+          "micros": 4400000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "1.92",
+          "micros": 1920000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "21.3",
+          "micros": 21300000
+        }
+      }
+    },
+    {
+      "ndb": "5062",
+      "fdcId": 171077,
+      "name": "Куриная грудка без кожи и костей, сырая",
+      "category": "meat-fish",
+      "expectedEnglish": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+      "id": "02d68441-1e49-30b0-bb92-8cd1221ecdf1",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "120",
+          "micros": 120000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "22.5",
+          "micros": 22500000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "2.62",
+          "micros": 2620000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "5064",
+      "fdcId": 171477,
+      "name": "Куриная грудка без кожи, запечённая",
+      "category": "meat-fish",
+      "expectedEnglish": "Chicken, broilers or fryers, breast, meat only, cooked, roasted",
+      "id": "7e66c3b5-bc9c-3433-990f-239dd70dd445",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "165",
+          "micros": 165000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "31.02",
+          "micros": 31020000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "3.57",
+          "micros": 3570000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "15076",
+      "fdcId": 173686,
+      "name": "Лосось атлантический дикий, сырой",
+      "category": "meat-fish",
+      "expectedEnglish": "Fish, salmon, Atlantic, wild, raw",
+      "id": "46b64c29-d606-3d10-8612-93971ee5899c",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "142",
+          "micros": 142000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "19.84",
+          "micros": 19840000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "6.34",
+          "micros": 6340000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "15121",
+      "fdcId": 173709,
+      "name": "Тунец светлый в воде, консервы без жидкости",
+      "category": "meat-fish",
+      "expectedEnglish": "Fish, tuna, light, canned in water, drained solids (Includes foods for USDA's Food Distribution Program)",
+      "id": "8a3c2bd6-4b1d-31cc-8e9c-8fc887a2c502",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "86",
+          "micros": 86000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "19.44",
+          "micros": 19440000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.96",
+          "micros": 960000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "15015",
+      "fdcId": 171955,
+      "name": "Треска атлантическая, сырая",
+      "category": "meat-fish",
+      "expectedEnglish": "Fish, cod, Atlantic, raw",
+      "id": "27f69c6a-f0c1-36b6-a067-0002aec7c9cb",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "82",
+          "micros": 82000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "17.81",
+          "micros": 17810000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0.67",
+          "micros": 670000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "12061",
+      "fdcId": 170567,
+      "name": "Миндаль",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Nuts, almonds",
+      "id": "a5a87bd5-875b-312e-a143-fc21d415c690",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "579",
+          "micros": 579000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "21.15",
+          "micros": 21150000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "49.93",
+          "micros": 49930000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "21.55",
+          "micros": 21550000
+        }
+      }
+    },
+    {
+      "ndb": "12036",
+      "fdcId": 170562,
+      "name": "Ядра семян подсолнечника, сушёные",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Seeds, sunflower seed kernels, dried",
+      "id": "c176f060-4528-371d-8b3f-4d7f94ba9ba2",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "584",
+          "micros": 584000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "20.78",
+          "micros": 20780000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "51.46",
+          "micros": 51460000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "20",
+          "micros": 20000000
+        }
+      }
+    },
+    {
+      "ndb": "12155",
+      "fdcId": 170187,
+      "name": "Орех грецкий",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Nuts, walnuts, english",
+      "id": "6be115e2-4562-35c4-ae4b-2d33affa362e",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "654",
+          "micros": 654000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "15.23",
+          "micros": 15230000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "65.21",
+          "micros": 65210000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "13.71",
+          "micros": 13710000
+        }
+      }
+    },
+    {
+      "ndb": "12014",
+      "fdcId": 170556,
+      "name": "Ядра семян тыквы и других тыквенных, сушёные",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Seeds, pumpkin and squash seed kernels, dried",
+      "id": "07a4af19-c546-34ad-a723-6358ed62b5a6",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "559",
+          "micros": 559000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "30.23",
+          "micros": 30230000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "49.05",
+          "micros": 49050000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "10.71",
+          "micros": 10710000
+        }
+      }
+    },
+    {
+      "ndb": "12120",
+      "fdcId": 170581,
+      "name": "Фундук",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Nuts, hazelnuts or filberts",
+      "id": "98219dcd-41f8-3694-9328-6ba1ee87e349",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "628",
+          "micros": 628000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "14.95",
+          "micros": 14950000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "60.75",
+          "micros": 60750000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "16.7",
+          "micros": 16700000
+        }
+      }
+    },
+    {
+      "ndb": "12087",
+      "fdcId": 170162,
+      "name": "Кешью, сырой",
+      "category": "nuts-seeds",
+      "expectedEnglish": "Nuts, cashew nuts, raw",
+      "id": "7c49eaa6-3ddd-3f8a-a321-96b918d69d1f",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "553",
+          "micros": 553000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "18.22",
+          "micros": 18220000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "43.85",
+          "micros": 43850000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "30.19",
+          "micros": 30190000
+        }
+      }
+    },
+    {
+      "ndb": "4053",
+      "fdcId": 171413,
+      "name": "Масло оливковое для салата и приготовления",
+      "category": "oils",
+      "expectedEnglish": "Oil, olive, salad or cooking",
+      "id": "7aca13b5-8920-3a20-9128-228751c7ad80",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "884",
+          "micros": 884000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "100",
+          "micros": 100000000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "4506",
+      "fdcId": 171025,
+      "name": "Масло подсолнечное, линолевое около 65%",
+      "category": "oils",
+      "expectedEnglish": "Oil, sunflower, linoleic, (approx. 65%)",
+      "id": "22b212f3-074b-3276-8d55-c75bf9387156",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "884",
+          "micros": 884000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "100",
+          "micros": 100000000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        }
+      }
+    },
+    {
+      "ndb": "19296",
+      "fdcId": 169640,
+      "name": "Мёд",
+      "category": "other",
+      "expectedEnglish": "Honey",
+      "id": "0bb9b0a2-5423-3d87-b58e-07848c2d63d0",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "304",
+          "micros": 304000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0.3",
+          "micros": 300000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "82.4",
+          "micros": 82400000
+        }
+      }
+    },
+    {
+      "ndb": "19335",
+      "fdcId": 169655,
+      "name": "Сахар-песок",
+      "category": "other",
+      "expectedEnglish": "Sugars, granulated",
+      "id": "b02a8db9-b142-3b0e-a252-ee573b645834",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "387",
+          "micros": 387000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "0",
+          "micros": 0
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "99.98",
+          "micros": 99980000
+        }
+      }
+    },
+    {
+      "ndb": "19165",
+      "fdcId": 169593,
+      "name": "Какао-порошок без сахара",
+      "category": "other",
+      "expectedEnglish": "Cocoa, dry powder, unsweetened",
+      "id": "1baf2c39-14fb-3ddb-a3e5-8aa12dab99f9",
+      "nutrients": {
+        "kcal": {
+          "nutrientId": 1008,
+          "unit": "KCAL",
+          "raw": "228",
+          "micros": 228000000
+        },
+        "protein": {
+          "nutrientId": 1003,
+          "unit": "G",
+          "raw": "19.6",
+          "micros": 19600000
+        },
+        "fat": {
+          "nutrientId": 1004,
+          "unit": "G",
+          "raw": "13.7",
+          "micros": 13700000
+        },
+        "carbs": {
+          "nutrientId": 1005,
+          "unit": "G",
+          "raw": "57.9",
+          "micros": 57900000
+        }
+      }
+    }
+  ]
+}
