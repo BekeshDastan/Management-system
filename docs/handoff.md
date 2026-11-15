@@ -40,7 +40,7 @@ D:\Diet, репозиторий https://github.com/BekeshDastan/Management-syste
 - [migrations](migrations.md): версии и пути каждого будущего выпуска, schema export/синтетические фикстуры, без destructive fallback/downgrade, пересчёта истории или обещания отката подтверждённой миграции.
 - [drafts](drafts.md): raw/последний durable checkpoint/факт различаются; receipt-first возвращает ранее выполненный результат без нового сохранения. Goal timeline revision, group revision и двухфазные ordinal предотвращают описанные конфликты.
 
-Публикации текущего запроса, remote SHA после каждого push проверен: f31f1eff4048726e4bd11e9c788a2d2feed6b19d — числа/NC; f4bbae4eef1d43fa01f47a692c61c90af5da6232 — миграции; 64955751ec1d7c82eec47aaaec2b2a2e0c6e4fd4 — черновики/ST; 5c5abbbd29e721810d4aa5dd7dbcb4b40b3abae6 — модель. Связывающие статусы/навигация публикуются отдельно.
+Публикации текущего запроса, remote SHA после каждого push проверен: f31f1eff4048726e4bd11e9c788a2d2feed6b19d — числа/NC; f4bbae4eef1d43fa01f47a692c61c90af5da6232 — миграции; 64955751ec1d7c82eec47aaaec2b2a2e0c6e4fd4 — черновики/ST; 5c5abbbd29e721810d4aa5dd7dbcb4b40b3abae6 — модель. Интеграция ТЗ/сценариев/плана/реестра опубликована 135a15dd373e1cb1e192186125ce63c7abf763a4, remote SHA подтверждён; после неё папка была чистой. Завершающая журнальная запись фиксирует результаты, актуальный HEAD сверять по Git.
 
 ## Физический профиль и открытые проверки
 
