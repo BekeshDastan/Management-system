@@ -16,8 +16,9 @@ import app.diet.data.DraftEntity
 import app.diet.data.newId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -52,10 +53,15 @@ class PhotoEngineTest {
         repo = DietRepository(context, scope, Clock.fixed(Instant.parse("2026-11-15T12:00:00Z"), ZoneOffset.UTC), db)
         repo.initialize(); engine = PhotoEngine(context, repo, scope)
     }
-    @After fun close() {
-        if (::scope.isInitialized) scope.cancel()
+    @After fun close(): Unit = runBlocking {
+        // Cancellation is cooperative: join the Room observer before closing its native database.
+        if (::scope.isInitialized) scope.coroutineContext[Job]!!.cancelAndJoin()
         if (::db.isInitialized) db.close()
-        if (::ownedRoot.isInitialized) ownedRoot.deleteRecursively()
+        if (::ownedRoot.isInitialized) {
+            val cache = ApplicationProvider.getApplicationContext<Context>().cacheDir.canonicalFile
+            check(ownedRoot.canonicalFile.parentFile == cache && ownedRoot.name.startsWith("photo-instrumentation-"))
+            check(ownedRoot.deleteRecursively())
+        }
     }
     private suspend fun draft(date: String = "2026-11-15") = repo.checkpointDraft(DraftEntity(kind = "moment", selectedLocalDate = date, rawPayload = "{\"note\":\"synthetic\"}", updatedAtMillis = 0), null)
     private fun pattern(name: String = "source.jpg", transparent: Boolean = false): File {

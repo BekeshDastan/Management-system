@@ -4,6 +4,7 @@ param(
     [ValidatePattern('^[a-zA-Z0-9_.,#]+$')][string]$Classes
 )
 $ErrorActionPreference = "Stop"
+trap { Write-Output ("Android validation failed: " + $_.Exception.Message); exit 1 }
 $DietRoot = Split-Path -Parent $PSScriptRoot
 $DietAdb = Join-Path $DietRoot ".local-tools/android-sdk/platform-tools/adb.exe"
 $DietDebug = Join-Path $DietRoot "app/build/outputs/apk/debug/app-debug.apk"

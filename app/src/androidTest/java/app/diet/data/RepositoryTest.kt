@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -52,11 +51,15 @@ class RepositoryTest {
         repo = DietRepository(context, scope, clock, db)
         repo.initialize()
     }
-    @After fun cleanup() {
-        if (::scope.isInitialized) scope.cancel()
+    @After fun cleanup(): Unit = runBlocking {
+        // Finish the repository's native reads before closing/releasing the test database.
+        if (::scope.isInitialized) scope.coroutineContext[Job]!!.cancelAndJoin()
         if (::db.isInitialized) db.close()
         // Delete only this test's explicitly allocated files, never the production database.
-        if (::file.isInitialized) listOf(file, File(file.path + "-wal"), File(file.path + "-shm")).forEach { it.delete() }
+        if (::file.isInitialized) {
+            check(file.canonicalFile.parentFile == File(context.noBackupFilesDir, "diet/db").canonicalFile && file.name.startsWith("test-"))
+            listOf(file, File(file.path + "-wal"), File(file.path + "-shm"), File(file.path + "-journal")).forEach { check(!it.exists() || it.delete()) }
+        }
     }
     private fun meal() = repo.state.value.meals.first().id
     private suspend fun product(): CatalogItemEntity {
@@ -228,7 +231,7 @@ class RepositoryTest {
         rejected { repo.checkpointDraft(draft.copy(rawPayload = "{\"weight\":\"80\"}"), draft.draftRevision) }
         assertEquals("DISCARDED", repo.freshDraft(draft.id)?.status)
         val open = repo.checkpointDraft(DraftEntity(kind = "sleep", rawPayload = "{\"hours\":\"oops\",\"minutes\":\"\"}", updatedAtMillis = 0), null)
-        scope.cancel(); db.close()
+        scope.coroutineContext[Job]!!.cancelAndJoin(); db.close()
         scope = CoroutineScope(SupervisorJob() + Dispatchers.IO); db = DietDatabase.open(context, file.name); repo = DietRepository(context, scope, clock, db); repo.initialize()
         assertEquals(open.rawPayload, repo.freshDraft(open.id)?.rawPayload)
         assertTrue(repo.state.value.sleeps.isEmpty())
@@ -298,10 +301,11 @@ class RepositoryTest {
 
     @Test fun unsupportedNewerSchemaIsNotDestroyed(): Unit = runBlocking {
         repo.saveWeight(today, 8012, null, Operation())
-        scope.cancel(); db.close()
+        scope.coroutineContext[Job]!!.cancelAndJoin(); db.close()
         VerifiedSQLiteDriver().open(file.absolutePath).use { it.execSQL("PRAGMA user_version = 2") }
         scope = CoroutineScope(SupervisorJob() + Dispatchers.IO); db = DietDatabase.open(context, file.name); repo = DietRepository(context, scope, clock, db)
         rejected { repo.initialize() }
+        scope.coroutineContext[Job]!!.cancelAndJoin()
         db.close()
         VerifiedSQLiteDriver().open(file.absolutePath).use { connection ->
             connection.prepare("PRAGMA user_version").use { assertTrue(it.step()); assertEquals(2L, it.getLong(0)) }
@@ -325,41 +329,49 @@ class RepositoryTest {
         val testScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val prefFile = File(context.noBackupFilesDir, "diet/prefs/test-${newId()}.preferences_pb")
         prefFile.parentFile!!.mkdirs()
-        val store = PreferenceDataStoreFactory.create(scope = testScope, produceFile = { prefFile })
-        val prefs = VisualPreferencesRepository(store, testScope)
-        withTimeout(5000) { prefs.state.first { it.ready } }
-        val draft = prefs.checkpoint(PreferenceDraft(newId(), "appearance", 1, rawFields = mapOf("accent" to "berry", "cover" to "2")), null)
-        prefs.apply("theme", mapOf("theme" to "dark"), 1, newId())
-        val token = newId(); prefs.apply("appearance", draft.rawFields, 1, token, draft.id, draft.draftRevision)
-        prefs.apply("appearance", draft.rawFields, 1, token, draft.id, draft.draftRevision)
-        rejected { prefs.apply("appearance", draft.rawFields, 2, token) }
-        assertTrue(prefs.recoverPreference("appearance", token, draft.rawFields, 1))
-        rejected { prefs.recoverPreference("appearance", token, mapOf("accent" to "ocean", "cover" to "2"), 1) }
-        assertEquals("COMMITTED", prefs.freshPreferenceDraft("appearance")?.status)
-        withTimeout(5000) { prefs.state.first { it.accent == "berry" && it.theme == "dark" } }
-        assertEquals(2L, prefs.state.value.revisions["appearance"])
-        prefs.apply("appearance", mapOf("accent" to "ocean", "cover" to "3"), 2, newId())
-        rejected { prefs.recoverPreference("appearance", token, draft.rawFields, 1) }
-        rejected { prefs.apply("appearance", draft.rawFields, 1, token) }
-        withTimeout(5000) { prefs.state.first { it.accent == "ocean" && it.cover == "3" } }
-        assertTrue(prefFile.canonicalPath.startsWith(context.noBackupFilesDir.canonicalPath))
-        testScope.cancel(); prefFile.delete()
+        try {
+            val store = PreferenceDataStoreFactory.create(scope = testScope, produceFile = { prefFile })
+            val prefs = VisualPreferencesRepository(store, testScope)
+            withTimeout(5000) { prefs.state.first { it.ready } }
+            val draft = prefs.checkpoint(PreferenceDraft(newId(), "appearance", 1, rawFields = mapOf("accent" to "berry", "cover" to "2")), null)
+            prefs.apply("theme", mapOf("theme" to "dark"), 1, newId())
+            val token = newId(); prefs.apply("appearance", draft.rawFields, 1, token, draft.id, draft.draftRevision)
+            prefs.apply("appearance", draft.rawFields, 1, token, draft.id, draft.draftRevision)
+            rejected { prefs.apply("appearance", draft.rawFields, 2, token) }
+            assertTrue(prefs.recoverPreference("appearance", token, draft.rawFields, 1))
+            rejected { prefs.recoverPreference("appearance", token, mapOf("accent" to "ocean", "cover" to "2"), 1) }
+            assertEquals("COMMITTED", prefs.freshPreferenceDraft("appearance")?.status)
+            withTimeout(5000) { prefs.state.first { it.accent == "berry" && it.theme == "dark" } }
+            assertEquals(2L, prefs.state.value.revisions["appearance"])
+            prefs.apply("appearance", mapOf("accent" to "ocean", "cover" to "3"), 2, newId())
+            rejected { prefs.recoverPreference("appearance", token, draft.rawFields, 1) }
+            rejected { prefs.apply("appearance", draft.rawFields, 1, token) }
+            withTimeout(5000) { prefs.state.first { it.accent == "ocean" && it.cover == "3" } }
+            assertTrue(prefFile.canonicalPath.startsWith(context.noBackupFilesDir.canonicalPath))
+        } finally {
+            testScope.coroutineContext[Job]!!.cancelAndJoin()
+            check(!prefFile.exists() || prefFile.delete())
+        }
     }
 
     @Test fun futurePreferenceFormatIsNeverResetByAnyMutation(): Unit = runBlocking {
         val testScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val prefFile = File(context.noBackupFilesDir, "diet/prefs/test-${newId()}.preferences_pb")
         prefFile.parentFile!!.mkdirs()
-        val store = PreferenceDataStoreFactory.create(scope = testScope, produceFile = { prefFile })
-        val prefs = VisualPreferencesRepository(store, testScope)
-        val draft = prefs.checkpoint(PreferenceDraft(newId(), "theme", 1, rawFields = mapOf("theme" to "dark")), null)
-        store.edit { it[longPreferencesKey("formatVersion")] = 2 }
-        val before = store.data.first()
-        rejected { prefs.checkpoint(draft, draft.draftRevision) }
-        rejected { prefs.discard(draft.group, draft.id, draft.draftRevision) }
-        rejected { prefs.apply("theme", draft.rawFields, 1, newId(), draft.id, draft.draftRevision) }
-        assertEquals(before, store.data.first())
-        testScope.cancel(); prefFile.delete()
+        try {
+            val store = PreferenceDataStoreFactory.create(scope = testScope, produceFile = { prefFile })
+            val prefs = VisualPreferencesRepository(store, testScope)
+            val draft = prefs.checkpoint(PreferenceDraft(newId(), "theme", 1, rawFields = mapOf("theme" to "dark")), null)
+            store.edit { it[longPreferencesKey("formatVersion")] = 2 }
+            val before = store.data.first()
+            rejected { prefs.checkpoint(draft, draft.draftRevision) }
+            rejected { prefs.discard(draft.group, draft.id, draft.draftRevision) }
+            rejected { prefs.apply("theme", draft.rawFields, 1, newId(), draft.id, draft.draftRevision) }
+            assertEquals(before, store.data.first())
+        } finally {
+            testScope.coroutineContext[Job]!!.cancelAndJoin()
+            check(!prefFile.exists() || prefFile.delete())
+        }
     }
 
     @Test fun viewContextUsesCanonicalMapSerializationOnRealDataStore(): Unit = runBlocking {
@@ -381,7 +393,7 @@ class RepositoryTest {
             assertTrue(prefFile.isFile)
         } finally {
             testScope.coroutineContext[Job]!!.cancelAndJoin()
-            prefFile.delete()
+            check(!prefFile.exists() || prefFile.delete())
         }
     }
 }

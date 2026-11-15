@@ -69,7 +69,7 @@ class ReminderSchedulerTest {
             repo.saveReminder(current.id, false, current.minuteOfDay, current.weekDaysMask, current.revision, Operation(newId()))
             scheduler.reconcile()
         }
-        if (::scope.isInitialized) scope.cancel()
+        if (::scope.isInitialized) scope.coroutineContext[Job]?.cancelAndJoin()
         if (::db.isInitialized) db.close()
         if (::root.isInitialized) root.deleteRecursively()
         if (grantedForTest && Build.VERSION.SDK_INT >= 33) {

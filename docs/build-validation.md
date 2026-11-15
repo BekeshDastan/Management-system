@@ -83,3 +83,11 @@ API29 ReminderSchedulerTest2 PASS в runs09/10: настоящие AlarmManager/
 Targeted run11:5tests PASS (4ReportQueries+S2),19.504с всего. В неизменённом S2fixture100000строк/3653даты:seed8169мс/read8305мс; PSSдо110432KiB/после124365KiB. N1826/Q913 и все4нутриента сверены независимой BigInteger cross-product arithmetic;≤600bucket и последние40точныхдат доступны, missing/zero/measurement-only различаются. Это одна итерация x86_64/2vCPUэмулятора, не p95 и не достижение3с наSamsung.
 
 Отдельные regressioncases:610строк одной даты с2приёмами, одинаковыми ordinal, >256unique key/eviction/изменённымquantity/quick/длинным диапазоном; NULL в quickнутриенте отклоняется, а не превращается черезSQLite.getLong в0. Их arithmetic/seek review выполнено независимо. Full12 позже прерван native teardownсбоем в другом классе; общийPASS не заявляется, отчётные cases до сбоя прошли.
+
+## Полный повтор13 — Android10/API29
+
+После исправлений teardown run13 полностью PASS:80executedtests/0failures/0errors за73.733с. Разбиение: Repository22, ReportQueries5, S2scale1, prefs4, прочиеintegration6, PhotoEngine11/WebP3/PhotoColor2, notifications2, UI24. Gainmap case имеет SdkSuppress API34+ и на29 не исполнялся; не включён в эти80.
+
+Предыдущий full12 завершился SIGSEGV в native SQLite при переходе между media tests. Локальный tombstone сопоставлен с APK mapping/libsqliteJni/releaseMemArray; найден небезопасный teardown cancel→db.close без join при IO observer. Все такие test/reopen scopes теперь cancelAndJoin до close, без задержек «на удачу» и подавления ошибок. Production DB живёт весь процесс и не закрывается этой тестовой очисткой. После исправления весь набор80 прошёл; это один полный повтор, не доказательство всех crash-interleavings.
+
+Новый RGBA_F16/P3 case первоначально честно отказал: API29 Bitmap PNG encoder выдал8бит. Fixture заменена настоящим тестовым16-bit PNG (CRC32/Deflater + реальный native P3 iCCP); native decode подтвердил F16/wide gamut. Затем проверены свежий opaque ARGB_8888/sRGB JPEG, белая прозрачная область/цвет. Большой4096×1024 RGB565 PNG проходит выбранный адаптивный profile, пропорции/цвета сохранены, bitmap источника освобождён до импорта.
