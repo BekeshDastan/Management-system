@@ -51,3 +51,11 @@ PhotoEngineTest:11cases PASS в совместном instrumentation run06. Пр
 Первый runtime-прогон нашёл ошибку blanket APP2 rejection: Android29 encoder создаёт новый стандартный sRGB ICC, который не содержит пользовательских EXIF/GPS. Валидатор теперь принимает только один структурно проверенный ICC_PROFILE/RGB/acsp; остальные private segments по-прежнему запрещены. Свежий canvas остаётся источником оптимизированного JPEG.
 
 Не выполнены этим run: WebP/animation/HDR/F16 input; реальные low-RAM/OOM; все6веток downsizing; framework Picker/SAF на разных providers; отзыв grants/медленный stream; process-kill каждой файловой фазы; настоящий disk-full/cache eviction128MiB; физические устройства. Их не считать PASS по наличию guard-кода. Media operation/read gates и native decode cancellation протестированы в названных синтетических точках.
+
+## Приватность, пути и системная локальная копия
+
+API29 run09: path inventory PASS, но merged-manifest test FAIL из-за библиотечного Room MultiInstanceInvalidationService/directBootAware=true. Single-process приложение не использует эту службу; удалена через manifest merger, строгая проверка сохранена. В run10 оба StoragePrivacyIntegrationTest PASS: manifest allowBackup=false/no BackupAgent/no broad network/storage, никакого Direct Boot; два compiled XML содержат все9доменных исключений каждого транспорта. Проверены фактический CE Room path по PRAGMA database_list, WAL/SHM/FK/FULL, production-path DataStore+tokens/raw, masters/staging/cache и отсутствие synthetic marker вне разрешённых областей.
+
+На изолированном DietApi29 был выбран com.android.localtransport/.LocalTransport, backup manager временно включён, bmgr backupnow app.diet вернул для пакета «Backup is not allowed». Затем manager disabled и прежний Google transport восстановлены. Ответ общего job «Success» не трактуется как наличие копии: результат самого пакета — запрет. Никакой учётной записи/личного телефона/системного factory reset не использовалось.
+
+Cloud/D2D/OEM и uninstall/reinstall на физических телефонах не выполнены; гарантия чужого транспорта не заявлена. Full run10 пока не PASS: отдельный S2 timeout100000facts и async UI test ожидание разбираются,71из73успешны. Это не дефект privacy cases.

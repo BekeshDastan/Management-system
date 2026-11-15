@@ -31,6 +31,7 @@ def verify(apk, sdk, release=False, require_signature=False):
     assert re.search(r"allowBackup[^\n]*=false\b", manifest), "allowBackup must be false"
     assert "fullBackupContent" in manifest and "dataExtractionRules" in manifest, "Both backup formats are required"
     assert "backupAgent" not in manifest, "Custom backup agent is forbidden"
+    assert not re.search(r"directBootAware[^\n]*=true\b", manifest), "A component is enabled before unlock"
     if release:
         assert not re.search(r"debuggable[^\n]*=true\b", manifest), "Release is debuggable"
     forbidden = ("INTERNET", "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "CAMERA", "SCHEDULE_EXACT_ALARM", "USE_EXACT_ALARM")
