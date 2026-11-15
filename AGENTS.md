@@ -3,7 +3,7 @@
 ## Project context
 
 - Build a personal Android app for tracking nutrition, weight, sleep, and progress.
-- Current phase: product, UX, and stage-zero technical planning. Do not start app implementation until the user asks to proceed.
+- Current phase: Android implementation, authorized by the user on 2026-11-15. Follow the accepted specification and development plan; verify build/runtime behavior and preserve explicit pending status for untested environments. The user's permission supersedes older documentation that prohibited code.
 - Communicate with the user in Russian.
 - Repository: https://github.com/BekeshDastan/Management-system
 - Local workspace: D:\Diet.
