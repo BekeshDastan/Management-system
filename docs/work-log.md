@@ -789,3 +789,10 @@
 - Media-draft/starterintegration опубликованыfa116fc19850767cc67fc5f4e5d8c7bab380510e, remoteпроверен. Добавлены3 native WebP checks: статическийlossy, transparent→whiteopaque, animated2frames→firstredframe. Все3PASS вAPI29runs09/10; используются настоящие ImageDecoder/Bitmap encoder и disk master, не mock.
 - Tiny fixture140B созданлокальноизкрасного/синегокадра и проверен Pillow; metadata/персональных/чужих фото нет. Fixture только testAPK, source/hash в androidTest/assets/README.md.
 - Файлы: androidTest/media/WebpPhotoEngineTest.kt, androidTest/assets/synthetic-first-frame.webp/README.md, docs/work-log.md. Production/media policy не меняется; wide-gamut/F16/gainmap/downsample новый блок отдельно и ещё неPASS. Compile/Lint0errors/diff проверены; отдельный commit/push/remoteSHA.
+
+## 2026-11-15 — реализация: мягкие локальные напоминания
+
+- WebPtests опубликованы8c0cf3f3ce751967e7048d1798fc24f016e4bcd7, remoteпроверен. Реализованы3канала/независимые декларации, AlarmManager.setWindow15мин, immutable private broadcast intents, текущая зона/DST, outbox/reconcile, atomic date/generation claim и повторная проверка permission/spec передnotify. На ближайшую дату rearm доclaim; всеoffнеставятповторныйpolling.
+- Receiver goAsync ограничен8с/partialwakelock10с иfinally.finish; boot/time/timezone/update triggers читают только напоминания, без starter/photoинициализации. OSpermission выдаётся только по explicitUIaction, без exactalarm/FGS/network. Сообщения общие, healthnumbers отсутствуют; POSTED не называетсяdelivery.
+- Исполнено6JVMtimecases и2API29frameworkintegrationcases PASS, включая реальную notification/intent/outbox, disable, stalegeneration/timezone/duplicateguard. Doze/coldboot/OEM/physicaldelivery остаютсяnotrun; нельзя выдавать прямой handleAlarm test за автоматическую доставку.
+- Файлы: notifications/*.kt, timing/ReminderTime.kt +unit, messages/ReminderMessages.kt, androidTest/notifications/ReminderSchedulerTest.kt, docs/remaining-stage-zero.md/build-validation.md/work-log.md. Gradle/unit/Lint0errors09, runtime09/10/diff/ссылки проверены. Отдельный commit/push/remoteSHA; native activity иUI следуют отдельно.

@@ -67,3 +67,11 @@ API29 run09/10: StarterCatalogIntegrationTest2 PASS на реальном asset6
 DraftMediaRecoveryIntegrationTest2 PASS: повторный вход существующего moment добавляет недостающие существующие refs к staged без clear; raw payload/revision не перезаписываются. Ограничение4, date/owner/READY/media revision остаются активными; повтор idempotent. Это необходимо для формы, которая может получить callback/StateFlow с задержкой.
 
 WebpPhotoEngineTest3 PASS API29: статический lossy WebP; прозрачный WebP→белый opaque JPEG; animated WebP→первый красный кадр. Локальная синтетическая32×24 red→blue2frames fixture140B хранится только в androidTest/assets, SHA256a669035f74de598a56f82b8e41e2f3d9d8ccde95fd9d84b5d64869c00a674e89; личных фото нет. Это расширяет прежние11media cases; HDR/F16/real providers ещё не считать PASS.
+
+## Мягкие напоминания — первые runtime результаты
+
+6JVM local-time cases PASS: DST gap/overlap, строгая следующая дата, weekday mask, зона Kathmandu, текущая зона/дата/2ч grace и границы9999. Напоминания используют динамическую текущую зону при reconcile, одна декларация/канал на food/weight/sleep, изначально выключены.
+
+API29 ReminderSchedulerTest2 PASS в runs09/10: настоящие AlarmManager/PendingIntent/NotificationManager и отдельная синтетическая Room. После setWindow outbox подтверждается и immutable PendingIntent существует; handleAlarm публикует реальную notification с общим текстом/intent, повтор не создаёт второй occurrence; disable отменяет pending notification и alarm intent. Старая generation, чужая timezone и новая generation после уже claimed даты не дублируют dispatch.
+
+Это проверка реальных framework вызовов/каналов/posting с детерминированным временем, не ожидание ОС15минутного окна. Не подтверждены автоматическая доставка в Doze/после cold reboot/OEM, нажатие заблокированного экрана физического телефона, отсутствие задержек или фактическое прочтение пользователем. POSTED в ledger означает успешный вызов notify, не «доставлено». В UI эта неопределённость сформулирована.
