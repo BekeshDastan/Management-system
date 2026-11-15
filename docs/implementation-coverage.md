@@ -1,6 +1,6 @@
 # Diet — соответствие Android-реализации требованиям
 
-Дата: 15 ноября 2026 года. Срез: native исходники, завершённые run13/API29 и run17/API37 на4KiB/16KiB; подробные результаты в build-validation. Это навигация по **25 активным FR и 8 NFR**, а не новая редакция ТЗ и не отметка о прохождении всего каталога приёмки.
+Дата: 15 ноября 2026 года. База карты — native1.0 и run13/run17; дополнение1.1 и его фактические проверки перечислены ниже. Это навигация по **25 активным FR и 8 NFR**, а не новая редакция ТЗ и не отметка о прохождении всего каталога приёмки.
 
 Требования остаются в [product-spec.md](product-spec.md), ожидаемые случаи — в [acceptance-tests.md](acceptance-tests.md), точные правила — в [data-rules.md](data-rules.md). Результаты запусков и ограничения окружений ведутся в [build-validation.md](build-validation.md); эта карта не заменяет их первичные отчёты.
 
@@ -10,7 +10,22 @@
 - **Реализовано, отдельная проверка открыта:** маршрут и сохранение есть в исходниках, но отдельный полный сценарий из каталога не подтверждён имеющимися результатами.
 - Ни один статус ниже не означает прохождение всего каталога приёмки, физической матрицы или готовность любого OEM-устройства.
 
-Сборка13 прошла compile/JVM/lint. Полный run13 на API29: **80 тестов PASS за 73,733 с**, без ошибок и прежнего native SIGSEGV: Repository22, ReportQueries5, ReportScale1, PreferencesRecovery4, остальные integration6, PhotoEngine11, WebP3, PhotoColor2, ReminderScheduler2, DietUi24. Gainmap-тест имеет `SdkSuppress(minSdkVersion=34)` и в эти80 **не входит**. Дополнительно выполнены оба API37 run17 по81case без ошибок/пропусков, включая synthetic Gainmap, и повтор24UI финальной15наAPI29. Подписанный minified release отдельно прошёл офлайн первый запуск и same-key update на29/37: профиль/питание/измерения, а на37 также цели/медиа/план/шаблон/dark/raw-черновик сохранены. [Конечный пакет и sourceSHA](release-1.0.0.md). Физические проверки открыты; успех debug не переносится на них автоматически.
+Сборка13 прошла compile/JVM/lint. Полный run13 на API29: **80 тестов PASS за 73,733 с**, без ошибок и прежнего native SIGSEGV: Repository22, ReportQueries5, ReportScale1, PreferencesRecovery4, остальные integration6, PhotoEngine11, WebP3, PhotoColor2, ReminderScheduler2, DietUi24. Gainmap-тест имеет `SdkSuppress(minSdkVersion=34)` и в эти80 **не входит**. Дополнительно выполнены оба API37 run17 по81case без ошибок/пропусков, включая synthetic Gainmap, и повтор24UI финальной15наAPI29. Подписанный minified release отдельно прошёл офлайн первый запуск и same-key update на29/37: профиль/питание/измерения, а на37 также цели/медиа/план/шаблон/dark/raw-черновик сохранены. [Пакет1.0.0 и sourceSHA этого исторического среза](release-1.0.0.md). Физические проверки открыты; успех debug не переносится на них автоматически.
+
+## Дополнение UX 1.1
+
+[Принятые требования](ux-v1.1.md) дополняют исходные25FR; [manifest 1.1.0](release-1.1.0.md) и [проверки UX](ux-validation-1.1.md) фиксируют конкретные версии/ограничения.
+
+| Изменение | Реализация | Наблюдённая проверка |
+|---|---|---|
+| Окна и возврат | UiDialogs, UiViewport, UiHost | Navigation4, font2/320dp и низкое окно; отдельный native IME |
+| Добавление и действия еды | CatalogTopBar, FoodEntryActions, repository batch/move/repeat | FoodWorkflow8 + FoodUi2, атомарность/снимки/ID |
+| Отмена удаления | PendingDeletion и photo intent после grace | Deletion4, native photo Undo + холодный Viewer |
+| Минималистичный отчёт | ReportScreens, ReportPresentation, ReportQueries | JVM2, ReportSegments3, ReportsUi2, S2 |
+| Виджет | widget/** и platform RemoteViews | JVM4, Integration2, настоящий launcher pin/кнопки/live update |
+| Анимации и знакомство | DietDesign, GuidanceScreen | Общий UI прогон, независимый source review; физический TalkBack/OEM открыт |
+
+JVM54 и полный API37/16 КиБ106 PASS; повтор UI36 после основного исправления IME PASS. Финальный compactIME не приписывается предыдущему набору — он проверен нативным вводом отдельно. Подписанное обновление, точные SHA и сохранность описаны в manifest, не выводятся из наличия UI-тестов.
 
 ## Функциональные требования
 
