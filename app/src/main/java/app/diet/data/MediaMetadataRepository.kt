@@ -63,6 +63,25 @@ class MediaMetadataRepository internal constructor(private val repository: DietR
         val next = draft.copy(draftRevision = Math.addExact(draft.draftRevision, 1), mediaRevision = Math.addExact(draft.mediaRevision, 1), updatedAtMillis = System.currentTimeMillis()); dao.put(next); next
     }
 
+    /** Restore an interrupted editor checkpoint without dropping already imported staged assets. */
+    suspend fun ensureExistingDraftAssets(draftId: String, expectedMediaRevision: Long, assetIds: List<String>): DraftEntity = repository.metadataTransaction { dao ->
+        val draft = dao.getDraft(draftId) ?: throw DataFailure.Missing()
+        require(draft.draftFormatVersion == 1) { "Неизвестная версия черновика; данные сохранены" }
+        if (draft.status != "OPEN" || draft.mediaRevision != expectedMediaRevision) throw DataFailure.Conflict()
+        require(assetIds.size <= 4 && assetIds.toSet().size == assetIds.size)
+        val moment = requireNotNull(draft.selectedLocalDate).let { dao.momentOn(it) }
+        val owned = moment?.let { dao.photosIn(it.id).map { photo -> photo.assetId }.toSet() } ?: emptySet()
+        assetIds.forEach { require(it in owned && dao.getMediaAsset(it)?.state == "READY") }
+        val prior = dao.draftMedia(draftId)
+        val missing = assetIds.filter { id -> prior.none { it.assetId == id } }
+        require(prior.size + missing.size <= 4)
+        if (missing.isEmpty()) return@metadataTransaction draft
+        val ordinal = prior.maxOfOrNull { it.ordinal }?.let { Math.addExact(it, 1) } ?: 0L
+        missing.forEachIndexed { index, id -> dao.put(DraftMediaEntity(draftId = draftId, assetId = id, role = "existing", ordinal = Math.addExact(ordinal, index.toLong()))) }
+        val next = draft.copy(draftRevision = Math.addExact(draft.draftRevision, 1), mediaRevision = Math.addExact(draft.mediaRevision, 1), updatedAtMillis = System.currentTimeMillis())
+        dao.put(next); next
+    }
+
     suspend fun abortImport(batchId: String, reason: String) = repository.metadataTransaction { dao ->
         val batch = dao.getMediaImportBatch(batchId) ?: return@metadataTransaction
         if (batch.status != "PREPARING") return@metadataTransaction

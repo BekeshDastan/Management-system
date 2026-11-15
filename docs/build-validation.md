@@ -59,3 +59,11 @@ API29 run09: path inventory PASS, но merged-manifest test FAIL из-за би�
 На изолированном DietApi29 был выбран com.android.localtransport/.LocalTransport, backup manager временно включён, bmgr backupnow app.diet вернул для пакета «Backup is not allowed». Затем manager disabled и прежний Google transport восстановлены. Ответ общего job «Success» не трактуется как наличие копии: результат самого пакета — запрет. Никакой учётной записи/личного телефона/системного factory reset не использовалось.
 
 Cloud/D2D/OEM и uninstall/reinstall на физических телефонах не выполнены; гарантия чужого транспорта не заявлена. Full run10 пока не PASS: отдельный S2 timeout100000facts и async UI test ожидание разбираются,71из73успешны. Это не дефект privacy cases.
+
+## Настоящий starter, draft-медиа и WebP
+
+API29 run09/10: StarterCatalogIntegrationTest2 PASS на реальном asset60, а не копии ожидаемых констант. Проверены source IDs/English/form/revision, контрольная банановая порция, edit/delete/reopen и changed-manifest без reset/resurrection.
+
+DraftMediaRecoveryIntegrationTest2 PASS: повторный вход существующего moment добавляет недостающие существующие refs к staged без clear; raw payload/revision не перезаписываются. Ограничение4, date/owner/READY/media revision остаются активными; повтор idempotent. Это необходимо для формы, которая может получить callback/StateFlow с задержкой.
+
+WebpPhotoEngineTest3 PASS API29: статический lossy WebP; прозрачный WebP→белый opaque JPEG; animated WebP→первый красный кадр. Локальная синтетическая32×24 red→blue2frames fixture140B хранится только в androidTest/assets, SHA256a669035f74de598a56f82b8e41e2f3d9d8ccde95fd9d84b5d64869c00a674e89; личных фото нет. Это расширяет прежние11media cases; HDR/F16/real providers ещё не считать PASS.

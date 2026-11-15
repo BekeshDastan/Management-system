@@ -777,3 +777,9 @@
 - API29 LocalTransport bmgr запроспакета отказан «Backup is not allowed»; исходные disabled/transport настройки AVD восстановлены. Cloud/D2D/OEM не выполнены, физический gate остаётся открыт; личные данные не использованы. Static verifier дополнен DirectBoot check.
 - Добавлен scripts/test-android.ps1: явныйserial/ADBport, без uninstall/clear, проверяет JUnit output вместо доверия adb exit0. Выполнен run10:73cases/2отказа(S2report10s и async UIfield wait), privacy/notify/media/storageвэтойсборкеPASS. Отказы чинятся отдельно; общийPASS не заявлен.
 - Файлы: app/src/main/AndroidManifest.xml/res XML+values/icons, integration/IntegrationDatabase.kt/StoragePrivacyIntegrationTest.kt, scripts/verify_apk.py/test-android.ps1, docs/system-backup-policy.md/build-validation.md/work-log.md. Проверки links/diff/UTF-8, compile/Lint0errors; отдельный commit/push/remote verification.
+
+## 2026-11-15 — проверка: starter после обновления и восстановление media-draft
+
+- Privacy опубликован90251166062934ee0553af52efb19a44015f7b94 с remoteverification. Два independent integration cases проверили actualstarter60/provenance/controlportion/edit/delete/reopen/change-manifest, PASS29. Неизменённый source отличается от пользовательской revision; старые факты сохраняют snapshots.
+- Добавлен ensureExistingDraftAssets: existingmomentrefs соединяются со staged атомарно/идемпотентно; raw/revision не очищаются, date/owner/Ready/4photo guards сохранены. Два recovery cases PASS29; UI включает это в подготовку и Save.
+- Файлы: MediaMetadataRepository.kt, integration/StarterCatalogIntegrationTest.kt/DraftMediaRecoveryIntegrationTest.kt, docs/build-validation.md/work-log.md. Общий IntegrationDatabase helper опубликован предыдущей privacyчастью. Diff/compile/Lint0errors и4casesвреальномrunnerпроверены; отдельный commit/push/remoteSHA.
