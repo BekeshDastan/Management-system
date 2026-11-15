@@ -862,3 +862,11 @@
 - Espressoзакреплёнf48d39a173b01f6d3f75028e2b513815510aa668, remoteпроверен. Первый16KiBrun16 остановленштатнымAndroidkillUIDпосле@Afterотзываpermission: ActivityManager«permissions revoked», неappnativecrash. Убрана выдача/ревокизJUnit; явныйCLI -GrantNotificationsвыдаётпередrunnerивосстанавливаетпервоначальныйgrantпослеегоокончания. НикакихMainappизменений.
 - Строгаяcompile17/lintPASS; full16KiB81PASS111.131с/0skips, затемобычный37/4096bytesfull81PASS141.638с/0skips. ОбеactualnativeGainmap+MPFfixtureи24UIисполнены. API29full80иfinalUI24остаютсяPASS, физические/OEM неследуютизэтогоповтора.
 - Файлы: androidTest/notifications/ReminderSchedulerTest.kt, scripts/test-android.ps1, docs/build-validation.md/work-log.md. Нетgrant/revokeсюрпризавнутрипроцесса; CLIпроверяетисходныйpermissionbitирезультатrunnerвместеcненулевымexit. Diff/UTF-8/links;отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — проверка: завершение async test и установочный APK
+
+- Permissionharness опубликован9c72aca94bfddfc3b62a3a48dfc06dd4b310d6a2, remoteпроверен. Повтор24UI сновымEspresso29 выявил1нестабильноеassert: formnullнаблюдалосьIOтестомдоfinishSaved.pop. ВproductionMainэтоодиннесуспендирующийcallback. Тесттеперьждётполныйpublicsavepipeline(session.busyfalse+formnull), аутвержденияroute/IDs/captionсохранены; Mainкодне менялся.
+- Compile18/testAPK/Lint0errorsPASS; повтор24API29UIcasesPASS44.382с. Предыдущий23/24отказневыданзаPASS; исходныйfull80иобаfull81остаютсянаблюдённымиуспешнымиruns.
+- R8assembleRelease+полныйlintRelease+domain-checksстрогоPASS3m22, debug/releaseLint0errors/7warnings. Подписанactual artifacts/Diet-1.0.0.apk:14219379байт/SHA256b62d72707dd43327c735ffad3029026bc2cea5339009af2fc24c919732168fd6,certificateba726a7b3396655b56a2329827bc5de3874a12d37198ba8ac64134f783d43220.
+- Подпись/SDK/compiledprivacy/noDirectBoot/9domains/12nativeLOAD+ZIP16KiB/4ABI/noDB-key/noInternet/staticstarter60PASS. Gitguardвsignscriptпередподписьюпроверяетобаprivatepathignored/untracked; самиприватныезначениянигденепечатались. Старыйrc05невыдаётсязафинальный.
+- Файлыэтогоtestcommit: androidTest/ui/DietUiTest.kt, docs/work-log.md. Signingguard/helper иточныеreleaseartifactsдокументируютсяотдельно; install/update наownedAPI29/37впроцессе, неphysicalS23. Diff/UTF-8;отдельныйcommit/push/remoteSHA. APKиrawvalidationJSONignored, sourceappнеизменёнпосле9c72.

@@ -436,9 +436,13 @@ class DietUiTest {
         val host = UiHost(repository, preferences, TestMediaActions(), scope)
         host.push(UiRoute("photo-feed")); host.push(UiRoute("photo-detail", removedId)); host.openForm("moment")
         withTimeout(10_000) { while (host.form == null || host.form?.editable != true) delay(20) }
-        host.removeMomentPhoto(host.form!!, assetA)
-        withTimeout(10_000) { while (host.form?.busy == true) delay(20) }
-        host.saveForm(); withTimeout(10_000) { while (host.form != null) delay(20) }
+        val session = requireNotNull(host.form)
+        host.removeMomentPhoto(session, assetA)
+        withTimeout(10_000) { while (session.busy) delay(20) }
+        host.saveForm()
+        // The synthetic host uses IO: form=null precedes navigation/message in finishSaved.
+        // Wait for the whole save pipeline, then independently assert its visible result.
+        withTimeout(10_000) { while (host.form != null || session.busy) delay(20) }
         assertEquals("photo-feed", host.route.name)
         assertEquals("Фото удалено. Остальные моменты сохранены.", host.message)
         assertNull(repository.loadPhoto(removedId)); assertEquals(keptId, repository.queryPhotos(today(), today()).single().id)
