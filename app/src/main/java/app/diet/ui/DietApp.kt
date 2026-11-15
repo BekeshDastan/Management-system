@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import app.diet.data.DietRepository
 import app.diet.data.VisualPreferencesRepository
@@ -43,15 +44,20 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
     BackHandler(enabled = h.route.name != "home" || h.form != null || h.canGoBack) { h.back() }
     CompositionLocalProvider(LocalUi provides h) {
         DietTheme(h.preferences, h.preferencePreview) {
+            val density = LocalDensity.current
+            val keyboardHeight = WindowInsets.ime.getBottom(density)
+            val compactKeyboard = keyboardHeight > 0 && LocalWindowInfo.current.containerSize.height - keyboardHeight - WindowInsets.statusBars.getTop(density) < with(density) { 160.dp.roundToPx() }
             Surface(color = MaterialTheme.colorScheme.background) {
                 if (!h.state.ready || !h.preferences.ready) {
                     Column(Modifier.fillMaxSize().padding(28.dp), Arrangement.Center, Alignment.CenterHorizontally) { Text("Diet", style = MaterialTheme.typography.displaySmall); Spacer(Modifier.height(24.dp)); CircularProgressIndicator(); ErrorNotice(h.error ?: h.state.error); PreferenceReadStatus(); if (h.error != null || h.state.error != null) Action("Повторить чтение дневника", onClick = { h.launch { repository.initialize() } }) }
                 } else {
                     Scaffold(containerColor = MaterialTheme.colorScheme.background, snackbarHost = { Column { PendingDeletionNotice(h); SnackbarHost(snackbar) } }, bottomBar = {
-                        if (h.route.name == "editor") Box(Modifier.navigationBarsPadding().imePadding()) { EditorActions() }
+                        // With very little space above the IME, let the focused field use it.
+                        // The fixed action returns as soon as the user closes the keyboard.
+                        if (h.route.name == "editor" && !compactKeyboard) Box(Modifier.navigationBarsPadding().imePadding()) { EditorActions() }
                         if (h.state.onboarding?.completed == true && h.route.name !in listOf("editor", "batch-picker", "line-picker", "replace-picker", "template-picker", "appearance", "home-layout", "photo-detail")) DietNavigation()
                     }) { padding ->
-                        Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding), horizontalAlignment = Alignment.CenterHorizontally) {
                             if (h.route.name in setOf("catalog", "add-food", "line-picker", "replace-picker", "batch-picker")) Box(Modifier.widthIn(max = 760.dp)) { CatalogTopBar(h.route.name) }
                             val screenKey = h.route.name + ":" + (if (h.route.name == "editor") h.form?.entity?.id else h.route.id).orEmpty()
                             DisposableEffect(screenKey) {

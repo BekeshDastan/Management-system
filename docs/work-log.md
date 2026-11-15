@@ -961,3 +961,11 @@
 - Новый отчёт опубликован 12caa1a72920082d47da8f536efca0a5721cda59, remote SHA подтверждён. versionName повышен до 1.1.0, versionCode до 2; appId, min29/target37, Room schema1 и постоянный сертификат не меняются.
 - Двенадцать строк/описаний виджета вынесены в widget_strings.xml. Независимое XML-сравнение подтвердило те же значения и размеры. Lint06: 0 ошибок/9 неподавленных предупреждений; full07 уже использовал эти ресурсы и прошёл native RemoteViews проверки.
 - Файлы: app/build.gradle.kts, res/layout/diet_widget.xml, res/values/widget_strings.xml, docs/work-log.md. Проверены compile/debug/native tests, diff/XML; отдельный commit/push/remote SHA. Следующий шаг — R8/LintRelease, подпись тем же ключом и реальное install-r поверх сохранённого 1.0.0.
+
+
+## 2026-11-15 — клавиатура и редактор в низком окне
+
+- Подготовка версии опубликована f1543c71a868b0e924fa20cef4a0d6fc23a5f37f, remote SHA проверен. Подписанный кандидат 08 прошёл update29/37, сохранность и независимые widget/photoUndo проверки, но нативный API29 показал перекрытие редактора клавиатурой. Поэтому этот кандидат не выдаётся за окончательный файл.
+- MainActivity получил adjustResize, Scaffold потребляет уже применённые inset padding. При менее 160 dp над IME footer уступает место вводу и возвращается после закрытия клавиатуры. Применены официальные Compose inset/WindowInfo API; без новых зависимостей и изменения данных.
+- 09 debug/test/JVM54/R8/Lint PASS; отдельные 36 UI на API37/16 КиБ PASS/182,158 с/0 пропусков. 10 compile/R8/LintRelease PASS/2 мин 51 с. Native подписанные09/10 на API29: поле и Save над Gboard в портрете; в низком окне поле с UX29_IME_FINAL видно и редактируется, Save возвращается после закрытия IME. Все кнопки диалога доступны прокруткой. Размер/density/font/rotation восстановлены.
+- Файлы: AndroidManifest.xml, DietApp.kt, docs/android-ui.md/ux-validation-1.1.md/work-log.md. Diff/UTF-8/links проверены; исходные факты сохранены, временный QA-черновик удалён через UI. Отдельный commit/push/remote SHA; после commit APK перепаковывается и проверяется повторным обновлением29/37. Предыдущие 838/ddfd/1a2 — только кандидаты с указанной областью проверки.
