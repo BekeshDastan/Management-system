@@ -5,31 +5,31 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:gravity="center_vertical">
         <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:gravity="center_vertical"
             android:singleLine="true" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="18sp"
-            android:text="@string/widget_brand" android:textSize="18sp" android:textStyle="bold" android:textColor="#D6F1B5" />
+            android:text="@string/widget_brand" android:textSize="18sp" android:textStyle="bold" android:textColor="#B8F36B" />
         <TextView android:id="@+id/widget_date" android:layout_width="0dp" android:layout_weight="2" android:layout_height="match_parent" android:gravity="center_vertical"
-            android:text="@string/widget_diary" android:textSize="13sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="13sp" android:maxLines="1" android:ellipsize="end" android:textColor="#D3DED5" />
+            android:text="@string/widget_diary" android:textSize="13sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="13sp" android:maxLines="1" android:ellipsize="end" android:textColor="#A1A1AA" />
         <TextView android:id="@+id/widget_refresh" android:layout_width="48dp" android:layout_height="match_parent" android:gravity="center"
-            android:text="@string/widget_refresh_symbol" android:textSize="26sp" android:textColor="#D6F1B5" android:contentDescription="@string/widget_refresh_description" android:background="@drawable/diet_widget_touch" />
+            android:text="@string/widget_refresh_symbol" android:textSize="26sp" android:textColor="#B8F36B" android:contentDescription="@string/widget_refresh_description" android:background="@drawable/diet_widget_touch" />
     </LinearLayout>
     <LinearLayout android:id="@+id/widget_summary" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
         android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/diet_widget_touch">
         <TextView android:id="@+id/widget_value" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="2" android:gravity="center_vertical"
-            android:text="@string/widget_open_prompt" android:textSize="30sp" android:textStyle="bold" android:textColor="#F4F7F0"
+            android:text="@string/widget_open_prompt" android:textSize="30sp" android:textStyle="bold" android:textColor="#FFFFFF"
             android:singleLine="true" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="30sp" android:autoSizeStepGranularity="1sp" />
         <TextView android:id="@+id/widget_goal" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical"
-            android:text="@string/widget_personal_diary" android:textSize="13sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="13sp" android:textColor="#D3DED5" android:maxLines="2" android:ellipsize="end" />
+            android:text="@string/widget_personal_diary" android:textSize="13sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="13sp" android:textColor="#A1A1AA" android:maxLines="2" android:ellipsize="end" />
         <TextView android:id="@+id/widget_status" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical"
-            android:text="" android:textSize="12sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="12sp" android:textColor="#D3DED5" android:maxLines="2" android:ellipsize="end" />
+            android:text="" android:textSize="12sp" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="12sp" android:textColor="#A1A1AA" android:maxLines="2" android:ellipsize="end" />
     </LinearLayout>
     <LinearLayout android:id="@+id/widget_actions" android:layout_width="match_parent" android:layout_height="48dp" android:gravity="center_vertical">
         <TextView android:id="@+id/widget_food" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"
-            android:text="@string/widget_food_label" android:textSize="14sp" android:textStyle="bold" android:textColor="#D6F1B5" android:gravity="center"
+            android:text="@string/widget_food_label" android:textSize="14sp" android:textStyle="bold" android:textColor="#B8F36B" android:gravity="center"
             android:contentDescription="@string/widget_food_description" android:background="@drawable/diet_widget_touch" android:singleLine="true" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="14sp" />
         <TextView android:id="@+id/widget_weight" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"
-            android:text="@string/widget_weight_label" android:textSize="14sp" android:textColor="#D6F1B5" android:gravity="center" android:contentDescription="@string/widget_weight_description"
+            android:text="@string/widget_weight_label" android:textSize="14sp" android:textColor="#B8F36B" android:gravity="center" android:contentDescription="@string/widget_weight_description"
             android:background="@drawable/diet_widget_touch" android:singleLine="true" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="14sp" />
         <TextView android:id="@+id/widget_sleep" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"
-            android:text="@string/widget_sleep_label" android:textSize="14sp" android:textColor="#D6F1B5" android:gravity="center" android:contentDescription="@string/widget_sleep_description"
+            android:text="@string/widget_sleep_label" android:textSize="14sp" android:textColor="#B8F36B" android:gravity="center" android:contentDescription="@string/widget_sleep_description"
             android:background="@drawable/diet_widget_touch" android:singleLine="true" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="14sp" />
     </LinearLayout>
 </LinearLayout>

@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,12 +73,12 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
                             }
                             screenStates.SaveableStateProvider(screenKey) {
                                 RetainedViewport(screenKey) {
-                                            if (h.route.name != "home" || h.canGoBack) TextButton(onClick = { h.back() }, contentPadding = PaddingValues(0.dp), enabled = h.form?.busy != true) { Text("← Назад") }
+                                            if (h.route.name !in setOf("home", "plans", "templates", "reports", "graph-weight", "graph-sleep", "graph-food", "settings")) TextButton(onClick = { h.back() }, contentPadding = PaddingValues(0.dp), enabled = h.form?.busy != true) { Text("← Назад") }
                                             ErrorNotice(h.state.error ?: h.error)
                                             PreferenceReadStatus()
                                             if (h.state.error != null) Action("Повторить чтение сохранённых данных", secondary = true) { h.launch { repository.initialize() } }
                                             when (h.route.name) {
-                                                "home" -> if (h.state.onboarding?.completed != true) { if (h.state.onboarding?.step == "goals") OnboardingGoals() else WelcomeScreen() } else { GuidanceInvite(); HomeScreen() }
+                                                "home" -> if (h.state.onboarding?.completed != true) { if (h.state.onboarding?.step == "goals") OnboardingGoals() else WelcomeScreen() } else HomeScreen()
                                                 "onboarding-goals" -> OnboardingGoals()
                                                 "guide" -> GuidanceScreen()
                                                 "editor" -> EditorScreen()
@@ -109,13 +112,24 @@ fun DietApp(repository: DietRepository, visualRepository: VisualPreferencesRepos
     }
 }
 
-@Composable internal fun ScreenHeading(title: String, description: String? = null) { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { Text(title, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.semantics { heading() }); description?.let { Muted(it) } } }
+@Composable internal fun ScreenHeading(title: String, description: String? = null) { Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { Text(title, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.semantics { heading() }); description?.let { Muted(it) } } }
 @Composable private fun DietNavigation() {
     val h = LocalUi.current
-    val density = LocalDensity.current
-    NavigationBar(modifier = Modifier.heightIn(min = (80 + (density.fontScale.coerceAtLeast(1f) - 1) * 40).dp), containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
-        listOf("home" to (Icons.Outlined.MenuBook to "Дневник"), "plans" to (Icons.Outlined.CalendarMonth to "План"), "reports" to (Icons.Outlined.BarChart to "Прогресс"), "settings" to (Icons.Outlined.MoreHoriz to "Ещё")).forEach { (route, label) ->
-            NavigationBarItem(h.activeRoot == route, { h.root(route) }, icon = { Icon(label.first, contentDescription = null, modifier = Modifier.size(24.dp).clearAndSetSemantics { }) }, label = { Text(label.second) })
+    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
+        Column(Modifier.navigationBarsPadding()) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(Modifier.fillMaxWidth().selectableGroup(), verticalAlignment = Alignment.CenterVertically) {
+                listOf("home" to (Icons.AutoMirrored.Outlined.MenuBook to "Дневник"), "plans" to (Icons.Outlined.CalendarMonth to "План"),
+                    "reports" to (Icons.Outlined.BarChart to "Прогресс"), "settings" to (Icons.Outlined.MoreHoriz to "Ещё")).forEach { (route, item) ->
+                    val selected = h.activeRoot == route
+                    val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    Column(Modifier.weight(1f).heightIn(min = 56.dp).selectable(selected, onClick = { h.root(route) }, role = Role.Tab).padding(vertical = 6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Icon(item.first, contentDescription = null, tint = color, modifier = Modifier.size(22.dp).clearAndSetSemantics { })
+                        Text(item.second, color = color, style = MaterialTheme.typography.labelMedium)
+                    }
+                }
+            }
         }
     }
 }

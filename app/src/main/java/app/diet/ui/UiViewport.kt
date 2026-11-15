@@ -88,10 +88,10 @@ private val LocalViewportLoad = staticCompositionLocalOf<ViewportLoad?> { null }
                 Modifier.widthIn(max = 760.dp).fillMaxHeight().imePadding().testTag("viewport-" + key)
                     .graphicsLayer { alpha = if (!restored && target.second > 0) 0f else entrance.value; translationY = if (reduced) 0f else (1f - entrance.value) * 10.dp.toPx() },
                 state = list,
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item { Column(verticalArrangement = Arrangement.spacedBy(14.dp), content = content) }
+                item { Column(verticalArrangement = Arrangement.spacedBy(12.dp), content = content) }
             }
             if (!restored && target.second > 0) CircularProgressIndicator(Modifier.padding(28.dp))
         }

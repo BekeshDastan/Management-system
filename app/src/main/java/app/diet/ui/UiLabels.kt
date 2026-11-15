@@ -39,6 +39,7 @@ internal fun recordedDateCount(count: Long): String {
 }
 
 internal fun preferenceGroupLabel(group: String): String = when (group) {
+    "weightTarget" -> "Желаемый вес"
     "theme" -> "Тема"
     "font" -> "Размер текста"
     "appearance" -> "Оформление"

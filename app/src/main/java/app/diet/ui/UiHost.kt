@@ -53,7 +53,7 @@ internal class UiHost(val repository: DietRepository, val visual: VisualPreferen
     val defaultMeal get() = activeMeals.firstOrNull()?.id.orEmpty()
     val currentEntries get() = state.entries.filter { it.localDate == date }
     val canGoBack get() = stack.isNotEmpty()
-    val activeRoot get() = (stack.toList() + route).lastOrNull { it.name in setOf("home", "plans", "reports", "settings") }?.name ?: "home"
+    val activeRoot get() = (stack.toList() + route).lastOrNull { it.name in setOf("home", "plans", "templates", "reports", "settings") }?.name?.let { if (it == "templates") "plans" else it } ?: "home"
 
     fun context(key: String, value: String) {
         view = view + (key to value)
