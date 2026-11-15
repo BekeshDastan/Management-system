@@ -833,3 +833,11 @@
 - Всеоперациичерезrepository/independentprefs, безвторогоисточникаhealthfacts вUI. Группыоформлениясохраняются/отменяютсяотдельно; неизвестныйdraftread-onlyсexplicitdiscardfingerprint, retryreadнеочищаетфайл. Канал/permissionдлякаждоговиданапоминанияпоказаныраздельно.
 - Проверки: sourceauditзакрылпрежниеP1безновыхподтверждённыхдефектов;24UItestsфинальной15на29PASS. Manual37:явнаязаменазанятойдатыцели/deleteinterval, frozen250.5template→plan→repeatconfirmation→751.5fact, deny→Allow→blockonlyweight иобратновключитьканалPASS. ДругиеполныеCRUDкомбинациипомеченыоткрытымивcoverage, не168PASS.
 - Файлы: ui/LibraryScreens.kt/SettingsScreens.kt, docs/work-log.md. Compile15/Lint0errors/units48PASS, diff/links/UTF-8; отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — native UI: история, графики и компактный отчёт
+
+- Библиотека/settings опубликованы3abe1e8ac5e692e71fa53b1fc86e2804af67351e, remoteпроверен. Этотслой:история еды/фотолента/деталь/подписи/поиск/период/приём, точныедаты/пагинация; отчёт6сворачиваемыхсекций/expandcollapseall, независимыеN/Q/M,4нутриентаграфика,weight/sleep,periodcomparison/custommonthyear иточнаятаблица40.
+- Partialvisibilityне меняетитогивыборки, gapразрываетлинию, точка/интервалподписаныN/M/range, goalcalendarmeanявноотдельноотQ. Выбордоступенtouch/actionbuttons, большиепериодынеусекаются, максимальные600толькоpresentation.
+-24UItestsвключеныздеськакобщаяисполняемаярегрессияnativeслоёв:full80API29run13 иtarget24final15PASS. Manual37:250.5→751.5послеexplicitplanrepeat, P/F/C/goalточки,missingбез0, custom1900..2026bucketN1/M8, раскрытияотчётов; photo-feed/ID/meal/default/reopen/update/delete-returnPASS.
+- Final15узкий320dp/font2:activeNext152px≈57.9dp/безclipping, datewrap;light/darkpalette/iconsвизуальноPASS, wm/fontвозвращены. Это неphysicalTalkBack/OEM/всяa11ymatrix. API37autotestотдельнообнаружилстарыйtransitiveEspresso3.5reflection; меняетсятолькоtestdependency, manualappнеподменяетсяэтимотказом.
+- Файлы: ui/HistoryScreens.kt/ReportScreens.kt, androidTest/ui/DietUiTest.kt, docs/work-log.md. Compile15/Lint0errors/units48/diffPASS. Nativewiringпубликуетсяследующимкоммитом; отдельныйcommit/push/remoteSHA.
