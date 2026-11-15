@@ -12,7 +12,7 @@
 - JPEG/EXIF/PNG/WebP/P3-F16/downsample/Gainmap+MPF проверены синтетическими native fixtures. Физическая камера/HDR-дисплей этим не проверены.
 - Manual API37: первый запуск, еда, вес/сон, цели, шаблоны/планы, графики, picker/фото/изменение/удаление, permission/channel,320dp/font2/light-dark прошли. Дополнительно signedR8 офлайн29/37 и обновление с сохранением профиля/фактов/целей/медиа/плана/шаблона/dark/raw72, PASS. Это не весь каталог168cases и не физическийp95/Doze/OEM/cloud/D2D.
 
-Каждая небольшая часть опубликована отдельным коммитом codex/android-implementation с проверкой remote SHA; завершённые исходники интегрируются fast-forward в main без переписывания истории. Конечный app source 08a91ab94af5a461f736d9cba12b4fee3f565294 встроен в VCS metadata APK. [Выпуск1.0.0](release-1.0.0.md) фиксирует конечный файл/SHA/install/update. SignedR8 проверен офлайн на29/37, обновление поверх заполненной версии сохранило данные; старые unsigned09/b62/aa0 не являются конечным APK. Текущий GitHEAD/remote сверять Git, не переносить sourceSHA на последующие документальные коммиты.
+Каждая небольшая часть опубликована отдельным коммитом codex/android-implementation с проверкой remote SHA; завершённые исходники и release-документация интегрированы fast-forward в main до9cf99d39444e94d76296da1fa1a568c467beec41; remoteSHA совпал, история не переписана. Конечный app source 08a91ab94af5a461f736d9cba12b4fee3f565294 встроен в VCS metadata APK. [Выпуск1.0.0](release-1.0.0.md) фиксирует конечный файл/SHA/install/update. SignedR8 проверен офлайн на29/37, обновление поверх заполненной версии сохранило данные; старые unsigned09/b62/aa0 не являются конечным APK. Текущий GitHEAD/remote сверять Git, не переносить sourceSHA на последующие документальные коммиты.
 
 ## Сборка и файлы
 
@@ -34,7 +34,7 @@ D:/Diet. Локальная среда: Temurin21.0.13+9, Gradle9.5, AGP9.3.1, K
 
 ## Тестовая среда и открытая приёмка
 
-Только owned AVD, ADBserver15037: DietApi29/emulator-5580, DietApi37/emulator-5582, DietApi37_16k/emulator-5584. Не выбирать default5037/USB/личный телефон. Перед stop/uninstall проверять emu avd name; тестовые записи синтетические. При R8 освобождать тяжёлые AVD; Start-Process Hidden. Raw logs/tombstones/screenshots остаются в .local-tools.
+Только owned AVD, ADBserver15037: DietApi29/emulator-5580, DietApi37/emulator-5582, DietApi37_16k/emulator-5584. Не выбирать default5037/USB/личный телефон. Перед stop/uninstall проверять emu avd name; тестовые записи синтетические. При R8 освобождать тяжёлые AVD; Start-Process Hidden. Raw logs/tombstones/screenshots остаются в .local-tools. По завершении API29/37 QA AVD закрыты после проверки имён; файлы/синтетические записи сохранены, физических телефонов не касались.
 
 Пользователь выбрал первую установку открытием APK. Его сведения: S23+,8GB,Android17,около250GB свободно; OneUI неизвестна. У близких самый старый названный Android14, модель неизвестна. Их установка/очистка автоматически не выполнялась.
 
