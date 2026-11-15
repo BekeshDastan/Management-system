@@ -710,3 +710,10 @@
 - Исходная main чистая на d965661a3e726a1f0ed26921337836cc7c015c5a, remote SHA подтверждён. Локальная sandbox-сеть ограничена; повторная проверка разрешённым сетевым вызовом достигла GitHub и официального Android SDK repository.
 - Координатор ведёт сборочную среду/интеграцию/Git; независимые области делегированы: чистое числовое ядро с тестами, Room/DataStore и оставшиеся решения TECH-007/008/009. Реальные личные данные и ключи не создаются в Git.
 - Файлы этой части: AGENTS.md, docs/handoff.md, docs/product-spec.md, docs/decisions.md, docs/work-log.md. Проверены согласованность нового поручения, UTF-8/локальные ссылки/diff перед отдельной публикацией. APK и готовность устройства пока не заявляются.
+
+## 2026-11-15 — реализация: оставшиеся решения этапа0
+
+- Автор подготовил remaining-stage-zero.md; независимый reviewer проверил официальные Android/USDA/Benchmark источники и различие выбора/исполнения. Уточнена граница: Room claim атомарен с spec/generation/date, OS permission не входит в DB-транзакцию и проверяется перед notify.
+- TECH-007: framework AlarmManager.setWindow/15мин без exact permission/FGS/GMS, три независимых вида, local timezone/DST/generation/outbox,2ч grace, ограниченный receiver, честные задержки/возможный crash-пропуск без дубля. Новая runtime dependency не нужна.
+- TECH-008: fixed USDA SR Legacy April2018/CC0, цель60 независимо проверенных строк и идемпотентное наполнение без перезаписи пользователя; картинки имеют отдельный реестр. TECH-009: конкретные S0–S3 и p95/frames/heap/PSS/APK/a11y цели; это не результаты измерений и не лимит истории.
+- Файлы: docs/remaining-stage-zero.md, docs/technical-decisions.md, docs/work-log.md. UTF-8/ссылки/diff и независимое review PASS. Полная сборочная проверка продолжается отдельно; фактическую доставку на телефонах/производительность не заявляем выполненной.
