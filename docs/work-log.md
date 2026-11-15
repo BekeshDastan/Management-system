@@ -818,3 +818,11 @@
 - Foundation: Compose theme/3accents/light-dark/system/large/reducedmotion, собственныйpresentationUiHost/dirtydialog, raw350mscheckpoints, freeze/receipt-first/unknownoutcomeproof, independentprefs. Date-boundopenawaitsource иphoto-remove durableintentguards; детальнаякартаandroid-ui.md.
 - Декоративные12foodtiles изпринятогопрототипа, явнаяграницаотличныхфото; vectorslauncherотдельно. Fixedflatpaletteконтрастрассчитан: mutedlight4D6253/outline697D6B/dark8DA78F, partialбезalpha; actual320dp проверяетсянафинальномdebug15. Nativeхукmediaещёпубликуетсяследующимслоем.
 - Файлы: ui/DietApp/DietDesign/UiHost/UiDrafts/UiPreferences/UiMediaActions, drawable-nodpi2sheets, docs/android-ui.md/work-log.md. Appunits48/Lint0errors/compile13/14PASS, новыхданных/экрановзаТЗнет; строкиархивныхдокументов«кода нет»обновятсявфинальнойинтеграции. Diff/UTF-8/links; отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — native UI: дневник, первый запуск и редакторы
+
+- Оболочка/формы опубликованыe40d6b3bdac59ed7ab91b3a10b8713af76f60829, remoteпроверен. Этотfocusedслой включаетwelcome/profile/ручнуюцель/skip,7homecards/customlayout,постояннуюполноту/подтверждённый0,foodmeals,weight/sleep,заметку/настроение/фото,прошлыедаты иредакторыснимков.
+- Sourcereplacementотдельнаяоперация, удалениепоследнейедыобъясняетснятиеполноты, target/revisionисторическойстрокинезависимотfirst40. Goaloccupieddatepreview/deleteinterval, midnightexplicitdate, deferredmanualgoalпослепроверкистарогоисхода; БЖУ/остаток/превышениенаглавной.
+- Quickportionsберутfrozenunit/basisдляitem41+, numericpaste>64cpсохраняетпредыдущее. Фотоприёмаdefaultтольконовымкадрам; persistedremoveintent/Savefreeze/возвратвлентупоследнегоудалённогоdetail. Nativepermission/pickerпубликуетсяотдельно.
+- Проверки:24DietUiвfull80run13PASS29; релевантныйполный24UIповторфинальной15сборкиPASSза47.655с, compile15/Lint0errors/units48PASS. Узкий320dpконтроль15на37выполняется, ещёневыдаётсязаPASS. DateRowweightудерживает48dp+стрелки.
+- Файлы: ui/DiaryScreens.kt/EditorScreen.kt, docs/work-log.md. UXконтрактынерасширены,Androidappбезbackup/account/formularecommendations. Diff/links/UTF-8; отдельныйcommit/push/remoteSHA.
