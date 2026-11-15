@@ -40,6 +40,11 @@ def main():
         raise FileNotFoundError(source)
     if not target.is_relative_to(ROOT):
         raise ValueError("Output must remain in the Diet workspace")
+    for private_file in (KEY, PASSWORD):
+        ignored = subprocess.run(["git", "check-ignore", "--quiet", str(private_file)],
+                                 cwd=ROOT, capture_output=True)
+        if ignored.returncode != 0:
+            raise ValueError("Private signing paths must be ignored and untracked before signing")
     if not KEY.exists():
         if not args.init_key:
             raise ValueError("No permanent local key. Use --init-key for the first release only.")

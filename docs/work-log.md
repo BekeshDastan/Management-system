@@ -877,3 +877,10 @@
 - Добавленаimplementation-coverage.md:33активныхтребования→реальныйкод/meaningfultests→конкретныепробелы. Независимыепроверкидокументов/sourceподтвердилинавигацию/IDs/неиспользуемыеNav3API.Первоначальныйвыборбиблиотекневыдаётсязаихполноеиспользование, физ/OEM/всяS2/p95/168casesнетложногоPASS.
 - Фактическийсрез:48uniqueJVM,80API29,24finalUI29,оба81API37(4KiB/16KiB)PASS. GapfirstNativephysicsиfullCRUD/errorcombinationsотдельно; подписьAPK/staticprivacyвыполнены, actualsignedinstall/updateна29/37ещёдописываютсяпослепроверки. Primaryreferences/архивныеprototypesнепереписаны.
 - Файлы: AGENTS.md/README.md, docs/product-spec.md/development-plan.md/acceptance-tests.md/handoff.md/implementation-coverage.md, docs/android-build-baseline.md/android-dependencies.md/android-test-matrix.md/stack-proposal.md/technical-decisions.md, docs/work-log.md. НезависимопровереныTECH001–009/55links, затемобщийUTF-8/links/IDs/diffPASS; отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — сборочный guard и подписанный кандидат
+
+- Интеграцияdocs опубликована31e7e12268fcbd284f0a77a9eddfef0fc102088b, remoteпроверен. Signerпередчтениемkeystore/passwordвызываетgitcheck-ignoreдляобоихабсолютныхпутей;еслиониtracked/неignored,подписьотказывается. Это делаетвыводprivateKeyTrackedfalseпроверенным,непредположением.
+- Реальныйsign+require-signature/staticcheckerуспешеннаfinalAPK14,219,379B/b62d72707dd43327c735ffad3029026bc2cea5339009af2fc24c919732168fd6. Публичныйсертификатпрежнийba726a7b3396655b56a2329827bc5de3874a12d37198ba8ac64134f783d43220; privatevalues/Gitникакнепечатались/непубликовались. appsource9c72,после негоMainнеизменён.
+- Nativeinstall29и37подписанногокандидатаужеуспешен; офлайнпервыйзапуск/food250.5/weight-sleep/profile37проверяютсяфактическимUI, финальныйsame-keyupdateещёpending. Этиchecksнепереносятсясdebug. Файлartifactsигнорируется, bin/privatekeysнеGit.
+- Файлы: scripts/sign_apk.py, docs/release-process.md/work-log.md. Проверкиpy_compile/реальноеsign/verify/Gitignore/diff/ссылки; отдельныйcommit/push/remoteSHA. Окончательныеinstall/updateитоги—следующаядокументальнаяфиксация.
