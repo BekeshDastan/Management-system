@@ -13,7 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -23,6 +25,7 @@ import java.security.MessageDigest
 
 @Serializable
 data class PreferenceDraft(val id: String, val group: String, val baseRevision: Long, val draftRevision: Long = 1, val rawFields: Map<String, String>, val status: String = "OPEN", val formatVersion: Int = 1)
+data class UnsupportedPreferenceDraft(val group: String, val rawFingerprint: String)
 
 data class VisualPreferences(
     val ready: Boolean = false, val error: String? = null,
@@ -32,7 +35,10 @@ data class VisualPreferences(
     val hiddenHome: Set<String> = emptySet(), val gameNames: Boolean = true, val gameLevels: Boolean = true,
     val report: Map<String, String> = emptyMap(), val viewContext: Map<String, String> = emptyMap(),
     val revisions: Map<String, Long> = emptyMap(), val drafts: List<PreferenceDraft> = emptyList(),
-)
+    val unsupportedDrafts: List<UnsupportedPreferenceDraft> = emptyList(),
+) {
+    val unsupportedDraftGroups: Set<String> get() = unsupportedDrafts.map { it.group }.toSet()
+}
 
 /** Owns no domain facts. Each update changes one preference group and its token atomically. */
 class VisualPreferencesRepository internal constructor(private val store: DataStore<Preferences>, scope: CoroutineScope) {
@@ -41,19 +47,42 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
     private val mutableState = MutableStateFlow(VisualPreferences())
     val state: StateFlow<VisualPreferences> = mutableState.asStateFlow()
     private val groups = setOf("theme", "font", "appearance", "home", "gameNames", "gameLevels", "report", "view")
+    private val observationRequests = MutableStateFlow(0L)
 
     init {
         scope.launch(Dispatchers.IO) {
-            try { store.data.collect { mutableState.value = decode(it) } }
-            catch (e: CancellationException) { throw e }
-            catch (_: Exception) { mutableState.value = mutableState.value.copy(error = "Не удалось прочитать настройки. Файл сохранён; настройки не сброшены.") }
+            observationRequests.collectLatest {
+                try { store.data.collect { preferences ->
+                    try { mutableState.value = decode(preferences) }
+                    catch (e: CancellationException) { throw e }
+                    catch (_: Exception) { observationFailed(blocked = true) }
+                } }
+                catch (e: CancellationException) { throw e }
+                catch (_: Exception) { observationFailed() }
+            }
         }
+    }
+    private fun observationFailed(blocked: Boolean = false) { mutableState.update { it.copy(ready = if (blocked) false else it.ready, error = "Не удалось прочитать настройки. Файл сохранён; повторите чтение.") } }
+    fun retryObservation() {
+        mutableState.update { it.copy(error = null) }
+        observationRequests.update { Math.addExact(it, 1L) }
     }
     private fun revisionKey(group: String) = longPreferencesKey("revision.$group")
     private fun payloadKey(group: String) = stringPreferencesKey("value.$group")
     private fun tokenKey(group: String) = stringPreferencesKey("token.$group")
     private fun fingerprintKey(group: String) = stringPreferencesKey("fingerprint.$group")
     private fun draftKey(group: String) = stringPreferencesKey("draft.$group")
+    private fun rawFingerprint(raw: String): String = MessageDigest.getInstance("SHA-256").digest(raw.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
+    private fun parseKnownDraft(raw: String, group: String): PreferenceDraft {
+        try {
+            require(raw.toByteArray(Charsets.UTF_8).size <= 8192)
+            val draft = json.decodeFromString<PreferenceDraft>(raw)
+            require(draft.formatVersion == 1 && draft.group == group && draft.draftRevision >= 1 && draft.baseRevision >= 1 && draft.status in setOf("OPEN", "COMMITTED", "DISCARDED"))
+            return draft
+        } catch (e: CancellationException) { throw e }
+        catch (_: Exception) { throw DataFailure.Invalid("Этот черновик настроек пока нельзя открыть. Его данные сохранены.") }
+    }
+    private fun knownDraft(p: Preferences, group: String): PreferenceDraft? = p[draftKey(group)]?.let { parseKnownDraft(it, group) }
     private fun encodedFields(fields: Map<String, String>): String = json.encodeToString<Map<String, String>>(fields.toSortedMap())
     private fun fingerprint(group: String, fields: Map<String, String>, baseRevision: Long): String {
         val encoded = encodedFields(fields)
@@ -63,7 +92,18 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
     suspend fun freshPreferenceDraft(group: String): PreferenceDraft? {
         require(group in groups)
         val current = store.data.first(); supported(current)
-        return current[draftKey(group)]?.let { json.decodeFromString<PreferenceDraft>(it) }
+        return knownDraft(current, group)
+    }
+    /** Explicit discard only; an old dialog cannot remove a newer incompatible draft. */
+    suspend fun discardUnsupportedDraft(group: String, expectedRawFingerprint: String) {
+        require(group in groups)
+        store.edit { current ->
+            supported(current)
+            val raw = current[draftKey(group)] ?: throw DataFailure.Missing()
+            if (rawFingerprint(raw) != expectedRawFingerprint) throw DataFailure.Conflict()
+            require(runCatching { parseKnownDraft(raw, group) }.isFailure) { "Черновик уже доступен; откройте его заново" }
+            current.remove(draftKey(group))
+        }
     }
     /** Returning the same Preferences is a read-only barrier in DataStore's serial update queue. */
     suspend fun recoverPreference(group: String, token: String, fields: Map<String, String>, baseRevision: Long): Boolean {
@@ -90,6 +130,12 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
         supported(p)
         groups.forEach { group -> if (p[payloadKey(group)] != null) validate(group, fields(p, group)) }
         val appearance = fields(p, "appearance"); val home = fields(p, "home")
+        val unsupported = mutableListOf<UnsupportedPreferenceDraft>()
+        val drafts = groups.mapNotNull { group ->
+            val raw = p[draftKey(group)] ?: return@mapNotNull null
+            try { parseKnownDraft(raw, group).takeIf { it.status == "OPEN" } }
+            catch (_: DataFailure.Invalid) { unsupported += UnsupportedPreferenceDraft(group, rawFingerprint(raw)); null }
+        }
         return VisualPreferences(ready = true,
             theme = fields(p, "theme")["theme"] ?: "system", largeText = fields(p, "font")["large"]?.toBooleanStrict() ?: false,
             accent = appearance["accent"] ?: "fern", cover = appearance["cover"] ?: "5",
@@ -99,7 +145,7 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
             gameLevels = fields(p, "gameLevels")["enabled"]?.toBooleanStrict() ?: true,
             report = fields(p, "report"), viewContext = fields(p, "view"),
             revisions = groups.associateWith { p[revisionKey(it)] ?: 1 },
-            drafts = groups.mapNotNull { p[draftKey(it)]?.let { raw -> json.decodeFromString<PreferenceDraft>(raw) } }.filter { it.status == "OPEN" })
+            drafts = drafts, unsupportedDrafts = unsupported)
     }
     private fun validate(group: String, fields: Map<String, String>) {
         require(group in groups)
@@ -117,7 +163,7 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
         var saved: PreferenceDraft? = null
         store.edit { p ->
             supported(p)
-            val old = p[draftKey(draft.group)]?.let { json.decodeFromString<PreferenceDraft>(it) }
+            val old = knownDraft(p, draft.group)
             if (old?.id == draft.id) {
                 if (old.status != "OPEN") throw DataFailure.ClosedDraft()
                 require(old.formatVersion == 1) { "Неизвестная версия черновика; данные сохранены" }
@@ -133,7 +179,7 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
         require(group in groups)
         store.edit { p ->
             supported(p)
-            val old = p[draftKey(group)]?.let { json.decodeFromString<PreferenceDraft>(it) } ?: throw DataFailure.Missing()
+            val old = knownDraft(p, group) ?: throw DataFailure.Missing()
             if (old.id != draftId || old.draftRevision != expectedRevision) throw DataFailure.Conflict()
             if (old.status != "OPEN") throw DataFailure.ClosedDraft()
             p[draftKey(group)] = json.encodeToString(old.copy(status = "DISCARDED", rawFields = emptyMap(), draftRevision = Math.addExact(old.draftRevision, 1)))
@@ -151,7 +197,7 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
             supported(p)
             if ((p[revisionKey(group)] ?: 1) != baseRevision) throw DataFailure.Conflict()
             validate(group, fields); require(encoded.toByteArray().size <= 8192)
-            val draft = p[draftKey(group)]?.let { json.decodeFromString<PreferenceDraft>(it) }
+            val draft = knownDraft(p, group)
             require(draft == null || draft.formatVersion == 1) { "Неизвестная версия черновика; данные сохранены" }
             if (draftId != null && (draft?.id != draftId || draft.draftRevision != draftRevision || draft.status != "OPEN" || draft.baseRevision != baseRevision)) throw DataFailure.Conflict()
             p[payloadKey(group)] = encoded; p[revisionKey(group)] = Math.addExact(baseRevision, 1)
@@ -162,12 +208,18 @@ class VisualPreferencesRepository internal constructor(private val store: DataSt
 
     companion object {
         @Volatile private var shared: DataStore<Preferences>? = null
+        /** The production factory and isolated integration stores use the same validated CE path. */
+        internal fun preferencesFile(context: Context, name: String = "visual.preferences_pb"): File {
+            check(!context.isDeviceProtectedStorage)
+            require(name.matches(Regex("[a-zA-Z0-9_.-]+\\.preferences_pb")))
+            val dir = File(context.noBackupFilesDir, "diet/prefs").canonicalFile
+            check(dir.isDirectory || dir.mkdirs()); check(dir.toPath().startsWith(context.noBackupFilesDir.canonicalFile.toPath()))
+            return File(dir, name)
+        }
         private fun preferenceStore(context: Context, scope: CoroutineScope): DataStore<Preferences> = shared ?: synchronized(this) {
             shared ?: run {
-                check(!context.isDeviceProtectedStorage)
-                val dir = File(context.noBackupFilesDir, "diet/prefs").canonicalFile
-                check(dir.isDirectory || dir.mkdirs()); check(dir.toPath().startsWith(context.noBackupFilesDir.canonicalFile.toPath()))
-                PreferenceDataStoreFactory.create(scope = scope, produceFile = { File(dir, "visual.preferences_pb") }).also { shared = it }
+                val file = preferencesFile(context)
+                PreferenceDataStoreFactory.create(scope = scope, produceFile = { file }).also { shared = it }
             }
         }
     }
