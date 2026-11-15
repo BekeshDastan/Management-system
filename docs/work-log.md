@@ -856,3 +856,9 @@
 - Закреплёнexplicit androidTestEspresso3.7.0stable, официальныйsourceSDK23+getSystemService/релизныеоснованияпроверены. Толькотестоваяdependency, неновыйUI/network/runtimepermission. Metadata+29lines:core/idling3.7иerrorprone2.30SHA, существующиеhashesнетронуты.
 - Compile16(fullwriteverification)PASS5m54; normalstrictcompile17/lintPASS2m02. Official16KiB/API37getconf16384,fullrun17 81cases/0failure/0skip/111.131с:включая24UI/Gainmap/SQLite/DataStore/graphics. S2read7662мс/seed3831/PSS110113→121945KiB, emulatoronlysingleiteration. Физическийp95неPASS.
 - Файлы: app/build.gradle.kts, gradle/libs.versions.toml/verification-metadata.xml, docs/build-validation.md/work-log.md. ЗависимостьизGoogleMaven,primarydocs/sourceпроверены, разрешённыйmin29сохранён. Diff/UTF-8/links, отдельныйcommit/push/remoteSHA.
+
+## 2026-11-15 — исправление: разрешение тестового процесса и финальный4KiBповтор
+
+- Espressoзакреплёнf48d39a173b01f6d3f75028e2b513815510aa668, remoteпроверен. Первый16KiBrun16 остановленштатнымAndroidkillUIDпосле@Afterотзываpermission: ActivityManager«permissions revoked», неappnativecrash. Убрана выдача/ревокизJUnit; явныйCLI -GrantNotificationsвыдаётпередrunnerивосстанавливаетпервоначальныйgrantпослеегоокончания. НикакихMainappизменений.
+- Строгаяcompile17/lintPASS; full16KiB81PASS111.131с/0skips, затемобычный37/4096bytesfull81PASS141.638с/0skips. ОбеactualnativeGainmap+MPFfixtureи24UIисполнены. API29full80иfinalUI24остаютсяPASS, физические/OEM неследуютизэтогоповтора.
+- Файлы: androidTest/notifications/ReminderSchedulerTest.kt, scripts/test-android.ps1, docs/build-validation.md/work-log.md. Нетgrant/revokeсюрпризавнутрипроцесса; CLIпроверяетисходныйpermissionbitирезультатrunnerвместеcненулевымexit. Diff/UTF-8/links;отдельныйcommit/push/remoteSHA.

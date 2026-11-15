@@ -1,20 +1,15 @@
 package app.diet.notifications
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import androidx.core.content.ContextCompat
 import androidx.room.useReaderConnection
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import app.diet.data.*
 import app.diet.messages.ReminderMessages
 import kotlinx.coroutines.*
@@ -36,14 +31,9 @@ class ReminderSchedulerTest {
     private lateinit var spec: ReminderEntity
     private lateinit var now: Instant
     private lateinit var zone: ZoneId
-    private var grantedForTest = false
 
     @Before fun setup(): Unit = runBlocking {
         val base = ApplicationProvider.getApplicationContext<Context>()
-        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(base, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(base.packageName, Manifest.permission.POST_NOTIFICATIONS)
-            grantedForTest = true
-        }
         root = File(base.cacheDir, "notification-test-" + newId()).apply { mkdirs() }
         context = object : ContextWrapper(base) {
             override fun getNoBackupFilesDir() = File(root, "no-backup").apply { mkdirs() }
@@ -58,7 +48,7 @@ class ReminderSchedulerTest {
         repo.initialize()
         scheduler = ReminderScheduler(context, repo, clock)
         scheduler.createChannels()
-        assertTrue("Test environment must permit app notifications", scheduler.appAllowed())
+        assertTrue("Grant POST_NOTIFICATIONS before starting the instrumentation process (test-android.ps1 -GrantNotifications)", scheduler.appAllowed())
         assertTrue("The synthetic test requires the food channel enabled", scheduler.channelAllowed("food"))
         spec = repo.reminderSpecs().single { it.kind == "food" }
     }
@@ -72,10 +62,7 @@ class ReminderSchedulerTest {
         if (::scope.isInitialized) scope.coroutineContext[Job]?.cancelAndJoin()
         if (::db.isInitialized) db.close()
         if (::root.isInitialized) root.deleteRecursively()
-        if (grantedForTest && Build.VERSION.SDK_INT >= 33) {
-            val base = ApplicationProvider.getApplicationContext<Context>()
-            InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(base.packageName, Manifest.permission.POST_NOTIFICATIONS)
-        }
+
     }
 
     private suspend fun enable(): ReminderEntity {

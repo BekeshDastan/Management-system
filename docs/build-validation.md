@@ -101,3 +101,11 @@ S2food slice на этом run:100000facts/3653dates,seed3831мс/read7662мс; 
 Первый стандартный API37/run15 выявил24отказа UI harness: Compose transitively выбрал Espresso3.5.0 с reflection InputManager.getInstance, удалённым Android17. Явно закреплён test-only стабильный Espresso3.7.0; его официальный source использует getSystemService наAPI23+, [release notes](https://developer.android.com/jetpack/androidx/releases/test) подтверждают изменение. Остальные57cases того run прошли. Main runtime dependencies/min29/target37 не изменены; SHA256 новых тестовых артефактов добавлены, прежние не ослаблены.
 
 После этого compile16 с обновлением metadata PASS; обычная strict compile17/lint PASS. Полный81case16KiB run17 выше подтверждает исправленный Espresso наSDK37; стандартный4KiB повтор записывается отдельно.
+
+## Обычный Android17/4KiB и test permission lifecycle
+
+DietApi37/x86_64, getconf PAGESIZE4096: полныйrun17 **81tests PASS/0failure/0skip за141.638с**. Стабильный Espresso3.7.0 действительно исполнил все24UIcases наAPI37; ручной запуск не подменял этот результат. UI source15 также вручную проверен320dp/fontScale2, обе активные стрелки даты≥48dp, dark/light и systembaricons; состояниеwm/font восстановлено.
+
+Предыдущий16KiB/run16 остановился после первого notification test из-за @After revokeRuntimePermission. ActivityManager явно записал «Killing app.diet … permissions revoked»; app fatal/native tombstone для этого события отсутствует. Это другой test-lifecycle дефект, не повтор SQLite SIGSEGV12. Выдача тестового POST_NOTIFICATIONS перенесена в внешний CLI по явному -GrantNotifications; изначальный grant-bit восстанавливается после завершения runner, когда штатное убийство UID уже не прерывает набор. JUnit не отзывает permission изнутри целевого процесса. После исправления оба37run17 выше прошли полностью. API29 не требует этого runtime permission.
+
+Пример воспроизведения на выделенном AVD: scripts/test-android.ps1 -Serial emulator-5582 -ServerPort15037 -GrantNotifications. Скрипт не удаляет приложение/данные и не выбирает личный телефон неявно.
