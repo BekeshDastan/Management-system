@@ -2,6 +2,14 @@
 
 Обновлено 15 ноября 2026 года. Реализация разрешена новым поручением пользователя. Здесь только наблюдённые результаты; [матрица](android-test-matrix.md) и [168 ожидаемых случаев](acceptance-tests.md) не объявляются автоматически пройденными.
 
+## Текущий результат
+
+Готов подписанный установочный APK1.0.0: [конечный manifest/установка/пределы](release-1.0.0.md). Release source 08a91ab94af5a461f736d9cba12b4fee3f565294; конечный SHA256 46efbd7705f08d9429cde032a879d266a3c0948783c62299e864d7cb673a6b63. R8/полный LintRelease PASS; подпись, nondebug, min29/target37, compiled privacy/noInternet, starter60,12nativeLOAD/ZIP16KiB PASS. Тот же подписанный файл обновлён поверх заполненной версии на API29/37 без uninstall/clear; факты/фото/цели/черновики сохранились.
+
+48 уникальных JVMcases PASS; Android29 полный80 и дополнительныйUI24 PASS; обычный37 и официальный16KiB37 по81PASS. Последние изменения только русских подписей проверены сборкой/Lint и живым signed update; полный81на каждом косметическом APK заново не приписывается. Физические устройства/весь каталог168/p95/Doze/OEM/cloud/D2D остаются открыты.
+
+Разделы ниже — последовательная история наблюдений, включая ранние отказы и их исправления. Слова «пока/ещё/после» внутри исторического run описывают именно тот run, а не отменяют этот текущий срез.
+
 ## Первая проверенная сборочная основа
 
 Windows11/AMD64, Temurin21.0.13+9, Gradle9.5.0, AGP9.3.1, Kotlin/compiler2.4.21, KSP2.3.14, SDK37.0r2/BuildTools36.0.0, min29/target37. Глобальная Java не перенастраивается: инструменты, SDK/Gradle cache, test AVD и signing material находятся в игнорируемой .local-tools. Команды — scripts/bootstrap_tools.py, scripts/install-sdk.ps1, scripts/build.ps1; сеть для первой загрузки обязательна. Артефакты и ключи не в Git.
@@ -109,3 +117,17 @@ DietApi37/x86_64, getconf PAGESIZE4096: полныйrun17 **81tests PASS/0failur
 Предыдущий16KiB/run16 остановился после первого notification test из-за @After revokeRuntimePermission. ActivityManager явно записал «Killing app.diet … permissions revoked»; app fatal/native tombstone для этого события отсутствует. Это другой test-lifecycle дефект, не повтор SQLite SIGSEGV12. Выдача тестового POST_NOTIFICATIONS перенесена в внешний CLI по явному -GrantNotifications; изначальный grant-bit восстанавливается после завершения runner, когда штатное убийство UID уже не прерывает набор. JUnit не отзывает permission изнутри целевого процесса. После исправления оба37run17 выше прошли полностью. API29 не требует этого runtime permission.
 
 Пример воспроизведения на выделенном AVD: scripts/test-android.ps1 -Serial emulator-5582 -ServerPort15037 -GrantNotifications. Скрипт не удаляет приложение/данные и не выбирает личный телефон неявно.
+
+## Окончательный подписанный APK и проверка обновления
+
+Конечный manifest — [выпуск1.0.0](release-1.0.0.md). Source08a91ab94af5a461f736d9cba12b4fee3f565294 действительно прочитан из подписанного META-INF/version-control-info.textproto. Последний runtime diff после e36 — одна строка справочной таблицы уровней с общим recordedDateCount. Compile/R8/fullLintRelease22 PASS2m39; повторная упаковка23 после sourcecommit PASS1с/R8UP-TO-DATE. Lint XML подтверждает0errors/7warnings; Сохранены предупреждения AndroidGradlePluginVersion2, ObsoleteSdkInt1, UsableSpace1, MonochromeLauncherIcon1, UseKtx2; они не подавлены и не названы ошибками сборки. Проверки реального disk-full/физического оформления остаются отдельными.
+
+Strict final verify с require-signature PASS: настоящий hash/размер, сертификат, manifestnondebug/min29/target37/noINET/noDirectBoot, compiled9domainsexclusions каждого транспорта, starter60, отсутствие DB/ключей,12nativeELF иZIP16KiB. Приватные signing files ignored/untracked; бинарник не загружен в Git. Проверка VCS metadata — проверка встроенной ревизии, не доказательство bit-for-bit воспроизводимости чужой сборки.
+
+Signed b62 на API29/37 офлайн: настоящий первый запуск→синтетический профиль→авокадо150г/250.5ккал→вес72.40→сон7ч30→полнота→отчётN1/M30. На37 также цель1800/100/60/220, actualSystemPicker→голубойJPEG→caption/meal→фотолента/Viewer, шаблон/план без автопереноса, dark и незавершённый вес72,. Force-stop/relaunch и повторная установка тем же сертификатом сохранили значения. Затем aa0 установлен поверх b62 без удаления:29/37 сохранность повторно подтверждена, на37 все перечисленные объекты открыты реальным UI.
+
+Конечный46efbd7705f08d9429cde032a879d266a3c0948783c62299e864d7cb673a6b63 установлен поверх aa0 через install-r без clear/uninstall. API29: actualMainActivity coldstart успешен, профиль/полнота/250.5; отчёт250.5/72.40/7ч30/N1each/M30; таблица «1 дата/2 даты» PASS. API37: HomeQARelease37/fullness/dark/русский draft сохранены; таблица «1 дата/2 даты» и отчёт250.5/72.40/7ч30/N1each/M30 PASS. Независимый повтор apksigner с min24 подтвердил v2true/v3true и тот же сертификат; aapt2/zipalign/VCSmetadata/hash+sidecars также подтверждены.
+
+API29 bmgr localtransport на подписанном b62 с дневником вернул package«Backup is not allowed»; прежние transport/enabled восстановлены. На холодном API37 один раз SystemUI показал ANR доwelcome; Wait восстановил системный экран, Diet продолжил сценарии, app.diet FATAL не наблюдался. Единичное ADB exec-out чтениеXML повторено после device/AVD/boot проверки; это сбой инструмента чтения, не ошибка приложения.
+
+Ни один этот install-r не был схемной миграцией1→2, реальным S23/ARM64 обновлением или испытанием cloud/D2D/OEM. Все записи/изображения синтетические; physical gate и исчерпывающая168приёмка остаются открыты. Дополнительные автотесты, повторяющие косметическую строку, не добавлялись; сохранность и видимая правка проверены в самом signed APK.
