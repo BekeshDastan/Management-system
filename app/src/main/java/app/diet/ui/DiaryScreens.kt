@@ -1,6 +1,16 @@
 package app.diet.ui
 
 import androidx.activity.compose.ReportDrawnWhen
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -46,61 +56,116 @@ internal fun dateLabel(value: String): String = runCatching { LocalDate.parse(va
 
 @Composable internal fun HomeScreen() {
     val h = LocalUi.current; val state = h.state
-    var day by remember(h.date) { mutableStateOf<ReportDay?>(null) }; var dayError by remember(h.date) { mutableStateOf<String?>(null) }
+    var day by remember(h.date) { mutableStateOf<ReportDay?>(null) }
+    var overview by remember(h.date) { mutableStateOf<DiaryOverview?>(null) }
+    var dayError by remember(h.date) { mutableStateOf<String?>(null) }
     ReportDrawnWhen { day != null && dayError == null }
-    ScreenLoad(day == null && dayError == null)
-    LaunchedEffect(h.date, state.dataRevision) { dayError = null; try { val selected = LocalDate.parse(h.date); day = h.repository.pageReportDays(selected, selected, 0, 1).days.single() } catch (e: CancellationException) { throw e } catch (e: Exception) { dayError = app.diet.messages.userMessage(e, "Не удалось посчитать выбранный день") } }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { Column(Modifier.weight(1f)) { Eyebrow("DIET · ДЛЯ СЕБЯ"); Text(if (state.profile?.name.isNullOrBlank()) "Хороший день для себя." else "${state.profile?.name.orEmpty()}, ваш день.", style = MaterialTheme.typography.headlineSmall) }; TextButton(onClick = { h.navigate("profile") }) { Text("Профиль") } }
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { TextButton(onClick = { h.date = LocalDate.parse(h.date).minusDays(1).toString() }, enabled = !h.openingForm && h.date > "1900-01-01", modifier = Modifier.semantics { contentDescription = "Предыдущая дата" }) { Text("←") }; TextButton(onClick = { h.navigate("calendar") }, modifier = Modifier.weight(1f)) { Text(dateLabel(h.date), textAlign = TextAlign.Center) }; TextButton(onClick = { h.date = LocalDate.parse(h.date).plusDays(1).toString() }, enabled = !h.openingForm && h.date < today(), modifier = Modifier.semantics { contentDescription = "Следующая дата" }) { Text("→") } }
-    if (h.date != today()) TextButton(onClick = { h.date = today() }) { Text("Вернуться к сегодня") }
+    ScreenLoad((day == null || overview == null) && dayError == null)
+    LaunchedEffect(h.date, state.dataRevision) {
+        dayError = null
+        try {
+            val selected = LocalDate.parse(h.date)
+            day = h.repository.pageReportDays(selected, selected, 0, 1).days.single()
+            overview = h.repository.readDiaryOverview(selected)
+        } catch (e: CancellationException) { throw e }
+        catch (e: Exception) { dayError = app.diet.messages.userMessage(e, "Не удалось посчитать выбранный день") }
+    }
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(if (h.date == today()) "Сегодня" else dateLabel(h.date), style = MaterialTheme.typography.headlineSmall)
+            if (h.date == today()) Muted(LocalDate.parse(h.date).format(DateTimeFormatter.ofPattern("d MMMM, EEEE", Locale.forLanguageTag("ru"))))
+        }
+        IconButton(onClick = { h.navigate("search") }, modifier = Modifier.semantics { contentDescription = "Поиск по дневнику" }) { Icon(Icons.Outlined.Search, contentDescription = null) }
+        IconButton(onClick = { h.navigate("calendar") }, modifier = Modifier.semantics { contentDescription = "Открыть календарь" }) { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) }
+    }
+    DiaryWeekStrip(overview)
+    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Icon(Icons.Outlined.LocalFireDepartment, contentDescription = null, tint = Color(0xFFFFB35C), modifier = Modifier.size(22.dp))
+        Text(recordingStreakLabel(overview?.recordingStreak ?: 0), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
     ErrorNotice(dayError)
+    NutritionHero(day)
     Action("＋ Добавить еду") { h.navigate("add-food") }
     DayCompletionControl(day?.food)
-    state.drafts.take(3).forEach { draft -> DietCard("Черновик ждёт вас") { Muted("${formLabel(draft.kind)} · ${draft.selectedLocalDate?.let(::dateLabel).orEmpty()}"); Action("Продолжить", secondary = true) { h.resume(draft) } } }
+    state.drafts.take(3).forEach { draft ->
+        Surface(color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.small) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) { Text("Черновик ждёт вас", style = MaterialTheme.typography.labelLarge); Muted("${formLabel(draft.kind)} · ${draft.selectedLocalDate?.let(::dateLabel).orEmpty()}") }
+                TextButton(onClick = { h.resume(draft) }) { Text("Продолжить") }
+            }
+        }
+    }
     if (state.drafts.isNotEmpty()) TextButton(onClick = { h.navigate("drafts") }) { Text("Все черновики →") }
     h.preferences.homeOrder.filterNot { it in h.preferences.hiddenHome }.forEach { block -> when (block) {
-        "hero" -> CoverArt(h.preferences.cover)
-        "nutrition" -> NutritionHero(day)
-        "meals" -> MealCards()
+        "meals" -> MealCards(overview)
         "journal" -> {
             val moment = state.moments.find { it.localDate == h.date }; val photos = state.photos.filter { it.momentId == moment?.id }
-            DietCard(modifier = Modifier.returnAnchor("moment"), title = "За кадром цифр") { Muted(moment?.note?.takeIf(String::isNotBlank) ?: "Как вы сегодня? Оставьте пару слов или фотографию."); moment?.mood?.let { Pill(when (it) { "great" -> "✦ Отлично"; "good" -> "☀ Хорошо"; "tired" -> "☾ Усталость"; else -> "◌ Обычно" }) }; photos.take(1).forEach { h.media.Thumbnail(it.assetId, Modifier.fillMaxWidth().height(180.dp), it.caption.ifBlank { "Фото дня" }) }; TextButton(onClick = { h.openForm("moment") }) { Text(if (moment == null) "Добавить момент →" else "Открыть мой день →") } }
+            DietCard(modifier = Modifier.returnAnchor("moment"), title = "Мой день") {
+                moment?.note?.takeIf(String::isNotBlank)?.let { Text(it) }
+                moment?.mood?.let { Pill(when (it) { "great" -> "✦ Отлично"; "good" -> "☀ Хорошо"; "tired" -> "☾ Усталость"; else -> "◌ Обычно" }) }
+                photos.take(1).forEach { h.media.Thumbnail(it.assetId, Modifier.fillMaxWidth().height(120.dp), it.caption.ifBlank { "Фото дня" }) }
+                TextButton(onClick = { h.openForm("moment") }) { Text(if (moment == null) "Добавить момент →" else "Открыть мой день →") }
+            }
         }
-        "prompt" -> DietCard(color = MaterialTheme.colorScheme.primaryContainer) { Eyebrow("Маленькое напоминание"); Text("Достаточно записать как было.", style = MaterialTheme.typography.headlineSmall); Muted("Не каждый день должен быть идеальным. Наблюдения помогают замечать свой ритм.") }
         "measurements" -> MeasurementsCards()
-        "level" -> if (h.preferences.gameLevels) { val level = GameRules.level(state.completedDayCount); DietCard("${level.number} · ${level.name}") { Muted("Заполненных дат: ${state.completedDayCount}. Уровень растёт за ведение дневника, а не за количество еды или изменение веса."); level.daysToNext?.let { Muted("До следующего уровня — ещё ${recordedDateCount(it)}") }; TextButton(onClick = { h.navigate("game") }) { Text("Названия и уровни →") } } }
     } }
-    Action("Открыть инструменты дня", secondary = true) { h.navigate("settings") }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable private fun NutritionHero(record: ReportDay?) {
-    val h = LocalUi.current; val day = record?.food; val complete = day?.completed == true; val entryCount = day?.entryCount ?: 0; val goal = record?.goal
-    DietCard(color = LocalDietColors.current.forest) {
-        Text("СЕГОДНЯ В ЦИФРАХ", style = MaterialTheme.typography.labelSmall, color = LocalDietColors.current.lime)
-        Text(day?.nutrients?.kcal?.format(1)?.let { "$it ккал" } ?: "Считаем день…", style = MaterialTheme.typography.displaySmall, color = androidx.compose.ui.graphics.Color.White)
-        if (day != null && entryCount == 0 && !complete) Text("Записей пока нет", color = androidx.compose.ui.graphics.Color(0xFFCFDBCC))
-        else day?.nutrients?.let { Text("Б ${it.protein.format(1)} · Ж ${it.fat.format(1)} · У ${it.carbs.format(1)} г", color = androidx.compose.ui.graphics.Color(0xFFCFDBCC)) }
-        Text(when { day == null -> "Загружаем точные данные"; complete && entryCount == 0 -> "Подтверждено: еды не было"; complete -> "День заполнен"; entryCount > 0 -> "Частично заполнен"; else -> "Нет данных о питании" }, color = LocalDietColors.current.lime)
-        goal?.let { target ->
-            Text("Цель на дату: ${target.kcal.format(1)} ккал", color = androidx.compose.ui.graphics.Color(0xFFCFDBCC))
-            day?.let { Text(nutritionBalance(it.nutrients.kcal, target.kcal, "ккал"), color = LocalDietColors.current.lime) }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                listOf(Triple("Белки", day?.nutrients?.protein, target.protein), Triple("Жиры", day?.nutrients?.fat, target.fat), Triple("Углеводы", day?.nutrients?.carbs, target.carbs)).forEach { (label, actual, value) ->
-                    Column(Modifier.widthIn(min = 84.dp).weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        Text(label, color = androidx.compose.ui.graphics.Color(0xFFCFDBCC), style = MaterialTheme.typography.labelMedium)
-                        Text("${actual?.format(1) ?: "—"} / ${value.format(1)} г", color = androidx.compose.ui.graphics.Color.White, style = MaterialTheme.typography.titleMedium)
-                        actual?.let { Text(nutritionBalance(it, value, "г"), color = LocalDietColors.current.lime, style = MaterialTheme.typography.bodySmall) }
+@Composable private fun DiaryWeekStrip(overview: DiaryOverview?) {
+    val h = LocalUi.current
+    val selectedDate = LocalDate.parse(h.date)
+    val first = selectedDate.minusDays((selectedDate.dayOfWeek.value - 1).toLong())
+    val days = overview?.week ?: List(7) { DiaryWeekDay(first.plusDays(it.toLong()), false, false) }
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+      val availableWidth = maxWidth
+      Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
+       Row(Modifier.width(maxOf(availableWidth, 336.dp)), horizontalArrangement = Arrangement.SpaceBetween) {
+        days.forEach { day ->
+            val active = day.date == selectedDate; val enabled = day.date <= LocalDate.now() && day.date >= DomainDates.MIN
+            Column(Modifier.weight(1f).heightIn(min = 60.dp).clickable(enabled = enabled) { h.date = day.date.toString() }
+                .semantics { contentDescription = dateLabel(day.date.toString()) + when { day.completed -> ", питание заполнено"; day.recorded -> ", есть записи еды"; else -> ", нет записей еды" }; selected = active },
+                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Surface(Modifier.size(32.dp), shape = CircleShape,
+                    color = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface) {
+                    Box(contentAlignment = Alignment.Center) {
+                        if (day.completed) Icon(Icons.Outlined.Check, contentDescription = null, Modifier.size(20.dp), tint = if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary)
+                        else Text(day.date.dayOfMonth.toString(), color = if (!enabled) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .4f) else if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.labelLarge)
                     }
                 }
+                Text(listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")[day.date.dayOfWeek.value - 1], style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            MutedOnForest("Остаток и превышение считаются только по внесённым записям; это не рекомендация изменить рацион.")
-        } ?: Text("Можно добавить свою цель", color = androidx.compose.ui.graphics.Color(0xFFCFDBCC))
-        TextButton(onClick = { h.navigate("goals") }, colors = ButtonDefaults.textButtonColors(contentColor = LocalDietColors.current.lime)) { Text("Мои цели →") }
+        }
+    }
+    }
     }
 }
 
-@Composable private fun MutedOnForest(text: String) { Text(text, color = androidx.compose.ui.graphics.Color(0xFFCFDBCC), style = MaterialTheme.typography.bodySmall) }
+@Composable private fun NutritionHero(record: ReportDay?) {
+    val h = LocalUi.current; val food = record?.food; val target = record?.goal; val actual = food?.nutrients
+    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Muted(if (target == null) "Цель калорий" else if (food == null) "Осталось калорий" else if ((target.kcal - food.nutrients.kcal).sign >= 0) "Осталось калорий" else "Сверх цели")
+            Text(if (target == null) "Не задана" else actual?.let { (target.kcal - it.kcal).let { n -> (if (n.sign < 0) -n else n).format(1) } } ?: "—", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge)
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Muted("Употреблено калорий")
+            Text(if (food == null || food.entryCount == 0 && !food.completed) "—" else "${actual?.kcal?.format(1)} ккал", style = MaterialTheme.typography.titleLarge)
+        }
+        if (actual != null && (food.entryCount > 0 || food.completed)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                MacroLabel("Б", actual.protein.format(1), Color(0xFF64C7FF))
+                MacroLabel("Ж", actual.fat.format(1), Color(0xFFFFBC66))
+                MacroLabel("У", actual.carbs.format(1), Color(0xFFC09AFF))
+            }
+        }
+    }
+}
+
+@Composable private fun MacroLabel(label: String, amount: String, color: Color) {
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) { Text(label, color = color, style = MaterialTheme.typography.labelLarge); Text("$amount г", style = MaterialTheme.typography.bodyMedium) }
+}
+
 internal fun nutritionBalance(actual: Rational, goal: Rational, unit: String): String { val remaining = goal - actual; return if (remaining.sign >= 0) "Осталось ${remaining.format(1)} $unit" else "Выше цели ${(-remaining).format(1)} $unit" }
 
 /** This control is intentionally outside the configurable home blocks. */
@@ -113,24 +178,57 @@ internal fun nutritionBalance(actual: Rational, goal: Rational, unit: String): S
     }
 }
 
-@Composable private fun MealCards() {
+@Composable private fun MealCards(overview: DiaryOverview?) {
     val h = LocalUi.current
-    var occupiedMeals by remember(h.date) { mutableStateOf<List<String>>(emptyList()) }
-    var occupiedLoading by remember(h.date) { mutableStateOf(true) }
-    ScreenLoad(occupiedLoading)
-    LaunchedEffect(h.date, h.state.dataRevision) { try { occupiedMeals = h.repository.mealsWithEntries(h.date) } finally { occupiedLoading = false } }
-    Text("Приёмы пищи", style = MaterialTheme.typography.titleLarge)
-    h.state.meals.filter { !it.archived || it.id in occupiedMeals }.forEach { meal ->
-        var page by rememberSaveable(h.date, meal.id) { mutableIntStateOf(0) }; var entries by remember(h.date, meal.id) { mutableStateOf<List<FoodEntryEntity>>(emptyList()) }; var loading by remember { mutableStateOf(true) }; var error by remember { mutableStateOf<String?>(null) }
-        LaunchedEffect(h.date, meal.id, page, h.state.dataRevision) { loading = true; try { entries = h.repository.queryHistory(h.date, h.date, mealId = meal.id, offset = page * 40L, limit = 40) } catch (e: CancellationException) { throw e } catch (e: Exception) { error = app.diet.messages.userMessage(e) } finally { loading = false } }
+    h.state.meals.filter { !it.archived || (overview?.meals?.get(it.id)?.entryCount ?: 0) > 0 }.forEach { meal ->
+        var expanded by rememberSaveable(h.date, meal.id) { mutableStateOf(false) }
+        LaunchedEffect(h.focusMealId, meal.id) { if (h.focusMealId == meal.id) expanded = true }
+        var page by rememberSaveable(h.date, meal.id) { mutableIntStateOf(0) }
+        var entries by remember(h.date, meal.id) { mutableStateOf<List<FoodEntryEntity>>(emptyList()) }
+        var loading by remember { mutableStateOf(false) }; var error by remember { mutableStateOf<String?>(null) }
+        val summary = overview?.meals?.get(meal.id)
+        LaunchedEffect(expanded, h.date, meal.id, page, h.state.dataRevision) {
+            if (expanded) {
+                loading = true; error = null
+                try { entries = h.repository.queryHistory(h.date, h.date, mealId = meal.id, offset = page * 40L, limit = 40) }
+                catch (e: CancellationException) { throw e }
+                catch (e: Exception) { error = app.diet.messages.userMessage(e) }
+                finally { loading = false }
+            }
+        }
         ScreenLoad(loading)
-        DietCard(modifier = Modifier.mealAnchor(meal.id), title = meal.name + if (meal.archived) " · архив" else "") {
-            if (loading) LinearProgressIndicator(Modifier.fillMaxWidth()); ErrorNotice(error); if (!loading && entries.isEmpty()) Muted("Пока ничего не записано")
-            entries.forEach { entry -> Row(Modifier.fillMaxWidth().clickable { h.openForm("entry", entry.id) }.padding(vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) { Column(Modifier.weight(1f)) { Text(entry.displayName(), style = MaterialTheme.typography.titleMedium); if (entry.kind != "quick") Muted("${decimal(requireNotNull(entry.quantityMicros))} ${unitLabel(requireNotNull(entry.snapshot).unit, entry.snapshot.portionName)}") }; Text("${entry.nutrients().kcal.format(1)} ккал", style = MaterialTheme.typography.labelLarge); FoodEntryActions(entry) } }
-            if (!meal.archived) TextButton(onClick = { h.navigate("add-food", meal.id) }) { Text("＋ Добавить в ${meal.name.lowercase()}") }
-            TextButton(onClick = { h.openForm("moment", meal = meal.id, extra = mapOf("photoDefaultMeal" to meal.id)) }) { Text("Фото приёма →") }
-            PageControls(page, entries.size == 40, loading) { page = it }
-            if (entries.isNotEmpty()) { TextButton(onClick = { h.launch { val source = h.mealRows(h.date, meal.id); h.openForm("template", meal = meal.id, extra = mapOf("name" to meal.name), lines = source.map { UiLine.from(h.repository.foodAsLine(it)) }) } }) { Text("Сохранить как шаблон") }; TextButton(onClick = { h.openForm("copy", meal = meal.id, extra = mapOf("sourceDate" to h.date, "sourceMeal" to meal.id)) }) { Text("Скопировать приём") } }
+        Surface(Modifier.fillMaxWidth().mealAnchor(meal.id), color = MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.small) {
+            Column {
+                Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(meal.name + if (meal.archived) " · архив" else "", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                    Column(horizontalAlignment = Alignment.End) { Text(summary?.nutrients?.kcal?.format(1) ?: if (overview != null) "0,0" else "—", style = MaterialTheme.typography.titleLarge); Text("ккал", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    if (!meal.archived) IconButton(onClick = { h.navigate("add-food", meal.id) }, modifier = Modifier.semantics { contentDescription = "Добавить еду в ${meal.name}" }) { Icon(Icons.Outlined.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }
+                }
+                Row(Modifier.fillMaxWidth().clickable { expanded = !expanded }.padding(start = 14.dp, end = 12.dp).heightIn(min = 48.dp)
+                    .semantics { role = Role.Button; stateDescription = if (expanded) "Развёрнуто" else "Свёрнуто"; contentDescription = "Состав ${meal.name}: " + foodPositionCount(summary?.entryCount ?: 0) }, verticalAlignment = Alignment.CenterVertically) {
+                    Muted(if (overview == null) "Загружаем состав…" else foodPositionCount(summary?.entryCount ?: 0), Modifier.weight(1f))
+                    Icon(if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                AnimatedVisibility(expanded, enter = expandVertically(tween(if (LocalReducedMotion.current) 0 else 160)) + fadeIn(tween(if (LocalReducedMotion.current) 0 else 160)), exit = shrinkVertically(tween(if (LocalReducedMotion.current) 0 else 160)) + fadeOut(tween(if (LocalReducedMotion.current) 0 else 160))) {
+                    Column(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        if (loading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                        ErrorNotice(error)
+                        entries.forEach { entry -> Row(Modifier.fillMaxWidth().clickable { h.openForm("entry", entry.id) }.padding(vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) { Text(entry.displayName(), style = MaterialTheme.typography.titleMedium); if (entry.kind != "quick") Muted("${decimal(requireNotNull(entry.quantityMicros))} ${unitLabel(requireNotNull(entry.snapshot).unit, entry.snapshot.portionName)}") }
+                            Text(entry.nutrients().kcal.format(1), style = MaterialTheme.typography.labelLarge)
+                            FoodEntryActions(entry)
+                        } }
+                        PageControls(page, entries.size == 40, loading) { page = it }
+                        if (!meal.archived) TextButton(onClick = { h.navigate("add-food", meal.id) }) { Text("＋ Добавить в ${meal.name.lowercase()}") }
+                        TextButton(onClick = { h.openForm("moment", meal = meal.id, extra = mapOf("photoDefaultMeal" to meal.id)) }) { Text("Фото приёма →") }
+                        if ((summary?.entryCount ?: 0) > 0) {
+                            TextButton(onClick = { h.launch { val source = h.mealRows(h.date, meal.id); h.openForm("template", meal = meal.id, extra = mapOf("name" to meal.name), lines = source.map { UiLine.from(h.repository.foodAsLine(it)) }) } }) { Text("Сохранить как шаблон") }
+                            TextButton(onClick = { h.openForm("copy", meal = meal.id, extra = mapOf("sourceDate" to h.date, "sourceMeal" to meal.id)) }) { Text("Скопировать приём") }
+                        }
+                    }
+                }
+            }
         }
     }
 }
