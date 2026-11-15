@@ -22,6 +22,7 @@
 - Distinguish missing, incomplete, and completed days in analytics; missing measurements are not zero.
 - Reward recording habits, not eating less or losing weight faster.
 - Define and verify calculation rules and reference cases before implementing them.
+- Numeric rules and storage/draft/migration design are selected in [numeric-contract.md](docs/numeric-contract.md), [storage-model.md](docs/storage-model.md), [drafts.md](docs/drafts.md), and [migrations.md](docs/migrations.md). They are engineering contracts, not implemented Room schemas or tested Android logic.
 - Keep real personal health records, credentials, backups, and signing keys out of the repository.
 
 ## Required commit workflow

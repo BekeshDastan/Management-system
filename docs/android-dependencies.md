@@ -19,11 +19,11 @@
 | SQLite driver | androidx.sqlite:sqlite-bundled | 2.7.1 | [SQLite](https://developer.android.com/jetpack/androidx/releases/sqlite); собственная библиотека SQLite, не системная версия разных телефонов |
 | Навигация Compose | androidx.navigation3:navigation3-runtime и navigation3-ui | 1.2.1 | [Navigation 3](https://developer.android.com/jetpack/androidx/releases/navigation3); не брать alpha из примера страницы |
 | ViewModel на запись back stack | androidx.lifecycle:lifecycle-viewmodel-navigation3 | 2.11.0 | Та же версия Lifecycle, отдельная от версии Navigation 3 |
-| Сериализуемые ключи навигации | org.jetbrains.kotlinx:kotlinx-serialization-core | 1.13.0 | [Официальный выпуск](https://github.com/Kotlin/kotlinx.serialization/releases/tag/v1.13.0), compiler plugin 2.4.21 из базовой конфигурации |
+| Ключи навигации и versioned JSON черновиков | org.jetbrains.kotlinx:kotlinx-serialization-core и kotlinx-serialization-json | 1.13.0 | [Официальный выпуск](https://github.com/Kotlin/kotlinx.serialization/releases/tag/v1.13.0), compiler plugin 2.4.21 из базовой конфигурации |
 
 BOM 2026.09.00 — реально прочитанный Stable POM, а не предположение по номеру месяца. Он задаёт UI/runtime/foundation/animation 1.12.1 и Material 3 1.4.0. Compiler plugin, Activity, Lifecycle, Room и прочие группы BOM не фиксирует. Alpha/Beta BOM и случайные preview-подстановки из примеров не используются.
 
-Serialization применяется к небольшим ключам навигации по [правилам Navigation 3](https://developer.android.com/guide/navigation/navigation-3/save-state); это не функция экспорта/резервирования дневника. Факты и постоянные черновики остаются в транзакционном хранилище, а не в сериализованном back stack. POM Serialization 1.13.0 указывает stdlib 2.4.10, Coroutines 1.11.0 — 2.2.20; выбранный Kotlin 2.4.21 выше этих базовых версий. Это проверка заявленных версий, не бинарный тест.
+Serialization применяется к небольшим ключам навигации и версиям JSON-полей persistent draft по [правилам Navigation 3](https://developer.android.com/guide/navigation/navigation-3/save-state); это не функция экспорта/резервирования дневника. JSON 1.13.0 добавлен по контракту хранения; его POM проверен: core 1.13.0 и stdlib 2.4.10. Raw-числа и p/q кодируются точными строками, не Double; размеры payload ограничены numeric-contract. Факты и постоянные черновики остаются в транзакционном хранилище, а не в сериализованном back stack. POM Serialization 1.13.0 указывает stdlib 2.4.10, Coroutines 1.11.0 — 2.2.20; выбранный Kotlin 2.4.21 выше этих базовых версий. Это проверка заявленных версий, не бинарный тест.
 
 ### Почему Room 2 и bundled SQLite
 
